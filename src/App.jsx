@@ -25,8 +25,8 @@ function HomePage() {
             <img src="/logo.png" alt="Slate" className="nav-logo" />
             <span className="nav-text">Slate AI</span>
           </div>
-          <a href="https://apps.apple.com" className="download-btn" target="_blank" rel="noopener noreferrer">
-            Download
+          <a href="https://testflight.apple.com/join/7wCx3GHY" className="download-btn" target="_blank" rel="noopener noreferrer">
+            Try Beta
           </a>
         </div>
       </nav>
@@ -120,8 +120,8 @@ function HomePage() {
       {/* CTA */}
       <section className="cta">
         <h2 className="cta-title">Ready?</h2>
-        <a href="https://apps.apple.com" className="cta-button" target="_blank" rel="noopener noreferrer">
-          Download for iOS
+        <a href="https://testflight.apple.com/join/7wCx3GHY" className="cta-button" target="_blank" rel="noopener noreferrer">
+          Beta Version
         </a>
       </section>
 
