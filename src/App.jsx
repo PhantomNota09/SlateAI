@@ -121,7 +121,7 @@ function HomePage() {
       <section className="cta">
         <h2 className="cta-title">Ready?</h2>
         <a href="https://testflight.apple.com/join/7wCx3GHY" className="cta-button" target="_blank" rel="noopener noreferrer">
-          Beta Version
+          Download Beta Version
         </a>
       </section>
 
