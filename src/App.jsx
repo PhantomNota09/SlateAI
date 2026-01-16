@@ -25,8 +25,8 @@ function HomePage() {
             <img src="/logo.png" alt="Slate" className="nav-logo" />
             <span className="nav-text">Slate AI</span>
           </div>
-          <a href="https://testflight.apple.com/join/7wCx3GHY" className="download-btn" target="_blank" rel="noopener noreferrer">
-            Try Beta
+          <a href="https://apps.apple.com/us/app/slate-ai/id6757089643" className="download-btn" target="_blank" rel="noopener noreferrer">
+            Download
           </a>
         </div>
       </nav>
@@ -120,8 +120,8 @@ function HomePage() {
       {/* CTA */}
       <section className="cta">
         <h2 className="cta-title">Ready?</h2>
-        <a href="https://testflight.apple.com/join/7wCx3GHY" className="cta-button" target="_blank" rel="noopener noreferrer">
-          Download Beta Version
+        <a href="https://apps.apple.com/us/app/slate-ai/id6757089643" className="cta-button" target="_blank" rel="noopener noreferrer">
+          Download on the App Store
         </a>
       </section>
 
