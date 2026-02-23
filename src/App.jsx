@@ -41,7 +41,7 @@ function HomePage() {
         <div className="hero-content">
           <div className="hero-text">
             <h1 className="hero-title">
-              Stop scrolling.<br />
+              Stop <br /> scrolling.<br />
               Start watching.
             </h1>
             <p className="hero-subtitle">
