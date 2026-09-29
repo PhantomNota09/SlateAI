@@ -70,8 +70,11 @@ describe("ensureUserDocuments", () => {
     expect(commit).toHaveBeenCalledOnce();
   });
 
-  it("reports username-taken when a concurrent claim makes the batch fail", async () => {
-    getDoc.mockResolvedValue(snap(false));
+  it("reports username-taken when a concurrent claim beats us to the username", async () => {
+    let usernameReads = 0;
+    getDoc.mockImplementation(async (ref: string) =>
+      ref === "usernames/sam" ? snap(++usernameReads > 1) : snap(false), // free at first, taken by the re-check
+    );
     commit.mockRejectedValue({ code: "permission-denied" });
     expect(await ensureUserDocuments(params)).toBe("username-taken");
   });
@@ -169,5 +172,61 @@ describe("claimUsername", () => {
     expect(await claimUsername(params)).toBe("claimed");
     expect(batchUpdate).toHaveBeenCalledWith("users/u1", { username: "sam" });
     expect(batchSet.mock.calls.map((c) => c[0])).toEqual(["usernames/sam", "userStats/u1"]);
+  });
+});
+
+// If Firestore denies the iOS-style three-write batch (e.g. the deployed rules don't let a
+// client create userStats), signup must not break or falsely blame the username.
+describe("signup batch fallback when userStats can't be seeded", () => {
+  const denied = { code: "permission-denied" };
+  // usernames/sam is free on the pre-check; `takenAfter` controls the re-check after a denial.
+  function mockUsernameLookups(takenAfterFirstDenial: boolean) {
+    let usernameReads = 0;
+    getDoc.mockImplementation(async (ref: string) => {
+      if (ref === "usernames/sam") return snap(++usernameReads > 1 && takenAfterFirstDenial);
+      return snap(false);
+    });
+  }
+  const paths = () => batchSet.mock.calls.map((c) => c[0]);
+
+  it("retries without the userStats seed and still creates the account", async () => {
+    mockUsernameLookups(false);
+    commit.mockRejectedValueOnce(denied).mockResolvedValueOnce(undefined);
+    expect(await ensureUserDocuments(params)).toBe("created");
+    expect(commit).toHaveBeenCalledTimes(2);
+    expect(paths()).toEqual(["usernames/sam", "users/u1", "userStats/u1", "usernames/sam", "users/u1"]);
+  });
+
+  it("reports username-taken (no retry) when the denial was a lost username race", async () => {
+    mockUsernameLookups(true);
+    commit.mockRejectedValue(denied);
+    expect(await ensureUserDocuments(params)).toBe("username-taken");
+    expect(commit).toHaveBeenCalledTimes(1);
+  });
+
+  it("throws (instead of looping or blaming the username) if both attempts are denied", async () => {
+    mockUsernameLookups(false);
+    commit.mockRejectedValue(denied);
+    await expect(ensureUserDocuments(params)).rejects.toMatchObject({ code: "permission-denied" });
+    expect(commit).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not retry on other errors like a network failure", async () => {
+    mockUsernameLookups(false);
+    commit.mockRejectedValue({ code: "unavailable" });
+    await expect(ensureUserDocuments(params)).rejects.toMatchObject({ code: "unavailable" });
+    expect(commit).toHaveBeenCalledTimes(1);
+  });
+
+  it("claimUsername falls back the same way and never touches other user fields", async () => {
+    let usernameReads = 0;
+    getDoc.mockImplementation(async (ref: string) =>
+      ref === "users/u1" ? snap(true, { username: "" }) : snap(++usernameReads > 1 && false),
+    );
+    commit.mockRejectedValueOnce(denied).mockResolvedValueOnce(undefined);
+    expect(await claimUsername(params)).toBe("claimed");
+    expect(commit).toHaveBeenCalledTimes(2);
+    expect(paths()).toEqual(["usernames/sam", "userStats/u1", "usernames/sam"]);
+    expect(batchUpdate.mock.calls.every((c) => JSON.stringify(c[1]) === '{"username":"sam"}')).toBe(true);
   });
 });
