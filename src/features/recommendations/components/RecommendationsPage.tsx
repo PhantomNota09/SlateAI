@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { AppShell } from "../../../core/components/AppShell";
 import { ErrorState } from "../../../core/components/FullPageState";
+import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { useToast } from "../../../core/components/Toast";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { matchInfoOf, type MovieRef } from "../../../core/models/Movie";
@@ -113,10 +114,9 @@ function Feed() {
     <AppShell watchLaterCount={rec.watchLater.length} onOpenWatchLater={() => setDrawer(true)}>
       <main className="feed">{body}</main>
 
-      <footer className="feed__footer">
-        <img src="/tmdb-logo.svg" alt="TMDB" height="12" />
-        <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
-      </footer>
+      <div className="feed__attribution">
+        <TmdbAttribution />
+      </div>
 
       <RatingDialog movie={rating} onClose={() => setRating(null)} onRate={(m, r) => void rec.markWatched(m, r)} />
       <DismissDialog

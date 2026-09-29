@@ -50,6 +50,9 @@ export function AppShell({
             <NavLink to="/app/recommendations" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
               For You
             </NavLink>
+            <NavLink to="/app/profile" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
+              Profile
+            </NavLink>
             {onOpenWatchLater && (
               <button type="button" onClick={onOpenWatchLater}>
                 Watch Later

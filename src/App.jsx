@@ -9,6 +9,7 @@ import { SignUpPage } from './features/auth/components/SignUpPage';
 import { ForgotPasswordPage } from './features/auth/components/ForgotPasswordPage';
 import { ChooseUsernamePage } from './features/auth/components/ChooseUsernamePage';
 import { RecommendationsPage } from './features/recommendations/components/RecommendationsPage';
+import { ProfilePage } from './features/profile/components/ProfilePage';
 import { ToastProvider } from './core/components/Toast';
 import { ProtectedRoute } from './features/auth/components/ProtectedRoute';
 import { OnboardingPage } from './features/onboarding/components/OnboardingPage';
@@ -313,6 +314,7 @@ function App() {
                   <Route path="choose-username" element={<ChooseUsernamePage />} />
                   <Route path="onboarding" element={<OnboardingPage />} />
                   <Route path="recommendations" element={<RecommendationsPage />} />
+                  <Route path="profile" element={<ProfilePage />} />
                   <Route
                     path="*"
                     element={
