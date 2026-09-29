@@ -1,0 +1,108 @@
+/* Design tokens ported from the iOS Friends Design System (spec §7), extended with the
+   web-only tokens needed for a polished desktop UI (surfaces, borders, states, motion).
+   Dark theme only — there's no light mode on iOS currently. Never hardcode hex colors or
+   pixel values in /app components; reference these instead.
+
+   Everything that styles the app lives under `.slate-app` so the marketing pages keep
+   their own look untouched. */
+:root {
+  /* Spec §7 — cross-platform contract, do not change values */
+  --color-accent: #3ecf8e;
+  --color-background: #0e1117;
+  --color-card-background: #1a1f2e;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #b4b4b4;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-xxl: 32px;
+  --space-xxxl: 48px;
+
+  --font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  --font-large-title: 700 32px/1.2 var(--font-family);
+  --font-title: 600 24px/1.25 var(--font-family);
+  --font-headline: 600 17px/1.3 var(--font-family);
+  --font-body: 400 15px/1.4 var(--font-family);
+  --font-body-emphasis: 500 15px/1.4 var(--font-family);
+  --font-caption: 400 13px/1.35 var(--font-family);
+  --font-caption-emphasis: 500 13px/1.35 var(--font-family);
+  --font-micro: 500 11px/1.3 var(--font-family);
+
+  --elevation-1: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --elevation-2: 0 4px 16px rgba(0, 0, 0, 0.18);
+  --elevation-3: 0 8px 24px rgba(0, 0, 0, 0.24);
+
+  --radius-card: 20px;
+  --radius-button: 14px;
+
+  /* Web extensions */
+  --font-display: 700 40px/1.1 var(--font-family);
+  --radius-chip: 999px;
+
+  --color-surface: #141925;
+  --color-surface-raised: #1f2537;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+  --color-text-tertiary: #7d8496;
+  --color-on-accent: #06140d;
+  --color-accent-hover: #55dba0;
+  --color-accent-pressed: #33b87c;
+  --color-accent-subtle: rgba(62, 207, 142, 0.12);
+  --color-accent-glow: rgba(62, 207, 142, 0.22);
+  --color-danger: #ff6b6b;
+  --color-danger-subtle: rgba(255, 107, 107, 0.1);
+  --color-danger-border: rgba(255, 107, 107, 0.32);
+  --color-success-subtle: rgba(62, 207, 142, 0.1);
+  --color-overlay-fill: rgba(255, 255, 255, 0.06);
+  --color-overlay-fill-hover: rgba(255, 255, 255, 0.1);
+
+  --control-height: 48px;
+  --focus-ring: 0 0 0 3px var(--color-accent-glow);
+
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+.slate-app {
+  min-height: 100vh;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.slate-app *,
+.slate-app *::before,
+.slate-app *::after {
+  box-sizing: border-box;
+}
+
+.slate-app a {
+  color: var(--color-accent);
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.slate-app a:hover {
+  color: var(--color-accent-hover);
+}
+
+.slate-app a:focus-visible,
+.slate-app button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slate-app *,
+  .slate-app *::before,
+  .slate-app *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

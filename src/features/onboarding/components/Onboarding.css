@@ -1,0 +1,403 @@
+.slate-app .onboarding {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Top bar ────────────────────────────────────────────── */
+.slate-app .onboarding__bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--color-background) 88%, transparent);
+  border-bottom: 1px solid var(--color-border);
+  backdrop-filter: blur(12px);
+}
+
+.slate-app .onboarding__bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-lg);
+}
+
+.slate-app .onboarding__bar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.slate-app .onboarding__count {
+  font: var(--font-caption-emphasis);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .onboarding__signout {
+  padding: var(--space-xs) var(--space-sm);
+  font: var(--font-caption-emphasis);
+  color: var(--color-text-tertiary);
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.slate-app .onboarding__signout:hover {
+  color: var(--color-text-primary);
+}
+
+/* ── Content ────────────────────────────────────────────── */
+.slate-app .onboarding__main {
+  flex: 1;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-xxl) var(--space-lg) var(--space-xl);
+}
+
+.slate-app .onb-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  animation: slate-step-in 260ms var(--motion-ease);
+}
+
+@keyframes slate-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.slate-app .onb-step__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  text-align: center;
+}
+
+.slate-app .onb-step__title {
+  margin: 0;
+  font: 700 clamp(26px, 4vw, 34px) / 1.15 var(--font-family);
+  letter-spacing: -0.025em;
+  outline: none;
+  text-wrap: balance;
+}
+
+.slate-app .onb-step__subtitle {
+  margin: 0;
+  font: var(--font-body);
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+
+.slate-app .onb-step__status {
+  margin: var(--space-xs) 0 0;
+  font: 500 15px/1.4 var(--font-family);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .onb-step__status .is-good {
+  color: var(--color-accent);
+}
+
+.slate-app .onb-step__status .is-warn {
+  font: var(--font-caption);
+  color: #f5a524;
+}
+
+.slate-app .onb-step__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.slate-app .onb-step__hint {
+  margin: 0;
+  text-align: center;
+  font: var(--font-caption);
+  color: var(--color-text-tertiary);
+}
+
+.slate-app .stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.slate-app .stack--tight {
+  gap: var(--space-sm);
+}
+
+.slate-app .grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.slate-app .grid--genres {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.slate-app .grid--themes {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 560px) {
+  .slate-app .grid--genres {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .slate-app .grid--themes {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 760px) {
+  .slate-app .grid--genres {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.slate-app .groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.slate-app .group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.slate-app .group legend {
+  margin-bottom: var(--space-md);
+  padding: 0;
+  font: var(--font-headline);
+}
+
+/* ── Language picker ────────────────────────────────────── */
+.slate-app .lang-search {
+  position: relative;
+}
+
+.slate-app .lang-search__input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-height: var(--control-height);
+  padding: 0 var(--space-lg);
+  color: var(--color-text-tertiary);
+  background: var(--color-card-background);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-button);
+  transition: border-color var(--motion-base) var(--motion-ease), box-shadow var(--motion-base) var(--motion-ease);
+}
+
+.slate-app .lang-search__input:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: var(--focus-ring);
+}
+
+.slate-app .lang-search__input input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  font: var(--font-body);
+  color: var(--color-text-primary);
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+
+.slate-app .lang-search__max {
+  flex: 1;
+  font: var(--font-caption);
+}
+
+.slate-app .lang-search__results {
+  margin: var(--space-sm) 0 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+  background: var(--color-card-background);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-button);
+  box-shadow: var(--elevation-2);
+}
+
+.slate-app .lang-search__results li + li {
+  border-top: 1px solid var(--color-border);
+}
+
+.slate-app .lang-search__results button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  color: var(--color-text-primary);
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.slate-app .lang-search__results button:hover,
+.slate-app .lang-search__results button:focus-visible {
+  background: var(--color-overlay-fill);
+}
+
+.slate-app .lang-search__results strong {
+  display: block;
+  font: var(--font-body-emphasis);
+}
+
+.slate-app .lang-search__results small {
+  display: block;
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .lang-search__results button > span:last-child {
+  font-size: 20px;
+  color: var(--color-accent);
+}
+
+.slate-app .lang-search__empty {
+  margin: var(--space-md) 0 0;
+  text-align: center;
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.slate-app .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md) var(--space-sm) var(--space-sm);
+  font: var(--font-body-emphasis);
+  background: var(--color-accent-subtle);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-chip);
+}
+
+.slate-app .chip__rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font: var(--font-micro);
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border-radius: 50%;
+}
+
+.slate-app .chip button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--color-text-secondary);
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slate-app .chip button:hover {
+  color: var(--color-text-primary);
+  background: var(--color-overlay-fill-hover);
+}
+
+.slate-app .suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-border);
+}
+
+.slate-app .suggestions__label {
+  margin: 0;
+  font: var(--font-caption-emphasis);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.slate-app .suggestions__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.slate-app .suggestions__list button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  font: var(--font-body);
+  color: var(--color-text-primary);
+  background: var(--color-card-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+  transition: border-color var(--motion-base) var(--motion-ease), background var(--motion-base) var(--motion-ease);
+}
+
+.slate-app .suggestions__list button:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+}
+
+.slate-app .suggestions__list button span {
+  color: var(--color-accent);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.slate-app .onboarding__footer {
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(transparent, var(--color-background) 32%);
+  padding-top: var(--space-xl);
+}
+
+.slate-app .onboarding__footer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg) var(--space-xl);
+}
+
+.slate-app .onboarding__actions {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.slate-app .onboarding__back {
+  width: auto;
+  padding: 0 var(--space-xl);
+}
+
+.slate-app .onboarding__next {
+  flex: 1;
+}
