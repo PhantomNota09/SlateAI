@@ -625,11 +625,19 @@
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
-.lp-poster::after {
+.lp-poster.is-fallback::after {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, transparent 45%, rgba(0, 0, 0, 0.55));
+}
+
+.lp-poster__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .lp-poster__orb {
@@ -658,8 +666,8 @@
 }
 
 .lp-poster--sm {
-  width: 46px;
-  height: 66px;
+  width: 52px;
+  height: 75px;
   border-radius: 8px;
 }
 
@@ -830,7 +838,7 @@
 }
 
 .lp-ranks {
-  --row: 88px;
+  --row: 98px;
   position: relative;
   height: calc(var(--n) * var(--row));
 }
@@ -1552,6 +1560,23 @@
 .lp-footer .lp-brand {
   color: var(--lp-text);
   font-size: 16px;
+}
+
+.lp-footer__credit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--lp-line);
+}
+
+.lp-footer__credit p {
+  max-width: 70ch;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--lp-faint);
 }
 
 .lp-footer__links {

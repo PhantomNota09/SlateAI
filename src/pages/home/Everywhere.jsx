@@ -1,4 +1,4 @@
-import { FILMS } from './data';
+import { filmById } from './data';
 import { AppStoreBadge, MatchRing, PosterArt, WebAppLink } from './Bits';
 import { Reveal } from './useReveal';
 
@@ -46,13 +46,13 @@ export default function Everywhere() {
               <em>Slate on the web</em>
             </div>
             <div className="lp-browser__body">
-              <MiniPick film={FILMS[0]} score={87} />
+              <MiniPick film={filmById('interstellar')} score={87} />
             </div>
           </div>
           <div className="lp-phone">
             <div className="lp-phone__notch" aria-hidden="true" />
             <div className="lp-phone__screen">
-              <MiniPick film={FILMS[6]} score={82} compact />
+              <MiniPick film={filmById('lalaland')} score={82} compact />
             </div>
           </div>
         </Reveal>

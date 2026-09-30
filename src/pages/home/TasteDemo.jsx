@@ -5,7 +5,7 @@ import { MatchRing, PosterArt } from './Bits';
 import { Reveal } from './useReveal';
 
 export default function TasteDemo() {
-  const [loves, setLoves] = useState(['Sci-Fi', 'Thriller']);
+  const [loves, setLoves] = useState(['Sci-Fi', 'Action']);
   const [avoids, setAvoids] = useState([]);
   const ranked = useMemo(() => rankFilms(FILMS, loves, avoids), [loves, avoids]);
   const byId = Object.fromEntries(ranked.map((r) => [r.film.id, r]));
@@ -57,7 +57,7 @@ export default function TasteDemo() {
               ))}
             </div>
           </div>
-          <p className="lp-fine">Up to {MAX_PER_LIST} each. A demo with made-up films: real scores come from Slate’s recommendation engine.</p>
+          <p className="lp-fine">Up to {MAX_PER_LIST} each. Example movies with illustrative scores. Your real picks come from Slate’s recommendation engine.</p>
         </Reveal>
 
         <Reveal className="lp-ranks-wrap" delay={120}>

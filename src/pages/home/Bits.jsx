@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { TMDB_IMG } from '../../shared/demoFilms';
 
 export const APP_STORE_URL = 'https://apps.apple.com/us/app/slate-ai/id6757089643';
 
@@ -24,13 +26,34 @@ export function WebAppLink({ children = 'Use it on the web', className = '' }) {
   );
 }
 
-// Fictional poster: two-hue gradient, a light orb, the title in serif italic. Pure CSS, so it is
-// sharp at any size and there are no movie images to license.
-export function PosterArt({ film, size = 'md' }) {
+// Real poster from TMDB's CDN over a gradient fallback (shown while loading, or if the image
+// fails). Posters are illustrative and credited in the page footer.
+export function PosterArt({ film, size = 'md', eager = false }) {
+  const [failed, setFailed] = useState(false);
+  const px = size === 'sm' ? 'w185' : 'w342';
+  const showFallback = !film.poster || failed;
   return (
-    <div className={`lp-poster lp-poster--${size}`} style={{ '--h1': film.hues[0], '--h2': film.hues[1] }} aria-hidden="true">
-      <span className="lp-poster__orb" />
-      <span className="lp-poster__title">{film.title}</span>
+    <div
+      className={`lp-poster lp-poster--${size} ${showFallback ? 'is-fallback' : ''}`}
+      style={{ '--h1': film.hues[0], '--h2': film.hues[1] }}
+      aria-hidden="true"
+    >
+      {film.poster && !failed && (
+        <img
+          className="lp-poster__img"
+          src={`${TMDB_IMG}/${px}${film.poster}`}
+          alt=""
+          loading={eager ? 'eager' : 'lazy'}
+          decoding="async"
+          onError={() => setFailed(true)}
+        />
+      )}
+      {showFallback && (
+        <>
+          <span className="lp-poster__orb" />
+          <span className="lp-poster__title">{film.title}</span>
+        </>
+      )}
     </div>
   );
 }

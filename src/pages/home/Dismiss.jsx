@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { DISMISS_REASONS, FILMS } from './data';
+import { DISMISS_REASONS, filmById } from './data';
 import { MatchRing, PosterArt } from './Bits';
 import { Reveal } from './useReveal';
 
-const DECK = [FILMS[3], FILMS[5], FILMS[7], FILMS[2]];
+const DECK = ['knivesout', 'darkknight', 'getout', 'lalaland'].map(filmById);
 
 export default function Dismiss() {
   const [index, setIndex] = useState(0);
@@ -53,7 +53,7 @@ export default function Dismiss() {
                 <div className="lp-dcard__title">
                   <div>
                     <strong>{film.title}</strong>
-                    <span>{film.year} · {film.runtime} min · {film.genres.join(' / ')}</span>
+                    <span>{film.year} · {film.runtime} min · {film.genres.slice(0, 2).join(' / ')}</span>
                   </div>
                   <MatchRing value={64} size={46} />
                 </div>

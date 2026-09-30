@@ -20,15 +20,15 @@ describe('toggleGenre (mirrors the onboarding rules)', () => {
 
 describe('rankFilms', () => {
   it('ranks films that match more loved genres higher', () => {
-    const ranked = rankFilms(FILMS, ['Sci-Fi', 'Thriller'], []);
-    expect(ranked[0].film.id).toBe('signal'); // Sci-Fi + Thriller
+    const ranked = rankFilms(FILMS, ['Sci-Fi', 'Action'], []);
+    expect(ranked[0].film.id).toBe('inception'); // Sci-Fi + Action
     expect(ranked[0].score).toBeGreaterThan(ranked[ranked.length - 1].score);
   });
   it('removes avoided genres and sends them to the end', () => {
     const ranked = rankFilms(FILMS, ['Sci-Fi'], ['Horror']);
-    const bloom = ranked.find((r) => r.film.id === 'bloom');
-    expect(bloom.hidden).toBe(true);
-    expect(ranked[ranked.length - 1].film.id).toBe('bloom');
+    const getOut = ranked.find((r) => r.film.id === 'getout');
+    expect(getOut.hidden).toBe(true);
+    expect(ranked[ranked.length - 1].film.id).toBe('getout');
   });
   it('explains every visible pick, naming the genres that matched', () => {
     const top = rankFilms(FILMS, ['Romance'], [])[0];

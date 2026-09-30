@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { FACTORS, FILMS, SAMPLE_REASONS } from './data';
+import { FACTORS, SAMPLE_REASONS, filmById } from './data';
 import { Check, MatchRing, PosterArt } from './Bits';
 import { Reveal, useReveal } from './useReveal';
+
+const WHY_FILM = filmById('inception');
 
 export default function WhyBoard() {
   const [active, setActive] = useState('genres');
@@ -46,10 +48,10 @@ export default function WhyBoard() {
         <Reveal className="lp-why-card-wrap" delay={120}>
           <div className="lp-why-card">
             <div className="lp-why-card__head">
-              <PosterArt film={FILMS[0]} size="sm" />
+              <PosterArt film={WHY_FILM} size="sm" />
               <div>
-                <strong>{FILMS[0].title}</strong>
-                <span>{FILMS[0].year} · {FILMS[0].runtime} min</span>
+                <strong>{WHY_FILM.title}</strong>
+                <span>{WHY_FILM.year} · {WHY_FILM.runtime} min</span>
               </div>
               <MatchRing value={87} size={58} />
             </div>

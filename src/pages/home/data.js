@@ -1,16 +1,7 @@
-// Content for the landing page. The films are FICTIONAL on purpose: the demos are illustrations
-// of how Slate works, not claims about real movies or real scores.
+// Content for the landing page. The films are real titles shown as ILLUSTRATIONS: the match scores
+// next to them are demo numbers, not real recommendations (see shared/demoFilms.ts).
 
-export const FILMS = [
-  { id: 'signal', title: 'Midnight Signal', year: 2024, runtime: 118, genres: ['Sci-Fi', 'Thriller'], rating: 8.1, hues: [212, 268] },
-  { id: 'reel', title: 'The Last Reel', year: 2023, runtime: 131, genres: ['Drama', 'Mystery'], rating: 7.9, hues: [28, 350] },
-  { id: 'moons', title: 'Paper Moons', year: 2022, runtime: 104, genres: ['Romance', 'Comedy'], rating: 7.4, hues: [330, 24] },
-  { id: 'coast', title: 'Hollow Coast', year: 2025, runtime: 109, genres: ['Thriller', 'Mystery'], rating: 7.6, hues: [188, 222] },
-  { id: 'orchard', title: 'Neon Orchard', year: 2024, runtime: 96, genres: ['Animation', 'Comedy'], rating: 7.8, hues: [156, 88] },
-  { id: 'meridian', title: 'Iron Meridian', year: 2023, runtime: 126, genres: ['Action', 'Sci-Fi'], rating: 7.2, hues: [18, 40] },
-  { id: 'harvest', title: 'A Quiet Harvest', year: 2021, runtime: 122, genres: ['Drama', 'Romance'], rating: 8.3, hues: [44, 120] },
-  { id: 'bloom', title: 'Static Bloom', year: 2025, runtime: 101, genres: ['Horror', 'Sci-Fi'], rating: 7.0, hues: [292, 330] },
-];
+export { DEMO_FILMS as FILMS, filmById } from '../../shared/demoFilms';
 
 export const DEMO_GENRES = ['Sci-Fi', 'Thriller', 'Drama', 'Comedy', 'Romance', 'Animation', 'Mystery', 'Action', 'Horror'];
 
@@ -33,13 +24,13 @@ export const FACTORS = [
   { id: 'context', label: 'Runtime & tone', weight: 0.38, note: 'How long tonight is, and what mood you’re in.' },
 ];
 
-// Real wording from Slate’s match explanations.
+// Real wording from Slate’s match explanations, for the film shown on the “why” card.
 export const SAMPLE_REASONS = [
-  'Matches your love of Sci-Fi, Thriller',
+  'Matches your love of Sci-Fi, Action',
+  'Perfect genre combination!',
   'In your preferred language',
-  'Highly rated (8.1)',
+  'Exceptional 8.4 rating',
   'Features Mind-Bending',
-  'Very recent release',
 ];
 
 // The ten reasons the app offers when you say “Not for me”.

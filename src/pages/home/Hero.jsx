@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import { FILMS } from './data';
+import { filmById } from './data';
 import { AppStoreBadge, MatchRing, PosterArt, WebAppLink } from './Bits';
 
 // Five illustrative picks the slate cycles through. Scores sit in the range the real engine
 // produces for good fits (roughly 40-90%), not an inflated 99%.
-const PICKS = [
-  { film: FILMS[0], score: 87, reason: 'Matches your love of Sci-Fi, Thriller' },
-  { film: FILMS[6], score: 82, reason: 'Matches your love of Drama, Romance' },
-  { film: FILMS[4], score: 79, reason: 'Matches your love of Animation, Comedy' },
-  { film: FILMS[3], score: 76, reason: 'Matches your love of Thriller, Mystery' },
-  { film: FILMS[1], score: 71, reason: 'Matches your love of Drama, Mystery' },
-];
+const PICK_SCORES = [['inception', 87], ['lalaland', 82], ['parasite', 79], ['spirited', 76], ['knivesout', 71]];
+const PICKS = PICK_SCORES.map(([id, score]) => {
+  const film = filmById(id);
+  return { film, score, reason: `Matches your love of ${film.genres.slice(0, 2).join(', ')}` };
+});
 
 const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
@@ -63,11 +61,11 @@ export default function Hero() {
               </dl>
 
               <div className="lp-pick" key={pick.film.id}>
-                <PosterArt film={pick.film} size="md" />
+                <PosterArt film={pick.film} size="md" eager />
                 <div className="lp-pick__body">
                   <h2>{pick.film.title}</h2>
                   <p className="lp-pick__meta">
-                    {pick.film.year} · {pick.film.runtime} min · {pick.film.genres.join(' / ')}
+                    {pick.film.year} · {pick.film.runtime} min · {pick.film.genres.slice(0, 2).join(' / ')}
                   </p>
                   <div className="lp-pick__match">
                     <MatchRing value={pick.score} />
@@ -89,7 +87,7 @@ export default function Hero() {
               </div>
             </div>
           </div>
-          <p className="lp-caption">Illustrative picks. Yours come from your own taste.</p>
+          <p className="lp-caption">Illustrative picks. Yours come from your own taste. Posters via TMDB.</p>
         </div>
       </div>
     </section>
