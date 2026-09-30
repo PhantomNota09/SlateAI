@@ -1,19 +1,11 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
-import { AuthProvider } from './features/auth/context/AuthContext';
-import { SignInPage } from './features/auth/components/SignInPage';
-import { SignUpPage } from './features/auth/components/SignUpPage';
-import { ForgotPasswordPage } from './features/auth/components/ForgotPasswordPage';
-import { ChooseUsernamePage } from './features/auth/components/ChooseUsernamePage';
-import { RecommendationsPage } from './features/recommendations/components/RecommendationsPage';
-import { ProfilePage } from './features/profile/components/ProfilePage';
-import { ToastProvider } from './core/components/Toast';
-import { ProtectedRoute } from './features/auth/components/ProtectedRoute';
-import { OnboardingPage } from './features/onboarding/components/OnboardingPage';
-import './core/theme/tokens.css';
+
+// The web app (auth, onboarding, recommendations, profile) is a separate chunk.
+const AppSection = lazy(() => import('./AppSection'));
 import './App.css';
 
 function AppStoreBadge() {
@@ -304,29 +296,9 @@ function App() {
           <Route
             path="/app/*"
             element={
-              <AuthProvider>
-                <ToastProvider>
-                <div className="slate-app">
-                <Routes>
-                  <Route path="sign-in" element={<SignInPage />} />
-                  <Route path="sign-up" element={<SignUpPage />} />
-                  <Route path="forgot-password" element={<ForgotPasswordPage />} />
-                  <Route path="choose-username" element={<ChooseUsernamePage />} />
-                  <Route path="onboarding" element={<OnboardingPage />} />
-                  <Route path="recommendations" element={<RecommendationsPage />} />
-                  <Route path="profile" element={<ProfilePage />} />
-                  <Route
-                    path="*"
-                    element={
-                      <ProtectedRoute>
-                        <Navigate to="/app/recommendations" replace />
-                      </ProtectedRoute>
-                    }
-                  />
-                </Routes>
-                </div>
-                </ToastProvider>
-              </AuthProvider>
+              <Suspense fallback={<div style={{ minHeight: '100vh', background: '#0e1117' }} aria-busy="true" />}>
+                <AppSection />
+              </Suspense>
             }
           />
         </Routes>
