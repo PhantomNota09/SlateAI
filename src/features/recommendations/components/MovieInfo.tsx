@@ -66,6 +66,16 @@ export function MovieInfo({
         )}
       </header>
 
+      {movie.onSelectedServices === false && (
+        <p className="info__notice">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v5M12 8v.01" />
+          </svg>
+          Availability on your streaming services isn't confirmed for this one.
+        </p>
+      )}
+
       {match && <MatchCard info={match} />}
 
       {overview && (

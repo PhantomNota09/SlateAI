@@ -14,6 +14,9 @@ export interface Movie {
   // From the engine's scoring pass (getRecommendations). null when the function had no score.
   matchPercentage: number | null;
   reasons: string[];
+  // Present only when a streaming filter was requested. true = fetched with the provider
+  // filter (on the user's services in their region); false = backfill, availability unknown.
+  onSelectedServices?: boolean;
 }
 
 // Minimal reference used by the watched / dismissed / watch-later writes.
@@ -33,11 +36,13 @@ export function normalizePool(raw: unknown): Movie[] {
   if (!Array.isArray(raw)) return [];
   return raw.map((m) => {
     const pct = typeof m?.matchPercentage === "number" && Number.isFinite(m.matchPercentage) ? m.matchPercentage : null;
-    return {
+    const movie = {
       ...m,
       matchPercentage: pct === null ? null : Math.max(0, Math.min(100, Math.round(pct))),
       reasons: Array.isArray(m?.reasons) ? m.reasons.filter((r: unknown): r is string => typeof r === "string") : [],
     } as Movie;
+    if (typeof movie.onSelectedServices !== "boolean") delete movie.onSelectedServices;
+    return movie;
   });
 }
 

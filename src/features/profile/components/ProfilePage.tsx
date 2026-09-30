@@ -177,6 +177,12 @@ function Streak({ current, best }: { current: number; best: number }) {
   );
 }
 
+function streamingSummary(prefs: Partial<UserPreferences>): string {
+  const n = (prefs.preferredStreamingServices ?? []).length;
+  if (n === 0) return "All streaming services";
+  return `${n} service${n === 1 ? "" : "s"} selected${prefs.region ? ` · ${prefs.region.toUpperCase()}` : ""}`;
+}
+
 function Taste({ prefs }: { prefs: Partial<UserPreferences> }) {
   const fav = (prefs.topGenres ?? []).map(genreName).filter(Boolean) as string[];
   const avoid = (prefs.avoidGenres ?? []).map(genreName).filter(Boolean) as string[];
@@ -185,6 +191,7 @@ function Taste({ prefs }: { prefs: Partial<UserPreferences> }) {
     ["Favorite genres", fav.join(", ")],
     ["Avoiding", avoid.join(", ")],
     ["Languages", langs.join(", ")],
+    ["Streaming", streamingSummary(prefs)],
     ["Releases", prefs.releasePreference ?? ""],
     ["Runtime", prefs.runtimePreference ?? ""],
     ["Story", prefs.storyPreference ?? ""],

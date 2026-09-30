@@ -24,6 +24,14 @@ describe("normalizePool", () => {
   });
 });
 
+describe("normalizePool onSelectedServices", () => {
+  it("keeps the flag only when it is a boolean", () => {
+    const pool = normalizePool([{ ...base, id: 1, onSelectedServices: true }, { ...base, id: 2, onSelectedServices: false }, { ...base, id: 3, onSelectedServices: "yes" }, { ...base, id: 4 }]);
+    expect(pool.map((m) => m.onSelectedServices)).toEqual([true, false, undefined, undefined]);
+    expect("onSelectedServices" in pool[3]).toBe(false);
+  });
+});
+
 describe("matchInfoOf", () => {
   it("returns null without a score so the card is hidden", () => {
     const [none] = normalizePool([base]);

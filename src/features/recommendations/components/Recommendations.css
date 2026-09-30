@@ -208,6 +208,24 @@
   color: var(--color-text-secondary);
 }
 
+.slate-app .info__notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+  background: var(--color-card-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+}
+
+.slate-app .info__notice svg {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+}
+
 /* ── Match ──────────────────────────────────────────────── */
 .slate-app .match {
   padding: var(--space-md) var(--space-lg);

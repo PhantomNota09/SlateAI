@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { buildRecommendationRequest, pickEnginePreferences } from "./recommendationPayload";
+import {
+  buildRecommendationRequest,
+  pickEnginePreferences,
+  sanitizeAvailabilityTypes,
+  sanitizeProviderIds,
+  sanitizeRegion,
+} from "./recommendationPayload";
 import type { UserCollections } from "../../core/services/userCollections";
 
 const collections: UserCollections = {
@@ -29,7 +35,8 @@ describe("buildRecommendationRequest", () => {
       [
         "avoidGenres", "caresAbout", "collectionWatchedMovies", "favoriteThemes", "foreignFilmPreference",
         "imdbThreshold", "maxSessionMinutes", "oldestAcceptableYear", "preferredLanguages", "ratedMovies",
-        "releasePreference", "runtimePreference", "tonePreference", "topGenres", "watchingWith",
+        "preferredStreamingServices", "region", "releasePreference", "runtimePreference", "streamingAvailabilityTypes",
+        "tonePreference", "topGenres", "watchingWith",
       ].sort(),
     );
   });
@@ -41,5 +48,32 @@ describe("buildRecommendationRequest", () => {
       foreignFilmPreference: "Open to",
       releasePreference: "Mix of new and old",
     });
+  });
+});
+
+describe("streaming filter fields", () => {
+  it("sends the user's stored iOS selection", () => {
+    const p = pickEnginePreferences({ preferredStreamingServices: [8, 337], region: "us", streamingAvailabilityTypes: ["flatrate", "rent"] });
+    expect(p).toMatchObject({ preferredStreamingServices: [8, 337], region: "US", streamingAvailabilityTypes: ["flatrate", "rent"] });
+  });
+
+  it("defaults to no filter: empty providers, flatrate", () => {
+    expect(pickEnginePreferences(null)).toMatchObject({ preferredStreamingServices: [], region: undefined, streamingAvailabilityTypes: ["flatrate"] });
+  });
+
+  it("sanitizes provider ids like the server does", () => {
+    expect(sanitizeProviderIds([8, "9", 8, 0, -1, 1.5, "x", null])).toEqual([8, 9]);
+    expect(sanitizeProviderIds("nope")).toEqual([]);
+    expect(sanitizeProviderIds(Array.from({ length: 80 }, (_, i) => i + 1))).toHaveLength(50);
+  });
+
+  it("only sends a valid 2-letter region", () => {
+    expect(sanitizeRegion(" gb ")).toBe("GB");
+    for (const bad of ["", "USA", "U", "12", 5, null, undefined]) expect(sanitizeRegion(bad)).toBeUndefined();
+  });
+
+  it("normalizes availability types and falls back to flatrate", () => {
+    expect(sanitizeAvailabilityTypes(["Rent", "buy", "rent", 3, ""])).toEqual(["rent", "buy"]);
+    for (const empty of [[], undefined, "flatrate", [1, 2]]) expect(sanitizeAvailabilityTypes(empty)).toEqual(["flatrate"]);
   });
 });

@@ -8,6 +8,26 @@ import type { UserPreferences } from "../../core/models/UserPreferences";
 // slower; this is requested once per load and on the rare refill, never per card.
 export const RECOMMENDATION_POOL_SIZE = 60;
 
+// Streaming filter fields (docs/STREAMING_FILTER.md in the backend repo). Sanitized the way the
+// server validates them, so a malformed stored value can never make the request fail.
+const MAX_STREAMING_PROVIDERS = 50;
+
+export function sanitizeProviderIds(value: unknown): number[] {
+  if (!Array.isArray(value)) return [];
+  const ids = value.map(Number).filter((n) => Number.isInteger(n) && n > 0);
+  return [...new Set(ids)].slice(0, MAX_STREAMING_PROVIDERS);
+}
+
+export function sanitizeRegion(value: unknown): string | undefined {
+  const region = typeof value === "string" ? value.trim().toUpperCase() : "";
+  return /^[A-Z]{2}$/.test(region) ? region : undefined;
+}
+
+export function sanitizeAvailabilityTypes(value: unknown): string[] {
+  const types = Array.isArray(value) ? value.filter((t): t is string => typeof t === "string" && t.trim() !== "") : [];
+  return types.length > 0 ? [...new Set(types.map((t) => t.trim().toLowerCase()))] : ["flatrate"];
+}
+
 export function pickEnginePreferences(p: Partial<UserPreferences> | null): Partial<UserPreferences> {
   return {
     topGenres: p?.topGenres ?? [],
@@ -25,6 +45,11 @@ export function pickEnginePreferences(p: Partial<UserPreferences> | null): Parti
     watchingWith: p?.watchingWith ?? "Alone",
     ratedMovies: p?.ratedMovies ?? [],
     collectionWatchedMovies: p?.collectionWatchedMovies ?? [],
+    // An empty provider list means "All Streaming Services": the server applies no filter, and
+    // `region` is then inert. Users' iOS selections apply here too, exactly as on iOS.
+    preferredStreamingServices: sanitizeProviderIds(p?.preferredStreamingServices),
+    region: sanitizeRegion(p?.region),
+    streamingAvailabilityTypes: sanitizeAvailabilityTypes(p?.streamingAvailabilityTypes),
   };
 }
 
