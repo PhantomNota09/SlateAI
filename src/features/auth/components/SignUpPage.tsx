@@ -11,6 +11,7 @@ import { TextField } from "../../../core/components/TextField";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { useSignUp, type SignUpOutcome } from "../hooks/useSignUp";
 import { checkPassword, isValidEmail, USERNAME_ISSUE_MESSAGES, usernameIssue } from "../validation";
+import { useAuth } from "../context/AuthContext";
 import { AuthLayout } from "./AuthLayout";
 
 const TERMS_REQUIRED_MESSAGE = "Please agree to the Terms of Service and Privacy Policy to continue.";
@@ -27,6 +28,7 @@ export function SignUpPage() {
   const [touched, setTouched] = useState({ username: false, email: false });
   const { signUpWithEmail, signUpWithGoogle, submitting, error } = useSignUp();
   const navigate = useNavigate();
+  const { refreshProfile } = useAuth();
 
   const issue = usernameIssue(username);
   const emailValid = isValidEmail(email);
@@ -35,7 +37,10 @@ export function SignUpPage() {
   const canSubmit =
     name.trim().length > 0 && !issue && emailValid && passwordValid && passwordsMatch && agreed;
 
-  function finish(outcome: SignUpOutcome) {
+  // The auth provider read the profile when the account was created, before the profile
+  // existed. Re-read it so the guards see the real state instead of a stale "missing".
+  async function finish(outcome: SignUpOutcome) {
+    await refreshProfile();
     navigate(outcome === "ready" ? "/app" : "/app/choose-username");
   }
 
@@ -43,7 +48,7 @@ export function SignUpPage() {
     e.preventDefault();
     if (!canSubmit) return;
     try {
-      finish(await signUpWithEmail({ name, email, username, password }));
+      await finish(await signUpWithEmail({ name, email, username, password }));
     } catch {
       // error state already set by useSignUp
     }
@@ -55,7 +60,7 @@ export function SignUpPage() {
       return;
     }
     try {
-      finish(await signUpWithGoogle());
+      await finish(await signUpWithGoogle());
     } catch {
       // error state already set by useSignUp
     }

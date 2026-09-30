@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { auth } from "../../../core/services/firebase";
 import { readProfile, type ProfileSnapshot } from "../../../core/services/firestore";
@@ -25,16 +25,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profileError, setProfileError] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Only the most recent load may update state. Right after sign-up the auth-state read (which
+  // ran before the profile existed and says "missing") can finish AFTER the post-sign-up
+  // refresh; without this it would overwrite the fresh result and bounce the user back into
+  // the username step.
+  const latestLoad = useRef(0);
+
   const load = useCallback(async (uid: string | null) => {
+    const seq = ++latestLoad.current;
     if (!uid) {
       setProfile(EMPTY_PROFILE);
       setProfileError(false);
       return;
     }
     try {
-      setProfile(await readProfile(uid));
+      const next = await readProfile(uid);
+      if (seq !== latestLoad.current) return;
+      setProfile(next);
       setProfileError(false);
     } catch {
+      if (seq !== latestLoad.current) return;
       setProfileError(true);
     }
   }, []);
