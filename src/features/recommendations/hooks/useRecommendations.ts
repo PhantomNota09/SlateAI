@@ -4,6 +4,9 @@ import type { DismissalReason, UserPreferences } from "../../../core/models/User
 import { getRecommendations } from "../../../core/services/cloudFunctions";
 import { describeCallableError } from "../../../core/services/callableErrors";
 import { readProfile } from "../../../core/services/firestore";
+import { recordStreakInteraction } from "../../../core/services/streak";
+import { describeStreakResult } from "../../../core/streak/streakMessages";
+import { utcDay } from "../../../core/streak/streakLogic";
 import {
   loadUserCollections,
   recordDismissed,
@@ -76,6 +79,24 @@ export function useRecommendations(uid: string, onToast: Toast) {
   const generation = useRef(0); // ignores responses from a load that has been superseded
   const toast = useRef(onToast);
   toast.current = onToast;
+
+  // iOS counts rating, dismissing, saving to Watch Later and skipping as a daily interaction
+  // (RecommendationCoordinator). One check per UTC day per session is enough: after it has been
+  // counted (or found already counted) further actions today skip the extra read.
+  const streakCountedOn = useRef<string | null>(null);
+  const trackInteraction = useCallback(() => {
+    const today = utcDay();
+    if (streakCountedOn.current === today) return;
+    // The service already swallows its own errors; the catch keeps a misbehaving one from ever
+    // surfacing as an unhandled rejection or disturbing the action that triggered it.
+    void recordStreakInteraction(uid)
+      .then((result) => {
+        if (result.kind !== "failed" && result.kind !== "skipped") streakCountedOn.current = today;
+        const message = describeStreakResult(result);
+        if (message) toast.current("success", message);
+      })
+      .catch((err) => console.error("Streak tracking failed", err));
+  }, [uid]);
 
   const load = useCallback(async () => {
     const gen = ++generation.current;
@@ -175,9 +196,10 @@ export function useRecommendations(uid: string, onToast: Toast) {
     (movie: Movie) => {
       skipped.current.add(movie.id);
       setState((s) => ({ ...s, queue: removeMovie(s.queue, movie.id) }));
+      trackInteraction();
       void refillIfNeeded();
     },
-    [setState, refillIfNeeded],
+    [setState, refillIfNeeded, trackInteraction],
   );
 
   const markWatched = useCallback(
@@ -197,6 +219,7 @@ export function useRecommendations(uid: string, onToast: Toast) {
       try {
         await recordWatched(uid, movie, rating, { dismissed: !!snap.dismissed, inWatchLater: !!snap.watchLater });
         toast.current("success", "Marked as watched");
+        trackInteraction();
         void refillIfNeeded();
       } catch (err) {
         console.error("Failed to save watched movie", err);
@@ -205,7 +228,7 @@ export function useRecommendations(uid: string, onToast: Toast) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [uid, setState, refillIfNeeded],
+    [uid, setState, refillIfNeeded, trackInteraction],
   );
 
   const dismiss = useCallback(
@@ -224,6 +247,7 @@ export function useRecommendations(uid: string, onToast: Toast) {
       try {
         await recordDismissed(uid, movie, reason, { inWatchLater: !!snap.watchLater });
         toast.current("success", "Got it — improving your picks");
+        trackInteraction();
         void refillIfNeeded();
       } catch (err) {
         console.error("Failed to save dismissed movie", err);
@@ -232,7 +256,7 @@ export function useRecommendations(uid: string, onToast: Toast) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [uid, setState, refillIfNeeded],
+    [uid, setState, refillIfNeeded, trackInteraction],
   );
 
   const saveForLater = useCallback(
@@ -250,6 +274,7 @@ export function useRecommendations(uid: string, onToast: Toast) {
       try {
         await recordWatchLater(uid, movie, { dismissed: !!snap.dismissed });
         toast.current("success", "Added to Watch Later");
+        trackInteraction();
         void refillIfNeeded();
       } catch (err) {
         console.error("Failed to save to watch later", err);
@@ -258,7 +283,7 @@ export function useRecommendations(uid: string, onToast: Toast) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [uid, setState, refillIfNeeded],
+    [uid, setState, refillIfNeeded, trackInteraction],
   );
 
   const removeFromWatchLater = useCallback(

@@ -11,9 +11,11 @@ const recordWatched = vi.fn();
 const recordDismissed = vi.fn();
 const recordWatchLater = vi.fn();
 const removeWatchLater = vi.fn();
+const recordStreakInteraction = vi.fn();
 
 vi.mock("../../../core/services/cloudFunctions", () => ({ getRecommendations: (...a: unknown[]) => getRecommendations(...a) }));
 vi.mock("../../../core/services/firestore", () => ({ readProfile: (...a: unknown[]) => readProfile(...a) }));
+vi.mock("../../../core/services/streak", () => ({ recordStreakInteraction: (...a: unknown[]) => recordStreakInteraction(...a) }));
 vi.mock("../../../core/services/userCollections", () => ({
   loadUserCollections: (...a: unknown[]) => loadUserCollections(...a),
   recordWatched: (...a: unknown[]) => recordWatched(...a),
@@ -47,6 +49,7 @@ beforeEach(() => {
   loadUserCollections.mockImplementation(async () => structuredClone(collections));
   readProfile.mockResolvedValue({ status: "ready", isOnboarded: true, preferences: { topGenres: [28] } });
   for (const fn of [recordWatched, recordDismissed, recordWatchLater, removeWatchLater]) fn.mockResolvedValue(undefined);
+  recordStreakInteraction.mockResolvedValue({ kind: "extended", streak: 4, badgeId: null });
 });
 
 describe("loading", () => {
@@ -193,5 +196,71 @@ describe("refill", () => {
     await act(async () => { result.current.skip(result.current.current!); }); // 5 left -> refill
     await waitFor(() => expect(result.current.queueLength).toBeGreaterThan(5));
     expect(getRecommendations).toHaveBeenCalledTimes(2);
+  });
+});
+
+// iOS (RecommendationCoordinator) counts rate, dismiss, watch-later and skip as the daily
+// interaction; removing from watch later does not count.
+describe("streak tracking", () => {
+  it("counts a rating, with a streak toast", async () => {
+    const { result } = await setup();
+    await act(async () => { await result.current.markWatched(ref(1), 4); });
+    await waitFor(() => expect(recordStreakInteraction).toHaveBeenCalledWith("u1"));
+    await waitFor(() => expect(toast).toHaveBeenCalledWith("success", "4-day streak"));
+  });
+
+  it("counts dismiss, watch-later and skip", async () => {
+    for (const act_ of ["dismiss", "saveForLater", "skip"] as const) {
+      recordStreakInteraction.mockClear();
+      const { result } = await setup();
+      const first = result.current.current!;
+      await act(async () => {
+        if (act_ === "dismiss") await result.current.dismiss(first, "Too long");
+        if (act_ === "saveForLater") await result.current.saveForLater(first);
+        if (act_ === "skip") result.current.skip(first);
+      });
+      await waitFor(() => expect(recordStreakInteraction).toHaveBeenCalledTimes(1));
+    }
+  });
+
+  it("does not count removing a movie from watch later", async () => {
+    collections.watchLater = [{ movieId: 99, title: "Saved", posterPath: null, voteAverage: 7, releaseDate: null, addedAt: new Date() }];
+    const { result } = await setup();
+    await act(async () => { await result.current.removeFromWatchLater(99); });
+    expect(recordStreakInteraction).not.toHaveBeenCalled();
+  });
+
+  it("does not count an action whose write failed", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const { result } = await setup();
+    recordWatched.mockRejectedValue(new Error("offline"));
+    await act(async () => { await result.current.markWatched(ref(1), 3); });
+    expect(recordStreakInteraction).not.toHaveBeenCalled();
+  });
+
+  it("checks only once per day per session, and retries after a failure", async () => {
+    const { result } = await setup();
+    await act(async () => { result.current.skip(result.current.current!); });
+    await waitFor(() => expect(recordStreakInteraction).toHaveBeenCalledTimes(1));
+    await act(async () => { result.current.skip(result.current.current!); });
+    await act(async () => { result.current.skip(result.current.current!); });
+    expect(recordStreakInteraction).toHaveBeenCalledTimes(1); // already counted today
+
+    recordStreakInteraction.mockClear();
+    recordStreakInteraction.mockResolvedValue({ kind: "failed" });
+    const second = await setup();
+    await act(async () => { second.result.current.skip(second.result.current.current!); });
+    await waitFor(() => expect(recordStreakInteraction).toHaveBeenCalledTimes(1));
+    await act(async () => { second.result.current.skip(second.result.current.current!); });
+    await waitFor(() => expect(recordStreakInteraction).toHaveBeenCalledTimes(2)); // failed -> try again
+  });
+
+  it("never lets a streak failure disturb the action itself", async () => {
+    recordStreakInteraction.mockRejectedValue(new Error("boom"));
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const { result } = await setup();
+    await act(async () => { await result.current.markWatched(ref(1), 5); });
+    expect(result.current.current?.id).toBe(2);
+    expect(toast).toHaveBeenCalledWith("success", "Marked as watched");
   });
 });
