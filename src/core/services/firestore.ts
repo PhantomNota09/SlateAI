@@ -170,42 +170,31 @@ export async function createProfileWithoutUsername(params: {
 
 const isPermissionDenied = (err: unknown) => (err as { code?: string })?.code === "permission-denied";
 
-// Commits a "claim username" batch. `build(withStats)` returns the batch with or without the
-// userStats seed. iOS always includes the seed, so that's tried first. If Firestore denies it
-// we can't tell a lost username race from a rules restriction on creating userStats, so:
-//   - re-check the username; if it's now taken, report that;
-//   - otherwise retry without the seed. The onUserCreated Cloud Function creates the full
-//     userStats document (correct username/displayName, taken from users/{uid}) on its own,
-//     so nothing is lost. A second denial with a free username is a real error and is thrown.
+// Commits a "claim username" batch. usernames updates are denied by the rules, so a denial
+// means someone claimed the username after our availability check; re-check to be sure. A
+// denial with the username still free is unexpected and is thrown, never blamed on the user.
 async function commitClaim(
-  build: (withStats: boolean) => ReturnType<typeof writeBatch>,
+  batch: ReturnType<typeof writeBatch>,
   username: string,
 ): Promise<"ok" | "username-taken"> {
   try {
-    await build(true).commit();
+    await batch.commit();
     return "ok";
   } catch (err) {
-    if (!isPermissionDenied(err)) throw err;
-  }
-  if (!(await isUsernameAvailable(username))) return "username-taken";
-  try {
-    await build(false).commit();
-    return "ok";
-  } catch (err) {
-    if (!isPermissionDenied(err)) throw err;
-    if (!(await isUsernameAvailable(username))) return "username-taken";
+    if (isPermissionDenied(err) && !(await isUsernameAvailable(username))) return "username-taken";
     throw err;
   }
 }
 
-// Atomic three-write batch iOS does at email signup (spec §2 / CLAUDE.md "Auth"):
-// claim usernames/{username}, create users/{uid}, seed userStats/{uid}.
+// Atomic signup batch: claim usernames/{username} and create users/{uid}.
 //
-// Safe for existing accounts: if users/{uid} already exists nothing is written. Must
-// run while signed in — firestore.rules requires auth to read usernames. usernames
-// updates are denied by the rules, so if someone claims the username between our
-// check and the commit, the whole batch fails atomically ("username-taken"). See commitClaim
-// for how a denied userStats seed is handled.
+// Deliberately NOT seeding userStats/{uid} the way iOS does. The onUserCreated Cloud Function
+// creates the complete document (joinedAt, avatarURL, counts, ...) and already copies the
+// username and display name from users/{uid}. A client seed makes that function skip the
+// document, leaving a partial one that iOS's non-optional UserStats model can't decode.
+//
+// Safe for existing accounts: if users/{uid} already exists nothing is written. Must run while
+// signed in — firestore.rules requires auth to read usernames.
 export async function ensureUserDocuments(params: {
   uid: string;
   name: string;
@@ -215,23 +204,10 @@ export async function ensureUserDocuments(params: {
   if ((await getDoc(doc(db, "users", params.uid))).exists()) return "exists";
   if (!(await isUsernameAvailable(params.username))) return "username-taken";
 
-  const result = await commitClaim((withStats) => {
-    const batch = writeBatch(db);
-    batch.set(doc(db, "usernames", params.username), { userId: params.uid });
-    batch.set(
-      doc(db, "users", params.uid),
-      defaultUserPreferences({ ...params, hasCompletedProfile: true }),
-    );
-    if (withStats) {
-      batch.set(
-        doc(db, "userStats", params.uid),
-        { username: params.username, displayName: params.name },
-        { merge: true },
-      );
-    }
-    return batch;
-  }, params.username);
-  return result === "ok" ? "created" : "username-taken";
+  const batch = writeBatch(db);
+  batch.set(doc(db, "usernames", params.username), { userId: params.uid });
+  batch.set(doc(db, "users", params.uid), defaultUserPreferences({ ...params, hasCompletedProfile: true }));
+  return (await commitClaim(batch, params.username)) === "ok" ? "created" : "username-taken";
 }
 
 export type ClaimResult = "claimed" | "already-set" | "username-taken" | "missing-profile";
@@ -249,18 +225,14 @@ export async function claimUsername(params: {
   if (String(snap.data().username ?? "").trim()) return "already-set";
   if (!(await isUsernameAvailable(params.username))) return "username-taken";
 
-  const result = await commitClaim((withStats) => {
-    const batch = writeBatch(db);
-    batch.set(doc(db, "usernames", params.username), { userId: params.uid });
-    batch.update(userRef, { username: params.username });
-    if (withStats) {
-      batch.set(
-        doc(db, "userStats", params.uid),
-        { username: params.username, displayName: params.name },
-        { merge: true },
-      );
-    }
-    return batch;
-  }, params.username);
-  return result === "ok" ? "claimed" : "username-taken";
+  // Mirror the username into userStats only if that document already exists (an update the
+  // rules allow). Never create it: a client-created stats doc would be partial.
+  const statsRef = doc(db, "userStats", params.uid);
+  const statsExist = (await getDoc(statsRef)).exists();
+
+  const batch = writeBatch(db);
+  batch.set(doc(db, "usernames", params.username), { userId: params.uid });
+  batch.update(userRef, { username: params.username });
+  if (statsExist) batch.update(statsRef, { username: params.username, displayName: params.name });
+  return (await commitClaim(batch, params.username)) === "ok" ? "claimed" : "username-taken";
 }
