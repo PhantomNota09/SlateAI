@@ -18,8 +18,8 @@ export default function Footer() {
       <div className="lp-wrap lp-footer__credit">
         <img src="/tmdb-logo.svg" alt="TMDB" height="12" />
         <p>
-          This product uses the TMDB API but is not endorsed or certified by TMDB. Movie posters are shown for illustration and
-          belong to their respective owners.
+          This product uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB. Movie posters
+          are shown for illustration and belong to their respective owners.
         </p>
       </div>
     </footer>
