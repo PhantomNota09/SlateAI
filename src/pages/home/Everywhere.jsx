@@ -2,10 +2,10 @@ import { filmById } from './data';
 import { AppStoreBadge, MatchRing, PosterArt, WebAppLink } from './Bits';
 import { Reveal } from './useReveal';
 
-function MiniPick({ film, score, compact }) {
+function MiniPick({ film, score }) {
   return (
-    <div className={`lp-mini ${compact ? 'is-compact' : ''}`} aria-hidden="true">
-      <PosterArt film={film} size={compact ? 'sm' : 'lg'} />
+    <div className="lp-mini" aria-hidden="true">
+      <PosterArt film={film} size="lg" />
       <div className="lp-mini__body">
         <strong>{film.title}</strong>
         <span>{film.year} · {film.runtime} min</span>
@@ -50,9 +50,15 @@ export default function Everywhere() {
             </div>
           </div>
           <div className="lp-phone">
-            <div className="lp-phone__notch" aria-hidden="true" />
             <div className="lp-phone__screen">
-              <MiniPick film={filmById('lalaland')} score={82} compact />
+              <img
+                src="/iphone-home.webp"
+                width="560"
+                height="963"
+                alt="The Slate iPhone app home screen with trending movies"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
         </Reveal>
