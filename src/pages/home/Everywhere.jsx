@@ -53,8 +53,8 @@ export default function Everywhere() {
             <div className="lp-phone__screen">
               <img
                 src="/iphone-home.webp"
-                width="560"
-                height="963"
+                width="600"
+                height="1251"
                 alt="The Slate iPhone app home screen with trending movies"
                 loading="lazy"
                 decoding="async"
