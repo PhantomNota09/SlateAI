@@ -52,6 +52,9 @@ export function AppShell({
               Watch Later
               {!!watchLaterCount && <span className="shell__count">{watchLaterCount > 99 ? "99+" : watchLaterCount}</span>}
             </NavLink>
+            <NavLink to="/app/letterboxd" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
+              Letterboxd
+            </NavLink>
             <NavLink to="/app/profile" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
               Profile
             </NavLink>

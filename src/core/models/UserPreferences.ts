@@ -137,8 +137,8 @@ export interface UserPreferences {
 
   letterboxdUsername?: string;
   letterboxdImportSource?: string;
-  letterboxdFullImportDate?: string | null;
-  letterboxdLastRSSSync?: string | null;
+  letterboxdFullImportDate?: unknown; // Firestore Timestamp (iOS writes a Date)
+  letterboxdLastRSSSync?: unknown; // Firestore Timestamp
   letterboxdTotalMoviesImported?: number;
 
   region: string;

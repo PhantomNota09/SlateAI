@@ -831,6 +831,9 @@
   display: flex;
   flex: 1;
   gap: var(--space-xs);
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
 .slate-app .shell__nav a,

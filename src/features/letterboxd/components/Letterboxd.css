@@ -1,0 +1,159 @@
+.slate-app .lbx {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg) var(--space-lg);
+  animation: slate-fade 300ms var(--motion-ease);
+}
+
+.slate-app .lbx__head h1 {
+  margin: 0;
+  font: var(--font-title);
+}
+
+.slate-app .lbx__head p {
+  margin: var(--space-xs) 0 0;
+  font: var(--font-body);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .lbx__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-accent-subtle);
+  border: 1px solid var(--color-accent-glow);
+  border-radius: var(--radius-card);
+}
+
+.slate-app .lbx__status span {
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .lbx__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.slate-app .lbx__card h2 {
+  margin: 0;
+  font: var(--font-headline);
+}
+
+.slate-app .lbx__lead {
+  margin: 0;
+  font: var(--font-body);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .lbx__lead strong {
+  color: var(--color-text-primary);
+}
+
+.slate-app .lbx__note {
+  margin: 0;
+  font: var(--font-caption);
+  color: var(--color-text-tertiary);
+}
+
+.slate-app .lbx__steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: 0;
+  padding-left: var(--space-xl);
+  font: var(--font-body);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .lbx__drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xxxl) var(--space-lg);
+  text-align: center;
+  color: var(--color-text-secondary);
+  border: 2px dashed var(--color-border-strong);
+  border-radius: var(--radius-card);
+  transition: border-color var(--motion-fast) var(--motion-ease), background var(--motion-fast) var(--motion-ease);
+}
+
+.slate-app .lbx__drop.is-over {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-accent);
+}
+
+.slate-app .lbx__drop strong {
+  font: var(--font-headline);
+  color: var(--color-text-primary);
+}
+
+.slate-app .lbx__drop .btn,
+.slate-app .lbx__actions .btn {
+  width: auto;
+  padding: 0 var(--space-xl);
+}
+
+.slate-app .lbx__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-md);
+}
+
+.slate-app .lbx__results {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  margin: 0;
+}
+
+.slate-app .lbx__results div {
+  padding: var(--space-md);
+  text-align: center;
+  background: var(--color-card-background);
+  border-radius: var(--radius-button);
+}
+
+.slate-app .lbx__results dt {
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .lbx__results dd {
+  margin: var(--space-xs) 0 0;
+  font: var(--font-title);
+}
+
+.slate-app .lbx__toggle {
+  align-self: flex-start;
+  padding: 0;
+  font: var(--font-caption-emphasis);
+  color: var(--color-accent);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.slate-app .lbx__failed {
+  max-height: 240px;
+  margin: 0;
+  padding: var(--space-md) var(--space-lg) var(--space-md) var(--space-xl);
+  overflow-y: auto;
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+  background: var(--color-card-background);
+  border-radius: var(--radius-button);
+}
