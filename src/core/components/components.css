@@ -817,9 +817,9 @@
   display: flex;
   align-items: center;
   gap: var(--space-xl);
-  max-width: 1152px; /* 1120px feed column + 2 x 16px gutter */
+  max-width: calc(var(--page-wide) + 2 * var(--gutter));
   margin: 0 auto;
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-md) var(--gutter);
 }
 
 .slate-app .shell__brand {
@@ -832,12 +832,71 @@
 }
 
 .slate-app .shell__nav {
-  display: flex;
+  display: none;
   flex: 1;
   gap: var(--space-xs);
   min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
+}
+
+/* Under 960px (phones, portrait tablets) the links live in a menu sheet instead. */
+.slate-app .shell__burger {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  color: var(--color-text-primary);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+}
+
+.slate-app .shell__burger:hover {
+  background: var(--color-overlay-fill);
+}
+
+.slate-app .shell__sheet {
+  position: fixed;
+  top: 69px; /* just under the header bar */
+  right: 0;
+  left: 0;
+  z-index: 29;
+  max-height: calc(100dvh - 69px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-sm) var(--gutter) var(--space-lg);
+  background: var(--color-background);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+}
+
+.slate-app .shell__sheet a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: 52px;
+  padding: 0 var(--space-md);
+  font: var(--font-headline);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-button);
+}
+
+.slate-app .shell__sheet a.is-active {
+  color: var(--color-text-primary);
+  background: var(--color-overlay-fill);
+}
+
+@media (min-width: 960px) {
+  .slate-app .shell__nav {
+    display: flex;
+  }
+
+  .slate-app .shell__burger,
+  .slate-app .shell__sheet {
+    display: none;
+  }
 }
 
 .slate-app .shell__nav a,

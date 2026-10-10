@@ -122,7 +122,7 @@ export function ProfileView({
       )}
 
       {s && s.topGenres.length > 0 && (
-        <section className="card" aria-labelledby="genres-title">
+        <section className="card profile__half" aria-labelledby="genres-title">
           <header className="card__head">
             <h2 id="genres-title">Top genres</h2>
           </header>
@@ -134,9 +134,9 @@ export function ProfileView({
         </section>
       )}
 
-      <BadgeGrid stats={s ?? EMPTY_STATS} />
-
       {prefs && <Taste prefs={prefs} />}
+
+      <BadgeGrid stats={s ?? EMPTY_STATS} />
 
       {recent.length > 0 && (
         <section className="card" aria-labelledby="recent-title">
@@ -205,7 +205,7 @@ function Taste({ prefs }: { prefs: Partial<UserPreferences> }) {
   const shown = rows.filter(([, v]) => v);
   if (shown.length === 0) return null;
   return (
-    <section className="card" aria-labelledby="taste-title">
+    <section className="card profile__half" aria-labelledby="taste-title">
       <header className="card__head">
         <h2 id="taste-title">Your taste</h2>
         <Link to="/app/preferences" className="card__meta card__link">Edit preferences</Link>

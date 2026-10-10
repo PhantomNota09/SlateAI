@@ -2,9 +2,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
-  max-width: 1120px;
+  max-width: calc(var(--page-wide) + 2 * var(--gutter));
   margin: 0 auto;
-  padding: var(--space-xl) var(--space-lg) var(--space-lg);
+  padding: var(--space-xl) var(--gutter) var(--space-lg);
   animation: slate-fade 300ms var(--motion-ease);
 }
 
@@ -63,7 +63,7 @@
 /* Featured hero */
 .slate-app .disc__hero {
   position: relative;
-  min-height: 300px;
+  min-height: clamp(260px, 32vw, 460px);
   overflow: hidden;
   background: var(--color-card-background);
   border-radius: var(--radius-card);
@@ -153,7 +153,7 @@
 
 .slate-app .disc__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--poster-w), 1fr));
   gap: var(--space-lg) var(--space-md);
 }
 
@@ -164,7 +164,7 @@
   flex: none;
   flex-direction: column;
   gap: 2px;
-  width: 150px;
+  width: var(--poster-w);
   padding: 0;
   text-align: left;
   color: var(--color-text-primary);
@@ -210,7 +210,7 @@
 }
 
 .slate-app .dcard--ranked {
-  width: 190px;
+  width: calc(var(--poster-w) + 40px);
   padding-left: 40px;
 }
 

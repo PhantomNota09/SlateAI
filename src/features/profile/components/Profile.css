@@ -2,9 +2,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
-  max-width: 880px;
+  max-width: calc(var(--page-wide) + 2 * var(--gutter));
   margin: 0 auto;
-  padding: var(--space-xl) var(--space-lg) var(--space-lg);
+  padding: var(--space-xl) var(--gutter) var(--space-lg);
   animation: slate-fade 300ms var(--motion-ease);
 }
 
@@ -354,9 +354,9 @@
 .slate-app .profile-tabs {
   display: flex;
   gap: var(--space-xs);
-  max-width: 880px;
+  max-width: calc(var(--page-wide) + 2 * var(--gutter));
   margin: var(--space-lg) auto 0;
-  padding: 0 var(--space-lg);
+  padding: 0 var(--gutter);
 }
 
 .slate-app .profile-tabs a {
@@ -374,4 +374,21 @@
 .slate-app .profile-tabs a.is-active {
   color: var(--color-text-primary);
   background: var(--color-overlay-fill-hover);
+}
+
+/* Wide screens: Top genres and Your taste sit side by side; everything else spans the page. */
+@media (min-width: 1100px) {
+  .slate-app .profile {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .slate-app .profile > * {
+    grid-column: 1 / -1;
+  }
+
+  .slate-app .profile > .profile__half {
+    grid-column: auto;
+  }
 }

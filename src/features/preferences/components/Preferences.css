@@ -1,7 +1,7 @@
 .slate-app .prefs {
-  max-width: 1040px;
+  max-width: calc(var(--page-wide) + 2 * var(--gutter));
   margin: 0 auto;
-  padding: var(--space-xl) var(--space-lg) 120px;
+  padding: var(--space-xl) var(--gutter) 120px;
   animation: slate-fade 300ms var(--motion-ease);
 }
 
@@ -110,9 +110,9 @@
 /* Save bar: a compact pill that floats up only while there is something to save. */
 .slate-app .prefs__bar {
   position: fixed;
-  right: var(--space-lg);
-  bottom: var(--space-lg);
-  left: var(--space-lg);
+  right: var(--gutter);
+  bottom: calc(var(--space-lg) + env(safe-area-inset-bottom));
+  left: var(--gutter);
   z-index: 20;
   display: flex;
   justify-content: center;

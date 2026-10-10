@@ -17,8 +17,8 @@ export function MovieHero({
       <div className="movie-hero__scrim" />
       {detail?.trailerKey && (
         <button type="button" className="movie-hero__play" onClick={onPlayTrailer} aria-label={`Play trailer for ${movie.title}`}>
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" />
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
+            <path d="M7.5 5 18.5 12 7.5 19Z" />
           </svg>
         </button>
       )}

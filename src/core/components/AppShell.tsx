@@ -21,10 +21,18 @@ export function AppShell({
   const requestCount = useIncomingRequestCount(user?.uid);
   const importProgress = useImportProgress();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const name = profile.preferences?.name ?? user?.displayName ?? "";
   const email = user?.email ?? user?.providerData.find((p) => p.email)?.email ?? "";
+
+  useEffect(() => {
+    if (!sheetOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setSheetOpen(false);
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [sheetOpen]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -40,6 +48,26 @@ export function AppShell({
     };
   }, [menuOpen]);
 
+  const active = ({ isActive }: { isActive: boolean }) => (isActive ? "is-active" : undefined);
+  const importBadge = importProgress && (
+    <span className="shell__count" title="Letterboxd import running" aria-label={`Letterboxd import ${importProgress.current} of ${importProgress.total}`}>
+      {Math.floor((importProgress.current / Math.max(1, importProgress.total)) * 100)}%
+    </span>
+  );
+  const count = (n: number) => n > 0 && <span className="shell__count">{n > 99 ? "99+" : n}</span>;
+  // The same links serve the inline nav (wide screens) and the menu sheet (phones and tablets).
+  const links = (onNavigate?: () => void) => (
+    <>
+      <NavLink to="/app/recommendations" className={active} onClick={onNavigate}>For You</NavLink>
+      <NavLink to="/app/discover" className={active} onClick={onNavigate}>Discover</NavLink>
+      <NavLink to="/app/watch-later" className={active} onClick={onNavigate}>Watch Later{count(watchLaterCount ?? 0)}</NavLink>
+      <NavLink to="/app/friends" className={active} onClick={onNavigate}>Friends{count(requestCount)}</NavLink>
+      <NavLink to="/app/insights" className={active} onClick={onNavigate}>Insights</NavLink>
+      <NavLink to="/app/letterboxd" className={active} onClick={onNavigate}>Letterboxd{importBadge}</NavLink>
+      <NavLink to="/app/profile" className={active} onClick={onNavigate}>Profile</NavLink>
+    </>
+  );
+
   return (
     <div className="shell">
       <header className="shell__bar">
@@ -49,35 +77,21 @@ export function AppShell({
           </Link>
 
           <nav className="shell__nav" aria-label="Primary">
-            <NavLink to="/app/recommendations" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
-              For You
-            </NavLink>
-            <NavLink to="/app/discover" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
-              Discover
-            </NavLink>
-            <NavLink to="/app/watch-later" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
-              Watch Later
-              {!!watchLaterCount && <span className="shell__count">{watchLaterCount > 99 ? "99+" : watchLaterCount}</span>}
-            </NavLink>
-            <NavLink to="/app/friends" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
-              Friends
-              {requestCount > 0 && <span className="shell__count">{requestCount > 99 ? "99+" : requestCount}</span>}
-            </NavLink>
-            <NavLink to="/app/insights" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
-              Insights
-            </NavLink>
-            <NavLink to="/app/letterboxd" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
-              Letterboxd
-              {importProgress && (
-                <span className="shell__count" title="Letterboxd import running" aria-label={`Letterboxd import ${importProgress.current} of ${importProgress.total}`}>
-                  {Math.floor((importProgress.current / Math.max(1, importProgress.total)) * 100)}%
-                </span>
-              )}
-            </NavLink>
-            <NavLink to="/app/profile" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
-              Profile
-            </NavLink>
+            {links()}
           </nav>
+
+          <button
+            type="button"
+            className="shell__burger"
+            onClick={() => setSheetOpen((o) => !o)}
+            aria-expanded={sheetOpen}
+            aria-controls="shell-sheet"
+            aria-label={sheetOpen ? "Close menu" : "Open menu"}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              {sheetOpen ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+            </svg>
+          </button>
 
           <div className="shell__user" ref={menuRef}>
             <button
@@ -107,6 +121,11 @@ export function AppShell({
           </div>
         </div>
       </header>
+      {sheetOpen && (
+        <nav id="shell-sheet" className="shell__sheet" aria-label="Menu">
+          {links(() => setSheetOpen(false))}
+        </nav>
+      )}
       {children}
     </div>
   );

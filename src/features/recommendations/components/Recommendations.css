@@ -1,7 +1,7 @@
 .slate-app .feed {
-  max-width: 1120px;
+  max-width: calc(var(--page-wide) + 2 * var(--gutter));
   margin: 0 auto;
-  padding: var(--space-xl) var(--space-lg) var(--space-xxxl);
+  padding: var(--space-xl) var(--gutter) var(--space-xxxl);
 }
 
 .slate-app .feed__layout {
@@ -25,7 +25,7 @@
 
 @media (min-width: 960px) {
   .slate-app .feed__layout {
-    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-columns: minmax(0, 1fr) clamp(340px, 24vw, 420px);
     align-items: start;
   }
 }
@@ -86,12 +86,12 @@
   place-items: center;
   width: 72px;
   height: 72px;
-  padding: 0 0 0 4px; /* optical centering: a play triangle's weight sits left of its box */
+  padding: 0;
   color: #fff;
   background: var(--color-trailer);
   border: 0;
   border-radius: 50%;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 0 6px rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
   cursor: pointer;
   transform: translate(-50%, -50%);
   transition: background var(--motion-base) var(--motion-ease), transform var(--motion-fast) var(--motion-ease),
@@ -101,7 +101,7 @@
 .slate-app .movie-hero__play:hover {
   background: var(--color-trailer-hover);
   transform: translate(-50%, -50%) scale(1.08);
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55), 0 0 0 8px rgba(255, 255, 255, 0.24);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55);
 }
 
 .slate-app .movie-hero__play:focus-visible {
