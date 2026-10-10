@@ -52,6 +52,9 @@ export function AppShell({
             <NavLink to="/app/recommendations" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
               For You
             </NavLink>
+            <NavLink to="/app/discover" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
+              Discover
+            </NavLink>
             <NavLink to="/app/watch-later" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
               Watch Later
               {!!watchLaterCount && <span className="shell__count">{watchLaterCount > 99 ? "99+" : watchLaterCount}</span>}

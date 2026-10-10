@@ -7,6 +7,8 @@ import { ForgotPasswordPage } from "./features/auth/components/ForgotPasswordPag
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { SignInPage } from "./features/auth/components/SignInPage";
 import { SignUpPage } from "./features/auth/components/SignUpPage";
+import { CategoryPage } from "./features/discover/components/CategoryPage";
+import { DiscoverPage } from "./features/discover/components/DiscoverPage";
 import { FriendProfilePage } from "./features/friends/components/FriendProfilePage";
 import { FriendsPage } from "./features/friends/components/FriendsPage";
 import { HistoryPage } from "./features/history/components/HistoryPage";
@@ -44,6 +46,8 @@ export default function AppSection() {
               <Route path="choose-username" element={<ChooseUsernamePage />} />
               <Route path="onboarding" element={<OnboardingPage />} />
               <Route path="recommendations" element={<RecommendationsPage />} />
+              <Route path="discover" element={<DiscoverPage />} />
+              <Route path="discover/:category" element={<CategoryPage />} />
               <Route path="watch-later" element={<WatchLaterPage />} />
               <Route path="preferences" element={<PreferencesPage />} />
               <Route path="friends" element={<FriendsPage />} />

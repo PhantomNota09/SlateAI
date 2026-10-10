@@ -46,6 +46,30 @@ export function normalizePool(raw: unknown): Movie[] {
   });
 }
 
+// Raw TMDb list responses ({ results: [...] } from /trending, /movie/top_rated, /search/movie …) as
+// Movies without a match score. Entries missing an id or title are dropped.
+export function normalizeTmdbResults(raw: unknown): Movie[] {
+  const results = (raw as { results?: unknown } | null)?.results;
+  if (!Array.isArray(results)) return [];
+  return results.flatMap((r: Record<string, unknown>): Movie[] => {
+    if (!r || !Number.isInteger(r.id) || typeof r.title !== "string" || !r.title) return [];
+    return [{
+      id: r.id as number,
+      title: r.title,
+      overview: typeof r.overview === "string" ? r.overview : "",
+      posterPath: typeof r.poster_path === "string" ? r.poster_path : null,
+      backdropPath: typeof r.backdrop_path === "string" ? r.backdrop_path : null,
+      releaseDate: typeof r.release_date === "string" && r.release_date ? r.release_date : null,
+      voteAverage: typeof r.vote_average === "number" ? r.vote_average : 0,
+      genreIds: Array.isArray(r.genre_ids) ? r.genre_ids.filter((g): g is number => Number.isInteger(g)) : [],
+      originalLanguage: typeof r.original_language === "string" ? r.original_language : "",
+      runtime: null,
+      matchPercentage: null,
+      reasons: [],
+    }];
+  });
+}
+
 // The card only shows match info when there is a score.
 export function matchInfoOf(movie: Movie): MatchInfo | null {
   return movie.matchPercentage === null ? null : { matchPercentage: movie.matchPercentage, reasons: movie.reasons };
