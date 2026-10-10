@@ -107,22 +107,26 @@
   margin-top: var(--space-lg);
 }
 
-/* Save bar: slides up only while there is something to save. */
+/* Save bar: a compact pill that floats up only while there is something to save. */
 .slate-app .prefs__bar {
   position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  right: var(--space-lg);
+  bottom: var(--space-lg);
+  left: var(--space-lg);
   z-index: 20;
-  background: var(--color-surface-raised);
-  border-top: 1px solid var(--color-border-strong);
-  transform: translateY(110%);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  transform: translateY(24px);
+  opacity: 0;
   visibility: hidden;
-  transition: transform var(--motion-fast) var(--motion-ease), visibility 0s linear var(--motion-fast);
+  transition: transform var(--motion-base) var(--motion-ease), opacity var(--motion-base) var(--motion-ease),
+    visibility 0s linear var(--motion-base);
 }
 
 .slate-app .prefs__bar[data-visible] {
   transform: none;
+  opacity: 1;
   visibility: visible;
   transition-delay: 0s;
 }
@@ -131,14 +135,60 @@
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  max-width: 1040px;
-  margin: 0 auto;
-  padding: var(--space-md) var(--space-lg);
+  max-width: 100%;
+  padding: var(--space-sm) var(--space-sm) var(--space-sm) var(--space-lg);
+  pointer-events: auto;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
 }
 
 .slate-app .prefs__bar-text {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
   min-width: 0;
-  font: var(--font-caption);
+  font: var(--font-caption-emphasis);
+  white-space: nowrap;
   color: var(--color-text-secondary);
+}
+
+.slate-app .prefs__bar-text::before {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  content: '';
+  background: var(--color-accent);
+  border-radius: 50%;
+}
+
+.slate-app .prefs__bar-text.is-error {
+  color: var(--color-danger);
+  white-space: normal;
+}
+
+.slate-app .prefs__bar-text.is-error::before {
+  background: var(--color-danger);
+}
+
+.slate-app .prefs__bar .btn {
+  width: auto;
+  min-height: 40px;
+  padding: 0 var(--space-lg);
+  white-space: nowrap;
+  border-radius: 999px;
+}
+
+@media (max-width: 520px) {
+  .slate-app .prefs__bar-inner {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    border-radius: var(--radius-card);
+  }
+
+  .slate-app .prefs__bar-text {
+    flex: 1 0 100%;
+  }
 }

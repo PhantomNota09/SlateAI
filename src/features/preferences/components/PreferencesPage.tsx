@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppShell } from "../../../core/components/AppShell";
-import { Alert } from "../../../core/components/Alert";
 import { Button } from "../../../core/components/Button";
 import { useToast } from "../../../core/components/Toast";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
@@ -151,7 +150,9 @@ function Preferences() {
 
       <div className="prefs__bar" data-visible={dirty || undefined}>
         <div className="prefs__bar-inner">
-          <span className="prefs__bar-text">{error ? <Alert>{error}</Alert> : problem && dirty ? problem : "You have unsaved changes"}</span>
+          <span className={`prefs__bar-text${error || problem ? " is-error" : ""}`} role={error ? "alert" : undefined}>
+            {error ?? problem ?? "Unsaved changes"}
+          </span>
           <Button variant="ghost" onClick={() => { setDraft(saved); setError(null); }} disabled={saving}>
             Discard
           </Button>
