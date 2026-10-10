@@ -10,6 +10,7 @@ import { SignUpPage } from "./features/auth/components/SignUpPage";
 import { FriendProfilePage } from "./features/friends/components/FriendProfilePage";
 import { FriendsPage } from "./features/friends/components/FriendsPage";
 import { InsightsPage } from "./features/insights/components/InsightsPage";
+import { LetterboxdImportProvider } from "./features/letterboxd/context/LetterboxdImportContext";
 import { LetterboxdPage } from "./features/letterboxd/components/LetterboxdPage";
 import { OnboardingPage } from "./features/onboarding/components/OnboardingPage";
 import { PreferencesPage } from "./features/preferences/components/PreferencesPage";
@@ -33,31 +34,33 @@ export default function AppSection() {
   return (
     <AuthProvider>
       <ToastProvider>
-        <div className="slate-app">
-          <Routes>
-            <Route path="sign-in" element={<SignInPage />} />
-            <Route path="sign-up" element={<SignUpPage />} />
-            <Route path="forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="choose-username" element={<ChooseUsernamePage />} />
-            <Route path="onboarding" element={<OnboardingPage />} />
-            <Route path="recommendations" element={<RecommendationsPage />} />
-            <Route path="watch-later" element={<WatchLaterPage />} />
-            <Route path="preferences" element={<PreferencesPage />} />
-            <Route path="friends" element={<FriendsPage />} />
-            <Route path="friends/:uid" element={<FriendProfilePage />} />
-            <Route path="insights" element={<InsightsPage />} />
-            <Route path="letterboxd" element={<LetterboxdPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-            <Route
-              path="*"
-              element={
-                <ProtectedRoute>
-                  <Navigate to="/app/recommendations" replace />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </div>
+        <LetterboxdImportProvider>
+          <div className="slate-app">
+            <Routes>
+              <Route path="sign-in" element={<SignInPage />} />
+              <Route path="sign-up" element={<SignUpPage />} />
+              <Route path="forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="choose-username" element={<ChooseUsernamePage />} />
+              <Route path="onboarding" element={<OnboardingPage />} />
+              <Route path="recommendations" element={<RecommendationsPage />} />
+              <Route path="watch-later" element={<WatchLaterPage />} />
+              <Route path="preferences" element={<PreferencesPage />} />
+              <Route path="friends" element={<FriendsPage />} />
+              <Route path="friends/:uid" element={<FriendProfilePage />} />
+              <Route path="insights" element={<InsightsPage />} />
+              <Route path="letterboxd" element={<LetterboxdPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              <Route
+                path="*"
+                element={
+                  <ProtectedRoute>
+                    <Navigate to="/app/recommendations" replace />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </div>
+        </LetterboxdImportProvider>
       </ToastProvider>
     </AuthProvider>
   );

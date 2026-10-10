@@ -59,6 +59,40 @@ describe("runImport", () => {
   });
 });
 
+describe("runImport batching and resuming", () => {
+  const many = Array.from({ length: 5 }, (_, i) => entry(`T${i}`));
+  const searchAll = async (t: string) => ({ id: Number(t.slice(1)) + 100, title: t, posterPath: null });
+
+  it("saves matches in batches while running and flushes the rest at the end", async () => {
+    const batches: [number[], number][] = [];
+    await runImport({ ...base, search: searchAll, entries: many, existingIds: new Set(), batchSize: 2, onMatches: async (b, p) => { batches.push([b.map((m) => m.movieId), p]); } });
+    expect(batches).toEqual([[[100, 101], 2], [[102, 103], 4], [[104], 5]]);
+  });
+
+  it("starts from a saved position and counts it as processed", async () => {
+    const seen: string[] = [];
+    const r = await runImport({ ...base, search: async (t) => { seen.push(t); return searchAll(t); }, entries: many, existingIds: new Set(), startAt: 3 });
+    expect(seen).toEqual(["T3", "T4"]);
+    expect(r.processed).toBe(5);
+  });
+
+  it("reports an interrupted run's position after its last batch", async () => {
+    const ctrl = new AbortController();
+    const positions: number[] = [];
+    const r = await runImport({
+      ...base, search: searchAll, entries: many, existingIds: new Set(), signal: ctrl.signal, batchSize: 10,
+      onProgress: (n) => n === 3 && ctrl.abort(),
+      onMatches: async (_b, p) => { positions.push(p); },
+    });
+    expect(r.cancelled).toBe(true);
+    expect(positions).toEqual([3]);
+  });
+
+  it("stops and surfaces the error if saving a batch fails", async () => {
+    await expect(runImport({ ...base, search: searchAll, entries: many, existingIds: new Set(), batchSize: 1, onMatches: async () => { throw new Error("denied"); } })).rejects.toThrow("denied");
+  });
+});
+
 describe("estimateMinutes", () => {
   it("is at least a minute and grows with the library", () => {
     expect(estimateMinutes(10)).toBe(1);

@@ -8,7 +8,7 @@ import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { ProtectedRoute } from "../../auth/components/ProtectedRoute";
 import { useAuth } from "../../auth/context/AuthContext";
 import { estimateMinutes } from "../importRunner";
-import { useLetterboxdImport, type Summary } from "../hooks/useLetterboxdImport";
+import { useLetterboxdImport, type Summary } from "../context/LetterboxdImportContext";
 import "./Letterboxd.css";
 
 export const LETTERBOXD_EXPORT_URL = "https://letterboxd.com/settings/data/";
@@ -31,8 +31,8 @@ const plural = (n: number, word: string) => `${n.toLocaleString()} ${word}${n ==
 
 function Letterboxd() {
   usePageTitle("Import from Letterboxd");
-  const { user, profile, refreshProfile } = useAuth();
-  const { state, choose, start, cancel, reset } = useLetterboxdImport(user!.uid, () => void refreshProfile().catch(() => undefined));
+  const { profile } = useAuth();
+  const { state, choose, start, restart, cancel, reset } = useLetterboxdImport();
 
   const prefs = profile.preferences;
   const lastImport = importDate(prefs?.letterboxdFullImportDate);
@@ -58,12 +58,16 @@ function Letterboxd() {
           <section className="lbx__card">
             <h2>Ready to import</h2>
             <p className="lbx__lead">
-              <strong>{state.fileName}</strong> has {plural(state.entries.length, "film")}. Matching takes about{" "}
-              {plural(estimateMinutes(state.entries.length), "minute")}, and you can leave this page open in another tab.
+              <strong>{state.fileName}</strong> has {plural(state.entries.length, "film")}.{" "}
+              {state.resumeFrom > 0
+                ? `You already got through ${state.resumeFrom.toLocaleString()} of them, so it will pick up from there (about ${plural(estimateMinutes(state.entries.length - state.resumeFrom), "minute")}).`
+                : `Matching takes about ${plural(estimateMinutes(state.entries.length), "minute")}.`}{" "}
+              It runs in the background, so you can use the rest of Slate meanwhile.
             </p>
             <div className="lbx__actions">
               <Button variant="ghost" onClick={reset}>Choose a different file</Button>
-              <Button onClick={() => void start()}>Start import</Button>
+              {state.resumeFrom > 0 && <Button variant="ghost" onClick={restart}>Start over</Button>}
+              <Button onClick={() => void start()}>{state.resumeFrom > 0 ? "Continue import" : "Start import"}</Button>
             </div>
           </section>
         )}
@@ -155,7 +159,10 @@ function Progress({ current, total, cancelling, onCancel }: { current: number; t
         {current.toLocaleString()} of {total.toLocaleString()}
         {!cancelling && remaining > 0 && ` · about ${plural(estimateMinutes(remaining), "minute")} left`}
       </p>
-      <p className="lbx__note">Keep this tab open. Leaving the page stops matching but keeps everything matched so far.</p>
+      <p className="lbx__note">
+        You can leave this page. The import keeps going while you use Slate, and a progress badge stays in the menu. Just keep this browser
+        tab open. If you close it, choose the same file later and it carries on where it stopped.
+      </p>
       <div className="lbx__actions">
         <Button variant="ghost" onClick={onCancel} disabled={cancelling}>Stop and save</Button>
       </div>

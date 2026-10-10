@@ -21,6 +21,12 @@ export interface RunOptions {
   search: (title: string, year: string | null) => Promise<TmdbMatch | null>;
   onProgress?: (processed: number, total: number) => void;
   signal?: AbortSignal;
+  // Skip this many rows from the top (resuming an earlier run of the same file).
+  startAt?: number;
+  // Called with each batch of new matches as they accumulate, so they are saved while the import is
+  // still running, and with whatever is left at the end. `processed` counts rows done so far.
+  onMatches?: (batch: LetterboxdMovie[], processed: number) => Promise<void>;
+  batchSize?: number;
   // Gap between lookups. The tmdbProxy callable allows 120 requests a minute per user, so the
   // default of 600ms (100/min) leaves headroom for the rest of the app.
   minIntervalMs?: number;
@@ -33,13 +39,20 @@ const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 // Matches each CSV row to a TMDb movie, one lookup at a time (port of LetterboxdCSVImportService).
 // A cancelled run still returns what it matched so far, so nothing the user waited for is lost.
 export async function runImport(options: RunOptions): Promise<ImportResult> {
-  const { entries, search, onProgress, signal, minIntervalMs = 600, now = () => new Date(), wait = sleep } = options;
+  const { entries, search, onProgress, signal, onMatches, startAt = 0, batchSize = 50, minIntervalMs = 600, now = () => new Date(), wait = sleep } = options;
   const seen = new Set(options.existingIds);
   const cache = new Map<string, TmdbMatch | null>();
-  const result: ImportResult = { added: [], skipped: 0, failed: [], processed: 0, cancelled: false };
+  const result: ImportResult = { added: [], skipped: 0, failed: [], processed: startAt, cancelled: false };
+  let pending: LetterboxdMovie[] = [];
+  const flush = async () => {
+    if (pending.length === 0 || !onMatches) return;
+    const batch = pending;
+    await onMatches(batch, result.processed);
+    pending = [];
+  };
   const label = (e: LetterboxdCSVEntry) => `${e.title} (${e.year ?? "?"})`;
 
-  for (const entry of entries) {
+  for (const entry of entries.slice(startAt)) {
     if (signal?.aborted) {
       result.cancelled = true;
       break;
@@ -76,15 +89,19 @@ export async function runImport(options: RunOptions): Promise<ImportResult> {
       continue;
     }
     seen.add(match.id);
-    result.added.push({
+    const movie: LetterboxdMovie = {
       movieId: match.id,
       title: match.title,
       posterPath: match.posterPath,
       letterboxdRating: entry.rating,
       watchedDate: entry.date,
       importedAt: now(),
-    });
+    };
+    result.added.push(movie);
+    pending.push(movie);
+    if (pending.length >= batchSize) await flush();
   }
+  await flush();
   return result;
 }
 

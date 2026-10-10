@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useAuth } from "../../features/auth/context/AuthContext";
+import { useImportProgress } from "../../features/letterboxd/context/LetterboxdImportContext";
 import { useIncomingRequestCount } from "../../features/friends/hooks/useFriends";
 import { BrandMark } from "./BrandMark";
 import { ProfileAvatar } from "./ProfileAvatar";
@@ -18,6 +19,7 @@ export function AppShell({
 }) {
   const { user, profile } = useAuth();
   const requestCount = useIncomingRequestCount(user?.uid);
+  const importProgress = useImportProgress();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -63,6 +65,11 @@ export function AppShell({
             </NavLink>
             <NavLink to="/app/letterboxd" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
               Letterboxd
+              {importProgress && (
+                <span className="shell__count" title="Letterboxd import running" aria-label={`Letterboxd import ${importProgress.current} of ${importProgress.total}`}>
+                  {Math.floor((importProgress.current / Math.max(1, importProgress.total)) * 100)}%
+                </span>
+              )}
             </NavLink>
             <NavLink to="/app/profile" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
               Profile
