@@ -1579,12 +1579,19 @@
   gap: 8px 26px;
 }
 
-.lp-footer__links a {
+.lp-footer__links a,
+.lp-footer__links button {
+  padding: 0;
+  font: inherit;
   color: var(--lp-dim);
+  background: none;
+  border: 0;
+  cursor: pointer;
   transition: color 160ms;
 }
 
-.lp-footer__links a:hover {
+.lp-footer__links a:hover,
+.lp-footer__links button:hover {
   color: var(--lp-text);
 }
 

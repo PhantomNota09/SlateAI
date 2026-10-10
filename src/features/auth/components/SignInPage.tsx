@@ -11,6 +11,7 @@ import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { useSignIn } from "../hooks/useSignIn";
 import { isValidEmail } from "../validation";
 import { AuthLayout } from "./AuthLayout";
+import { track } from "../../../core/analytics/analytics";
 
 export function SignInPage() {
   usePageTitle("Sign in");
@@ -29,6 +30,7 @@ export function SignInPage() {
     if (!canSubmit) return;
     try {
       await signInWithEmail(email, password, remember);
+      track({ name: "login", params: { method: "email" } });
       navigate("/app");
     } catch {
       // error state already set by useSignIn
@@ -37,7 +39,10 @@ export function SignInPage() {
 
   async function handleGoogle() {
     try {
-      if ((await signInWithGoogle(remember)) === "ok") navigate("/app");
+      if ((await signInWithGoogle(remember)) === "ok") {
+        track({ name: "login", params: { method: "google" } });
+        navigate("/app");
+      }
     } catch {
       // error state already set by useSignIn
     }

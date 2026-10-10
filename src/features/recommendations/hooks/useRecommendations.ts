@@ -17,6 +17,7 @@ import {
 } from "../../../core/services/userCollections";
 import { buildRecommendationRequest } from "../recommendationPayload";
 import { mergePool, needsRefill, removeMovie } from "../queueLogic";
+import { track } from "../../../core/analytics/analytics";
 
 // State + actions for the For You feed — the web counterpart of HomeViewModel +
 // RecommendationCoordinator. Every action updates the UI immediately, writes to Firestore
@@ -196,6 +197,7 @@ export function useRecommendations(uid: string, onToast: Toast) {
     (movie: Movie) => {
       skipped.current.add(movie.id);
       setState((s) => ({ ...s, queue: removeMovie(s.queue, movie.id) }));
+      track({ name: "recommendation_action", params: { action: "skipped" } });
       trackInteraction();
       void refillIfNeeded();
     },
@@ -219,6 +221,7 @@ export function useRecommendations(uid: string, onToast: Toast) {
       try {
         await recordWatched(uid, movie, rating, { dismissed: !!snap.dismissed, inWatchLater: !!snap.watchLater });
         toast.current("success", "Marked as watched");
+        track({ name: "recommendation_action", params: { action: "watched" } });
         trackInteraction();
         void refillIfNeeded();
       } catch (err) {
@@ -247,6 +250,7 @@ export function useRecommendations(uid: string, onToast: Toast) {
       try {
         await recordDismissed(uid, movie, reason, { inWatchLater: !!snap.watchLater });
         toast.current("success", "Got it — improving your picks");
+        track({ name: "recommendation_action", params: { action: "dismissed" } });
         trackInteraction();
         void refillIfNeeded();
       } catch (err) {
@@ -274,6 +278,7 @@ export function useRecommendations(uid: string, onToast: Toast) {
       try {
         await recordWatchLater(uid, movie, { dismissed: !!snap.dismissed });
         toast.current("success", "Added to Watch Later");
+        track({ name: "recommendation_action", params: { action: "watch_later" } });
         trackInteraction();
         void refillIfNeeded();
       } catch (err) {

@@ -3,6 +3,7 @@ import { saveOnboardingProgress, type OnboardingFields } from "../../../core/ser
 import { TOTAL_STEPS } from "../data";
 import { canProceed, clampStep, draftFrom } from "../onboardingLogic";
 import type { UserPreferences } from "../../../core/models/UserPreferences";
+import { track } from "../../../core/analytics/analytics";
 
 // State machine for /app/onboarding — parallel to OnboardingViewModel.swift. Progress is
 // saved on every step change (resume works across devices) with a partial update of only
@@ -27,8 +28,13 @@ export function useOnboarding(
     setError(null);
     try {
       await saveOnboardingProgress(uid, draft, nextStep, options);
-      if (options.complete) await onFinished();
-      else setStep(nextStep);
+      if (options.complete) {
+        track({ name: "onboarding_complete", params: {} });
+        await onFinished();
+      } else {
+        track({ name: "onboarding_step", params: { step: nextStep } });
+        setStep(nextStep);
+      }
     } catch {
       setError("We couldn't save your choices. Check your connection and try again.");
     } finally {

@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react';
 import Home from './pages/Home';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import { ConsentBanner } from './core/analytics/ConsentBanner';
 import './App.css';
 
 // The web app (auth, onboarding, recommendations, profile) is a separate chunk.
@@ -12,6 +13,7 @@ function App() {
   return (
     <Router>
       <div className="App">
+        <ConsentBanner />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/terms" element={<Terms />} />

@@ -18,6 +18,7 @@ import { changedFields, draftProblem, preferencesDraftFrom, type PreferencesDraf
 import { StreamingSection } from "./StreamingSection";
 import "../../onboarding/components/Onboarding.css";
 import "./Preferences.css";
+import { track } from "../../../core/analytics/analytics";
 
 export function PreferencesPage() {
   return (
@@ -77,6 +78,7 @@ function Preferences() {
     setError(null);
     try {
       await savePreferenceChanges(user!.uid, changes);
+      track({ name: "preferences_saved", params: { fields_changed: Object.keys(changes).length } });
       setSaved(draft);
       toast("success", "Preferences saved. Your recommendations will use them.");
       void refreshProfile().catch(() => undefined);

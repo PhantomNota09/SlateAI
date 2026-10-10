@@ -4,6 +4,7 @@ import type { WatchLaterItem } from "../../../core/models/WatchLaterItem";
 import { recordStreakInteraction } from "../../../core/services/streak";
 import { loadUserCollections, recordWatched, removeWatchLater } from "../../../core/services/userCollections";
 import { describeStreakResult } from "../../../core/streak/streakMessages";
+import { track } from "../../../core/analytics/analytics";
 
 type Toast = (kind: "success" | "error", message: string) => void;
 
@@ -69,6 +70,7 @@ export function useWatchLater(uid: string, onToast: Toast) {
       try {
         await removeWatchLater(uid, movieId);
         toast.current("success", "Removed from Watch Later");
+        track({ name: "watch_later_action", params: { action: "removed" } });
       } catch (err) {
         console.error("Failed to remove from watch later", err);
         restore(item);
@@ -85,6 +87,7 @@ export function useWatchLater(uid: string, onToast: Toast) {
       try {
         await recordWatched(uid, movie, rating, { dismissed: false, inWatchLater: true });
         toast.current("success", "Marked as watched");
+        track({ name: "watch_later_action", params: { action: "watched" } });
         void recordStreakInteraction(uid)
           .then((result) => {
             const message = describeStreakResult(result);

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { openConsentSettings } from '../../core/analytics/consent';
 
 export default function Footer() {
   return (
@@ -12,6 +13,7 @@ export default function Footer() {
           <Link to="/terms">Terms of Service</Link>
           <Link to="/privacy">Privacy Policy</Link>
           <a href="mailto:slateai09@gmail.com">Contact</a>
+          <button type="button" onClick={openConsentSettings}>Analytics settings</button>
         </nav>
         <p>© 2026 Slate. All rights reserved.</p>
       </div>
