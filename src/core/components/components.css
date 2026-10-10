@@ -822,6 +822,10 @@
   padding: var(--space-md) var(--space-lg);
 }
 
+.slate-app .shell__brand {
+  flex: none;
+}
+
 .slate-app .shell__brand,
 .slate-app .shell__brand:hover {
   color: var(--color-text-primary);
@@ -875,6 +879,7 @@
 
 .slate-app .shell__user {
   position: relative;
+  flex: none;
 }
 
 .slate-app .shell__avatar {
