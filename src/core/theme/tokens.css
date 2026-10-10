@@ -159,7 +159,7 @@
 
 /* Touch screens: every control is at least 44px tall. */
 @media (pointer: coarse) {
-  .slate-app :where(.shell__nav a, .shell__nav button, .frd__tabs button, .hist__filters button, .prefs__nav button, .profile-tabs a) {
+  .slate-app :where(.shell__nav a, .shell__nav button, .shell__menu a, .shell__menu button, .frd__tabs button, .hist__filters button, .prefs__nav button, .profile-tabs a) {
     min-height: 44px;
   }
 }

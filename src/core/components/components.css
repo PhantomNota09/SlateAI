@@ -838,7 +838,7 @@
   min-width: 0;
 }
 
-/* Under 960px (phones, portrait tablets) the links live in a menu sheet instead. */
+/* Under 720px (phones) the four tabs live in a menu sheet instead. */
 .slate-app .shell__burger {
   display: grid;
   place-items: center;
@@ -888,7 +888,7 @@
   background: var(--color-overlay-fill);
 }
 
-@media (min-width: 960px) {
+@media (min-width: 720px) {
   .slate-app .shell__nav {
     display: flex;
   }
@@ -988,8 +988,8 @@
   text-overflow: ellipsis;
 }
 
-.slate-app .shell__menu > button,
-.slate-app .shell__menu > a {
+.slate-app .shell__menu button,
+.slate-app .shell__menu a {
   display: block;
   width: 100%;
   padding: var(--space-md);
@@ -1002,8 +1002,8 @@
   cursor: pointer;
 }
 
-.slate-app .shell__menu > button:hover,
-.slate-app .shell__menu > a:hover {
+.slate-app .shell__menu button:hover,
+.slate-app .shell__menu a:hover {
   background: var(--color-overlay-fill);
 }
 
@@ -1058,4 +1058,41 @@
   max-width: 44ch;
   font: var(--font-micro);
   color: var(--color-text-tertiary);
+}
+
+/* Account menu: links to the account-level pages, then Sign out. */
+.slate-app .shell__menu-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.slate-app .shell__menu-links a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.slate-app .shell__menu a.is-active {
+  background: var(--color-overlay-fill);
+}
+
+.slate-app .shell__menu-sep {
+  height: 1px;
+  margin: var(--space-sm) 0;
+  background: var(--color-border);
+}
+
+.slate-app .shell__avatar {
+  position: relative;
+}
+
+.slate-app .shell__avatar-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background: var(--color-accent);
+  border: 2px solid var(--color-background);
+  border-radius: 50%;
 }

@@ -49,22 +49,14 @@ export function AppShell({
   }, [menuOpen]);
 
   const active = ({ isActive }: { isActive: boolean }) => (isActive ? "is-active" : undefined);
-  const importBadge = importProgress && (
-    <span className="shell__count" title="Letterboxd import running" aria-label={`Letterboxd import ${importProgress.current} of ${importProgress.total}`}>
-      {Math.floor((importProgress.current / Math.max(1, importProgress.total)) * 100)}%
-    </span>
-  );
   const count = (n: number) => n > 0 && <span className="shell__count">{n > 99 ? "99+" : n}</span>;
-  // The same links serve the inline nav (wide screens) and the menu sheet (phones and tablets).
+  // The four main tabs. Everything else lives in the account menu (avatar).
   const links = (onNavigate?: () => void) => (
     <>
       <NavLink to="/app/recommendations" className={active} onClick={onNavigate}>For You</NavLink>
       <NavLink to="/app/discover" className={active} onClick={onNavigate}>Discover</NavLink>
       <NavLink to="/app/watch-later" className={active} onClick={onNavigate}>Watch Later{count(watchLaterCount ?? 0)}</NavLink>
       <NavLink to="/app/friends" className={active} onClick={onNavigate}>Friends{count(requestCount)}</NavLink>
-      <NavLink to="/app/insights" className={active} onClick={onNavigate}>Insights</NavLink>
-      <NavLink to="/app/letterboxd" className={active} onClick={onNavigate}>Letterboxd{importBadge}</NavLink>
-      <NavLink to="/app/profile" className={active} onClick={onNavigate}>Profile</NavLink>
     </>
   );
 
@@ -103,6 +95,7 @@ export function AppShell({
               aria-label="Account menu"
             >
               <ProfileAvatar name={name} seed={user?.uid ?? email} photoUrl={profile.preferences?.avatarURL || user?.photoURL} />
+              {importProgress && <span className="shell__avatar-dot" aria-hidden="true" />}
             </button>
             {menuOpen && (
               <div className="shell__menu" role="menu">
@@ -110,9 +103,21 @@ export function AppShell({
                   <strong>{name || "Your account"}</strong>
                   <span>{email}</span>
                 </div>
-                <Link to="/app/preferences" role="menuitem" onClick={() => setMenuOpen(false)}>
-                  Preferences
-                </Link>
+                <div className="shell__menu-links" onClick={() => setMenuOpen(false)}>
+                  <NavLink to="/app/profile" end role="menuitem" className={active}>Profile</NavLink>
+                  <NavLink to="/app/profile/history" role="menuitem" className={active}>History</NavLink>
+                  <NavLink to="/app/preferences" role="menuitem" className={active}>Preferences</NavLink>
+                  <NavLink to="/app/insights" role="menuitem" className={active}>Insights</NavLink>
+                  <NavLink to="/app/letterboxd" role="menuitem" className={active}>
+                    Letterboxd
+                    {importProgress && (
+                      <span className="shell__count" aria-label={`Import running: ${importProgress.current} of ${importProgress.total}`}>
+                        {Math.floor((importProgress.current / Math.max(1, importProgress.total)) * 100)}%
+                      </span>
+                    )}
+                  </NavLink>
+                </div>
+                <div className="shell__menu-sep" role="separator" />
                 <button type="button" role="menuitem" onClick={() => void signOut(auth)}>
                   Sign out
                 </button>
