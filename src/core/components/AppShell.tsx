@@ -11,11 +11,9 @@ import "./components.css";
 export function AppShell({
   children,
   watchLaterCount,
-  onOpenWatchLater,
 }: {
   children: ReactNode;
   watchLaterCount?: number;
-  onOpenWatchLater?: () => void;
 }) {
   const { user, profile } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -50,15 +48,13 @@ export function AppShell({
             <NavLink to="/app/recommendations" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
               For You
             </NavLink>
+            <NavLink to="/app/watch-later" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
+              Watch Later
+              {!!watchLaterCount && <span className="shell__count">{watchLaterCount > 99 ? "99+" : watchLaterCount}</span>}
+            </NavLink>
             <NavLink to="/app/profile" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
               Profile
             </NavLink>
-            {onOpenWatchLater && (
-              <button type="button" onClick={onOpenWatchLater}>
-                Watch Later
-                {!!watchLaterCount && <span className="shell__count">{watchLaterCount > 99 ? "99+" : watchLaterCount}</span>}
-              </button>
-            )}
           </nav>
 
           <div className="shell__user" ref={menuRef}>

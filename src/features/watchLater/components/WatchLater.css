@@ -1,0 +1,104 @@
+.slate-app .wl {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg) var(--space-lg);
+  animation: slate-fade 300ms var(--motion-ease);
+}
+
+.slate-app .wl__head {
+  margin-bottom: var(--space-xl);
+}
+
+.slate-app .wl__head h1 {
+  margin: 0;
+  font: var(--font-title);
+}
+
+.slate-app .wl__head p {
+  margin: var(--space-xs) 0 0;
+  font: var(--font-body);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .wl__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-lg);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slate-app .wl__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.slate-app .wl__card img,
+.slate-app .wl__blank {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  background: var(--color-card-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.slate-app .wl__text strong {
+  display: block;
+  overflow: hidden;
+  font: var(--font-body-emphasis);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slate-app .wl__text small {
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .wl__actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.slate-app .wl__actions button {
+  flex: 1;
+  padding: var(--space-xs) var(--space-md);
+  font: var(--font-caption-emphasis);
+  color: var(--color-accent);
+  background: var(--color-accent-subtle);
+  border: 0;
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+}
+
+.slate-app .wl__actions .wl__remove {
+  color: var(--color-text-secondary);
+  background: var(--color-overlay-fill);
+}
+
+.slate-app .wl__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xxxl) var(--space-lg);
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.slate-app .wl__empty p {
+  margin: 0;
+  font: var(--font-headline);
+}
+
+.slate-app .wl__empty small {
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}

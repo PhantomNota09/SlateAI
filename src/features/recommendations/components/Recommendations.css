@@ -376,15 +376,13 @@
 }
 
 .slate-app .cast strong,
-.slate-app .upnext strong,
-.slate-app .saved strong {
+.slate-app .upnext strong {
   display: block;
   font: var(--font-body-emphasis);
 }
 
 .slate-app .cast small,
-.slate-app .upnext small,
-.slate-app .saved small {
+.slate-app .upnext small {
   display: block;
   font: var(--font-caption);
   color: var(--color-text-secondary);
@@ -493,8 +491,7 @@
   letter-spacing: 0.06em;
 }
 
-.slate-app .upnext ul,
-.slate-app .saved {
+.slate-app .upnext ul {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
@@ -503,57 +500,20 @@
   list-style: none;
 }
 
-.slate-app .upnext li,
-.slate-app .saved li {
+.slate-app .upnext li {
   display: flex;
   align-items: center;
   gap: var(--space-md);
 }
 
 .slate-app .upnext img,
-.slate-app .upnext__blank,
-.slate-app .saved img,
-.slate-app .saved__blank {
+.slate-app .upnext__blank {
   width: 44px;
   height: 66px;
   flex-shrink: 0;
   object-fit: cover;
   background: var(--color-card-background);
   border-radius: 8px;
-}
-
-.slate-app .saved img,
-.slate-app .saved__blank {
-  width: 56px;
-  height: 84px;
-}
-
-.slate-app .saved__text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.slate-app .saved__actions {
-  display: flex;
-  gap: var(--space-md);
-  margin-top: var(--space-sm);
-}
-
-.slate-app .saved__actions button {
-  padding: var(--space-xs) var(--space-md);
-  font: var(--font-caption-emphasis);
-  color: var(--color-accent);
-  background: var(--color-accent-subtle);
-  border: 0;
-  border-radius: var(--radius-chip);
-  cursor: pointer;
-}
-
-.slate-app .saved__actions .saved__remove {
-  color: var(--color-text-secondary);
-  background: var(--color-overlay-fill);
 }
 
 /* ── Dialog bits ────────────────────────────────────────── */
@@ -568,12 +528,6 @@
   text-align: center;
   font: var(--font-caption);
   color: var(--color-text-secondary);
-}
-
-.slate-app .drawer__empty {
-  padding: var(--space-xxl) 0;
-  text-align: center;
-  color: var(--color-text-primary);
 }
 
 .slate-app .trailer {

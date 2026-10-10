@@ -10,7 +10,7 @@ import { useAuth } from "../../auth/context/AuthContext";
 import { useMovieDetail } from "../hooks/useMovieDetail";
 import { useRecommendations } from "../hooks/useRecommendations";
 import { ActionPanel } from "./ActionPanel";
-import { DismissDialog, RatingDialog, TrailerDialog, WatchLaterDrawer } from "./Dialogs";
+import { DismissDialog, RatingDialog, TrailerDialog } from "./Dialogs";
 import { FeedDone, FeedSkeleton } from "./FeedStates";
 import { MovieHero } from "./MovieHero";
 import { MovieInfo } from "./MovieInfo";
@@ -36,11 +36,10 @@ function Feed() {
   const [rating, setRating] = useState<MovieRef | null>(null);
   const [dismissing, setDismissing] = useState(false);
   const [trailer, setTrailer] = useState(false);
-  const [drawer, setDrawer] = useState(false);
 
   const firstName = (profile.preferences?.name ?? "").trim().split(/\s+/)[0];
   const greeting = firstName && firstName !== "User" ? `Hi, ${firstName}` : "For You";
-  const anyDialogOpen = !!rating || dismissing || trailer || drawer;
+  const anyDialogOpen = !!rating || dismissing || trailer;
 
   // Keyboard shortcuts for the current card; ignored while typing or when a dialog is open.
   const { skip, saveForLater } = rec;
@@ -111,7 +110,7 @@ function Feed() {
   }
 
   return (
-    <AppShell watchLaterCount={rec.watchLater.length} onOpenWatchLater={() => setDrawer(true)}>
+    <AppShell watchLaterCount={rec.watchLater.length}>
       <main className="feed">{body}</main>
 
       <div className="feed__attribution">
@@ -125,13 +124,6 @@ function Feed() {
         onConfirm={(reason) => current && void rec.dismiss(current, reason)}
       />
       <TrailerDialog open={trailer} onClose={() => setTrailer(false)} title={current?.title ?? ""} videoKey={detail?.trailerKey ?? null} />
-      <WatchLaterDrawer
-        open={drawer}
-        onClose={() => setDrawer(false)}
-        items={rec.watchLater}
-        onRemove={(id) => void rec.removeFromWatchLater(id)}
-        onMarkWatched={(m) => setRating(m)}
-      />
     </AppShell>
   );
 }

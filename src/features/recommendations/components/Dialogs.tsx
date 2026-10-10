@@ -3,9 +3,8 @@ import { Button } from "../../../core/components/Button";
 import { HalfStarPicker } from "../../../core/components/HalfStarPicker";
 import { Modal } from "../../../core/components/Modal";
 import { OptionCard } from "../../../core/components/OptionCard";
-import { posterUrl, releaseYear, type MovieRef } from "../../../core/models/Movie";
+import type { MovieRef } from "../../../core/models/Movie";
 import type { DismissalReason } from "../../../core/models/UserPreferences";
-import type { WatchLaterItem } from "../../../core/models/WatchLaterItem";
 
 // "Already Watched?" dialog (RecommendationRatingSheet).
 export function RatingDialog({
@@ -101,52 +100,6 @@ export function TrailerDialog({ open, onClose, title, videoKey }: { open: boolea
             referrerPolicy="strict-origin-when-cross-origin"
           />
         </div>
-      )}
-    </Modal>
-  );
-}
-
-// Watch Later list (iOS WatchLaterModalView): view, remove, or mark watched.
-export function WatchLaterDrawer({
-  open,
-  onClose,
-  items,
-  onRemove,
-  onMarkWatched,
-}: {
-  open: boolean;
-  onClose: () => void;
-  items: WatchLaterItem[];
-  onRemove: (movieId: number) => void;
-  onMarkWatched: (movie: MovieRef) => void;
-}) {
-  return (
-    <Modal open={open} onClose={onClose} title="Watch Later" variant="drawer">
-      {items.length === 0 ? (
-        <div className="drawer__empty">
-          <p>Nothing saved yet.</p>
-          <p className="dialog__hint">Tap “Save to Watch Later” on any recommendation and it will show up here.</p>
-        </div>
-      ) : (
-        <ul className="saved">
-          {items.map((item) => (
-            <li key={item.movieId}>
-              {posterUrl(item.posterPath, "w185") ? <img src={posterUrl(item.posterPath, "w185")!} alt="" loading="lazy" /> : <span className="saved__blank" />}
-              <div className="saved__text">
-                <strong>{item.title}</strong>
-                <small>{[releaseYear(item.releaseDate), item.voteAverage ? `★ ${item.voteAverage.toFixed(1)}` : ""].filter(Boolean).join(" · ")}</small>
-                <div className="saved__actions">
-                  <button type="button" onClick={() => onMarkWatched({ id: item.movieId, title: item.title, posterPath: item.posterPath })}>
-                    Watched
-                  </button>
-                  <button type="button" onClick={() => onRemove(item.movieId)} className="saved__remove">
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
       )}
     </Modal>
   );

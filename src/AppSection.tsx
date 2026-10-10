@@ -10,6 +10,7 @@ import { SignUpPage } from "./features/auth/components/SignUpPage";
 import { OnboardingPage } from "./features/onboarding/components/OnboardingPage";
 import { ProfilePage } from "./features/profile/components/ProfilePage";
 import { RecommendationsPage } from "./features/recommendations/components/RecommendationsPage";
+import { WatchLaterPage } from "./features/watchLater/components/WatchLaterPage";
 import "./core/theme/tokens.css";
 
 // Everything under /app/*. Loaded lazily from App.jsx so the marketing pages never download
@@ -35,6 +36,7 @@ export default function AppSection() {
             <Route path="choose-username" element={<ChooseUsernamePage />} />
             <Route path="onboarding" element={<OnboardingPage />} />
             <Route path="recommendations" element={<RecommendationsPage />} />
+            <Route path="watch-later" element={<WatchLaterPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route
               path="*"
