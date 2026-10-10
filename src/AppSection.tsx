@@ -7,6 +7,8 @@ import { ForgotPasswordPage } from "./features/auth/components/ForgotPasswordPag
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { SignInPage } from "./features/auth/components/SignInPage";
 import { SignUpPage } from "./features/auth/components/SignUpPage";
+import { FriendProfilePage } from "./features/friends/components/FriendProfilePage";
+import { FriendsPage } from "./features/friends/components/FriendsPage";
 import { InsightsPage } from "./features/insights/components/InsightsPage";
 import { LetterboxdPage } from "./features/letterboxd/components/LetterboxdPage";
 import { OnboardingPage } from "./features/onboarding/components/OnboardingPage";
@@ -41,6 +43,8 @@ export default function AppSection() {
             <Route path="recommendations" element={<RecommendationsPage />} />
             <Route path="watch-later" element={<WatchLaterPage />} />
             <Route path="preferences" element={<PreferencesPage />} />
+            <Route path="friends" element={<FriendsPage />} />
+            <Route path="friends/:uid" element={<FriendProfilePage />} />
             <Route path="insights" element={<InsightsPage />} />
             <Route path="letterboxd" element={<LetterboxdPage />} />
             <Route path="profile" element={<ProfilePage />} />

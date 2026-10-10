@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useAuth } from "../../features/auth/context/AuthContext";
+import { useIncomingRequestCount } from "../../features/friends/hooks/useFriends";
 import { BrandMark } from "./BrandMark";
 import { ProfileAvatar } from "./ProfileAvatar";
 import "./components.css";
@@ -16,6 +17,7 @@ export function AppShell({
   watchLaterCount?: number;
 }) {
   const { user, profile } = useAuth();
+  const requestCount = useIncomingRequestCount(user?.uid);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -51,6 +53,10 @@ export function AppShell({
             <NavLink to="/app/watch-later" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
               Watch Later
               {!!watchLaterCount && <span className="shell__count">{watchLaterCount > 99 ? "99+" : watchLaterCount}</span>}
+            </NavLink>
+            <NavLink to="/app/friends" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
+              Friends
+              {requestCount > 0 && <span className="shell__count">{requestCount > 99 ? "99+" : requestCount}</span>}
             </NavLink>
             <NavLink to="/app/insights" className={({ isActive }) => (isActive ? "is-active" : undefined)}>
               Insights

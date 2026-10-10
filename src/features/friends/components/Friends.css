@@ -1,0 +1,295 @@
+.slate-app .frd {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg) var(--space-lg);
+  animation: slate-fade 300ms var(--motion-ease);
+}
+
+.slate-app .frd__head h1,
+.slate-app .frd__hero h1 {
+  margin: 0;
+  font: var(--font-title);
+}
+
+.slate-app .frd__head p,
+.slate-app .frd__hero p {
+  margin: var(--space-xs) 0 0;
+  color: var(--color-text-secondary);
+}
+
+.slate-app .frd__tabs {
+  display: flex;
+  gap: var(--space-xs);
+  padding: var(--space-xs);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+}
+
+.slate-app .frd__tabs button {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  font: var(--font-body-emphasis);
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+}
+
+.slate-app .frd__tabs button.is-active {
+  color: var(--color-text-primary);
+  background: var(--color-overlay-fill-hover);
+}
+
+.slate-app .frd__count {
+  min-width: 20px;
+  padding: 1px 6px;
+  font: var(--font-micro);
+  color: var(--color-text-secondary);
+  text-align: center;
+  background: var(--color-overlay-fill);
+  border-radius: var(--radius-chip);
+}
+
+.slate-app .frd__count.is-alert {
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+}
+
+.slate-app .frd__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slate-app .frd__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.slate-app a.frd__row:hover {
+  background: var(--color-surface-raised);
+}
+
+.slate-app .frd__person {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.slate-app .frd__who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.slate-app .frd__who strong {
+  overflow: hidden;
+  font: var(--font-body-emphasis);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slate-app .frd__who small,
+.slate-app .frd__genres {
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .frd__chevron {
+  font-size: 24px;
+  color: var(--color-text-tertiary);
+}
+
+.slate-app .frd__actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.slate-app .frd__actions .btn,
+.slate-app .frd__row > .btn,
+.slate-app .frd__empty .btn,
+.slate-app .frd__danger .btn {
+  width: auto;
+  min-height: 40px;
+  padding: 0 var(--space-lg);
+}
+
+.slate-app .frd__center {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-xl);
+}
+
+.slate-app .frd__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: var(--space-xxxl) var(--space-lg);
+  text-align: center;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.slate-app .frd__empty p {
+  margin: 0;
+  font: var(--font-headline);
+  color: var(--color-text-primary);
+}
+
+.slate-app .frd__add {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.slate-app .frd__back {
+  align-self: flex-start;
+  font: var(--font-body-emphasis);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .frd__hero {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.slate-app .frd__hero small {
+  color: var(--color-text-tertiary);
+}
+
+.slate-app .frd__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.slate-app .frd__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.slate-app .frd__card h2 {
+  margin: 0;
+  font: var(--font-headline);
+}
+
+.slate-app .frd__note {
+  margin: 0;
+  font: var(--font-body);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .frd__score {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-md);
+}
+
+.slate-app .frd__score strong {
+  font: 700 44px/1 var(--font-family);
+  color: var(--color-accent);
+}
+
+.slate-app .frd__score span {
+  font: var(--font-headline);
+}
+
+.slate-app .frd__match ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin: 0;
+  padding-left: var(--space-xl);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .frd__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slate-app .frd__chips li {
+  padding: var(--space-xs) var(--space-md);
+  font: var(--font-caption-emphasis);
+  color: var(--color-accent);
+  background: var(--color-accent-subtle);
+  border-radius: var(--radius-chip);
+}
+
+.slate-app .frd__posters {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slate-app .frd__posters img,
+.slate-app .frd__blank {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  background: var(--color-card-background);
+  border-radius: 8px;
+}
+
+.slate-app .frd__posters small {
+  display: block;
+  margin-top: var(--space-xs);
+  text-align: center;
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .frd__danger {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 479px) {
+  .slate-app .frd__row {
+    flex-wrap: wrap;
+  }
+
+  .slate-app .frd__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
