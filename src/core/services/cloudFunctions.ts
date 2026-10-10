@@ -28,3 +28,30 @@ export async function getRecommendations(request: RecommendationRequest): Promis
   // An empty pool on success means the user has acted on every candidate; failures throw.
   return { pool: normalizePool(data?.pool) };
 }
+
+// Advanced Analytics only — never from the recommendation path (spec §3). Cached server-side per
+// user for 7 days, so there is no client cache on top of it.
+export interface AnalyticsInsights {
+  personalityInsights: string[];
+  tasteProfile: string;
+  recommendedNextSteps: string[];
+}
+
+export interface AnalyticsInsightsRequest {
+  totalMovies: number;
+  averageRating: number;
+  topGenres: string[]; // genre display names
+  explorationScore: number; // 0–100
+  forceRefresh?: boolean;
+}
+
+export async function generateAnalyticsInsights(request: AnalyticsInsightsRequest): Promise<AnalyticsInsights> {
+  const call = httpsCallable<AnalyticsInsightsRequest, AnalyticsInsights>(functions, "generateAnalyticsInsights");
+  const { data } = await call(request);
+  const strings = (v: unknown) => (Array.isArray(v) ? v.filter((s): s is string => typeof s === "string") : []);
+  return {
+    personalityInsights: strings(data?.personalityInsights),
+    tasteProfile: typeof data?.tasteProfile === "string" ? data.tasteProfile : "",
+    recommendedNextSteps: strings(data?.recommendedNextSteps),
+  };
+}

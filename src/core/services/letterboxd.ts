@@ -50,3 +50,22 @@ export async function updateLetterboxdMetadata(uid: string, totalMovies: number)
     letterboxdTotalMoviesImported: totalMovies,
   });
 }
+
+// Imported films with their rating and watch date, for the Insights page.
+export async function loadLetterboxdMovies(uid: string): Promise<LetterboxdMovie[]> {
+  const snap = await getDocs(collection(db, "users", uid, "letterboxdData"));
+  return snap.docs.flatMap((d): LetterboxdMovie[] => {
+    const x = d.data();
+    const movieId = Number(x.movieId ?? d.id);
+    if (!Number.isFinite(movieId)) return [];
+    const at = (v: unknown): Date | null => (typeof (v as { toDate?: () => Date })?.toDate === "function" ? (v as { toDate: () => Date }).toDate() : null);
+    return [{
+      movieId,
+      title: String(x.title ?? ""),
+      posterPath: x.posterPath ?? null,
+      letterboxdRating: typeof x.letterboxdRating === "number" ? x.letterboxdRating : null,
+      watchedDate: at(x.watchedDate),
+      importedAt: at(x.importedAt) ?? new Date(0),
+    }];
+  });
+}

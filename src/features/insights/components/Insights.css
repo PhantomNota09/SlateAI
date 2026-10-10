@@ -1,0 +1,211 @@
+.slate-app .ins {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg) var(--space-lg);
+  animation: slate-fade 300ms var(--motion-ease);
+}
+
+.slate-app .ins__head h1 {
+  margin: 0;
+  font: var(--font-title);
+}
+
+.slate-app .ins__head p {
+  margin: var(--space-xs) 0 0;
+  color: var(--color-text-secondary);
+}
+
+.slate-app .ins__stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+@media (min-width: 640px) {
+  .slate-app .ins__stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.slate-app .ins__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.slate-app .ins__card h2 {
+  margin: 0;
+  font: var(--font-headline);
+}
+
+.slate-app .ins__card h3 {
+  margin: var(--space-sm) 0 0;
+  font: var(--font-body-emphasis);
+}
+
+.slate-app .ins__note {
+  margin: 0;
+  font: var(--font-caption);
+  color: var(--color-text-tertiary);
+}
+
+.slate-app .ins__empty p {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.slate-app .ins__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.slate-app .ins__links .btn {
+  width: auto;
+  padding: 0 var(--space-xl);
+}
+
+.slate-app .ins__loading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  color: var(--color-text-secondary);
+}
+
+/* Bar charts: plain CSS, no chart library. */
+.slate-app .ins__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-xs);
+  height: 160px;
+}
+
+.slate-app .ins__bar {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  min-width: 0;
+  padding-bottom: 20px;
+}
+
+.slate-app .ins__bar-fill {
+  display: block;
+  width: 100%;
+  max-width: 36px;
+  min-height: 3px;
+  background: var(--color-accent);
+  border-radius: 6px 6px 2px 2px;
+}
+
+.slate-app .ins__bar-count {
+  margin-bottom: 4px;
+  font: var(--font-micro);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .ins__bar-label {
+  position: absolute;
+  bottom: 0;
+  font: var(--font-micro);
+  color: var(--color-text-tertiary);
+}
+
+.slate-app .ins__genres {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slate-app .ins__genres li {
+  display: grid;
+  grid-template-columns: 120px 1fr 44px;
+  align-items: center;
+  gap: var(--space-md);
+  font: var(--font-body);
+}
+
+.slate-app .ins__genres li span:last-child {
+  text-align: right;
+  color: var(--color-text-secondary);
+}
+
+.slate-app .ins__meter {
+  height: 8px;
+  overflow: hidden;
+  background: var(--color-overlay-fill);
+  border-radius: 999px;
+}
+
+.slate-app .ins__meter span {
+  display: block;
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 999px;
+}
+
+.slate-app .ins__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-md);
+  margin: 0;
+}
+
+.slate-app .ins__facts div {
+  padding: var(--space-md);
+  background: var(--color-card-background);
+  border-radius: var(--radius-button);
+}
+
+.slate-app .ins__facts dt {
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .ins__facts dd {
+  margin: var(--space-xs) 0 0;
+  font: var(--font-headline);
+}
+
+.slate-app .ins__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slate-app .ins__tags li {
+  padding: var(--space-xs) var(--space-md);
+  font: var(--font-caption-emphasis);
+  color: var(--color-accent);
+  background: var(--color-accent-subtle);
+  border-radius: var(--radius-chip);
+}
+
+.slate-app .ins__profile {
+  margin: 0;
+  font: var(--font-body);
+  line-height: 1.55;
+}
+
+.slate-app .ins__steps {
+  margin: 0;
+  padding-left: var(--space-xl);
+  font: var(--font-body);
+  color: var(--color-text-secondary);
+}
