@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { AppShell } from "../../../core/components/AppShell";
 import { ErrorState, LoadingState } from "../../../core/components/FullPageState";
 import { ProfileAvatar } from "../../../core/components/ProfileAvatar";
@@ -203,7 +204,7 @@ function Taste({ prefs }: { prefs: Partial<UserPreferences> }) {
     <section className="card" aria-labelledby="taste-title">
       <header className="card__head">
         <h2 id="taste-title">Your taste</h2>
-        <span className="card__meta">Edit in the iOS app for now</span>
+        <Link to="/app/preferences" className="card__meta card__link">Edit preferences</Link>
       </header>
       <dl className="taste">
         {shown.map(([k, v]) => (

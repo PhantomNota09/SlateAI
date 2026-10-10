@@ -921,7 +921,9 @@
   text-overflow: ellipsis;
 }
 
-.slate-app .shell__menu > button {
+.slate-app .shell__menu > button,
+.slate-app .shell__menu > a {
+  display: block;
   width: 100%;
   padding: var(--space-md);
   font: var(--font-body);
@@ -933,7 +935,8 @@
   cursor: pointer;
 }
 
-.slate-app .shell__menu > button:hover {
+.slate-app .shell__menu > button:hover,
+.slate-app .shell__menu > a:hover {
   background: var(--color-overlay-fill);
 }
 

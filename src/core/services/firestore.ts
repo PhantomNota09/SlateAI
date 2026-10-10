@@ -236,3 +236,10 @@ export async function claimUsername(params: {
   if (statsExist) batch.update(statsRef, { username: params.username, displayName: params.name });
   return (await commitClaim(batch, params.username)) === "ok" ? "claimed" : "username-taken";
 }
+
+// Settings edits write only the fields the user actually changed (same reason as onboarding:
+// a stale tab must not overwrite another device's changes to unrelated fields).
+export async function savePreferenceChanges(uid: string, changes: Partial<UserPreferences>): Promise<void> {
+  if (Object.keys(changes).length === 0) return;
+  await updateDoc(doc(db, "users", uid), changes);
+}

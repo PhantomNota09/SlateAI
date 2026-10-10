@@ -8,6 +8,7 @@ import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { SignInPage } from "./features/auth/components/SignInPage";
 import { SignUpPage } from "./features/auth/components/SignUpPage";
 import { OnboardingPage } from "./features/onboarding/components/OnboardingPage";
+import { PreferencesPage } from "./features/preferences/components/PreferencesPage";
 import { ProfilePage } from "./features/profile/components/ProfilePage";
 import { RecommendationsPage } from "./features/recommendations/components/RecommendationsPage";
 import { WatchLaterPage } from "./features/watchLater/components/WatchLaterPage";
@@ -37,6 +38,7 @@ export default function AppSection() {
             <Route path="onboarding" element={<OnboardingPage />} />
             <Route path="recommendations" element={<RecommendationsPage />} />
             <Route path="watch-later" element={<WatchLaterPage />} />
+            <Route path="preferences" element={<PreferencesPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route
               path="*"

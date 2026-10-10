@@ -74,6 +74,9 @@ export function AppShell({
                   <strong>{name || "Your account"}</strong>
                   <span>{email}</span>
                 </div>
+                <Link to="/app/preferences" role="menuitem" onClick={() => setMenuOpen(false)}>
+                  Preferences
+                </Link>
                 <button type="button" role="menuitem" onClick={() => void signOut(auth)}>
                   Sign out
                 </button>

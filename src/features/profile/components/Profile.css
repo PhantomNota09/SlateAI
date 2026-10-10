@@ -342,3 +342,11 @@
     align-items: flex-start;
   }
 }
+
+.slate-app .card__link {
+  color: var(--color-accent);
+}
+
+.slate-app .card__link:hover {
+  color: var(--color-accent-hover);
+}
