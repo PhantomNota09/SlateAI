@@ -350,3 +350,28 @@
 .slate-app .card__link:hover {
   color: var(--color-accent-hover);
 }
+
+.slate-app .profile-tabs {
+  display: flex;
+  gap: var(--space-xs);
+  max-width: 880px;
+  margin: var(--space-lg) auto 0;
+  padding: 0 var(--space-lg);
+}
+
+.slate-app .profile-tabs a {
+  padding: var(--space-sm) var(--space-lg);
+  font: var(--font-body-emphasis);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-chip);
+}
+
+.slate-app .profile-tabs a:hover {
+  color: var(--color-text-primary);
+  background: var(--color-overlay-fill);
+}
+
+.slate-app .profile-tabs a.is-active {
+  color: var(--color-text-primary);
+  background: var(--color-overlay-fill-hover);
+}

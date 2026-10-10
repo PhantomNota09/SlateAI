@@ -14,6 +14,7 @@ import { ProtectedRoute } from "../../auth/components/ProtectedRoute";
 import { useAuth } from "../../auth/context/AuthContext";
 import { useProfile } from "../hooks/useProfile";
 import { BadgeGrid } from "./BadgeGrid";
+import { ProfileTabs } from "./ProfileTabs";
 import "./Profile.css";
 
 export function ProfilePage() {
@@ -42,6 +43,7 @@ function Profile() {
   if (phase === "loading") {
     return (
       <AppShell>
+        <ProfileTabs />
         <LoadingState />
       </AppShell>
     );
@@ -49,12 +51,14 @@ function Profile() {
   if (phase === "error") {
     return (
       <AppShell>
+        <ProfileTabs />
         <ErrorState title="Couldn't load your profile" message="Check your connection and try again." onRetry={() => void reload()} />
       </AppShell>
     );
   }
   return (
     <AppShell>
+      <ProfileTabs />
       <ProfileView
         uid={user!.uid}
         authName={user?.displayName ?? ""}

@@ -9,6 +9,7 @@ import { SignInPage } from "./features/auth/components/SignInPage";
 import { SignUpPage } from "./features/auth/components/SignUpPage";
 import { FriendProfilePage } from "./features/friends/components/FriendProfilePage";
 import { FriendsPage } from "./features/friends/components/FriendsPage";
+import { HistoryPage } from "./features/history/components/HistoryPage";
 import { InsightsPage } from "./features/insights/components/InsightsPage";
 import { LetterboxdImportProvider } from "./features/letterboxd/context/LetterboxdImportContext";
 import { LetterboxdPage } from "./features/letterboxd/components/LetterboxdPage";
@@ -50,6 +51,7 @@ export default function AppSection() {
               <Route path="insights" element={<InsightsPage />} />
               <Route path="letterboxd" element={<LetterboxdPage />} />
               <Route path="profile" element={<ProfilePage />} />
+              <Route path="profile/history" element={<HistoryPage />} />
               <Route
                 path="*"
                 element={

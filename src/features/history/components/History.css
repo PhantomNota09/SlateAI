@@ -1,0 +1,153 @@
+.slate-app .hist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-lg) var(--space-lg);
+  animation: slate-fade 300ms var(--motion-ease);
+}
+
+.slate-app .hist__filters {
+  display: flex;
+  gap: var(--space-sm);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.slate-app .hist__filters button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  font: var(--font-body-emphasis);
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+}
+
+.slate-app .hist__filters button span {
+  font: var(--font-caption);
+  color: var(--color-text-tertiary);
+}
+
+.slate-app .hist__filters button.is-active {
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.slate-app .hist__filters button.is-active span {
+  color: var(--color-on-accent);
+  opacity: 0.7;
+}
+
+.slate-app .hist__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-lg) var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slate-app .hist__card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.slate-app .hist__card img,
+.slate-app .hist__blank {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--space-xs);
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  background: var(--color-card-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+}
+
+.slate-app .hist__card strong {
+  overflow: hidden;
+  font: var(--font-body-emphasis);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slate-app .hist__card small {
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .hist__stars {
+  display: flex;
+  gap: var(--space-sm);
+  color: var(--color-accent);
+}
+
+.slate-app .hist__stars .hist__lb {
+  color: #ff8000; /* Letterboxd orange, to tell the two ratings apart */
+}
+
+.slate-app .hist__badge {
+  align-self: flex-start;
+  margin-top: var(--space-xs);
+  padding: 1px var(--space-sm);
+  font: var(--font-micro);
+  color: var(--color-text-secondary);
+  background: var(--color-overlay-fill);
+  border-radius: var(--radius-chip);
+}
+
+.slate-app .hist__none,
+.slate-app .hist__empty {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.slate-app .hist__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xxxl) var(--space-lg);
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.slate-app .hist__empty p {
+  margin: 0;
+  font: var(--font-headline);
+  color: var(--color-text-primary);
+}
+
+.slate-app .hist__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+}
+
+.slate-app .hist__links .btn {
+  width: auto;
+  padding: 0 var(--space-xl);
+}
+
+.slate-app .hist__more {
+  display: flex;
+  justify-content: center;
+}
+
+.slate-app .hist__more .btn {
+  width: auto;
+  padding: 0 var(--space-xl);
+}
