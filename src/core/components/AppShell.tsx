@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useAuth } from "../../features/auth/context/AuthContext";
+import { useWatchLaterCount } from "../../features/watchLater/context/WatchLaterCountContext";
 import { useImportProgress } from "../../features/letterboxd/context/LetterboxdImportContext";
 import { useIncomingRequestCount } from "../../features/friends/hooks/useFriends";
 import { BrandMark } from "./BrandMark";
@@ -12,14 +13,13 @@ import "./components.css";
 // Signed-in chrome for every /app screen: brand, primary navigation, user menu.
 export function AppShell({
   children,
-  watchLaterCount,
 }: {
   children: ReactNode;
-  watchLaterCount?: number;
 }) {
   const { user, profile } = useAuth();
   const requestCount = useIncomingRequestCount(user?.uid);
   const importProgress = useImportProgress();
+  const watchLaterCount = useWatchLaterCount();
   const [menuOpen, setMenuOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);

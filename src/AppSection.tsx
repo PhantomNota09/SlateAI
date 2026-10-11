@@ -19,6 +19,7 @@ import { OnboardingPage } from "./features/onboarding/components/OnboardingPage"
 import { PreferencesPage } from "./features/preferences/components/PreferencesPage";
 import { ProfilePage } from "./features/profile/components/ProfilePage";
 import { RecommendationsPage } from "./features/recommendations/components/RecommendationsPage";
+import { WatchLaterCountProvider } from "./features/watchLater/context/WatchLaterCountContext";
 import { WatchLaterPage } from "./features/watchLater/components/WatchLaterPage";
 import "./core/theme/tokens.css";
 
@@ -37,36 +38,38 @@ export default function AppSection() {
   return (
     <AuthProvider>
       <ToastProvider>
-        <LetterboxdImportProvider>
-          <div className="slate-app">
-            <Routes>
-              <Route path="sign-in" element={<SignInPage />} />
-              <Route path="sign-up" element={<SignUpPage />} />
-              <Route path="forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="choose-username" element={<ChooseUsernamePage />} />
-              <Route path="onboarding" element={<OnboardingPage />} />
-              <Route path="recommendations" element={<RecommendationsPage />} />
-              <Route path="discover" element={<DiscoverPage />} />
-              <Route path="discover/:category" element={<CategoryPage />} />
-              <Route path="watch-later" element={<WatchLaterPage />} />
-              <Route path="preferences" element={<PreferencesPage />} />
-              <Route path="friends" element={<FriendsPage />} />
-              <Route path="friends/:uid" element={<FriendProfilePage />} />
-              <Route path="insights" element={<InsightsPage />} />
-              <Route path="letterboxd" element={<LetterboxdPage />} />
-              <Route path="profile" element={<ProfilePage />} />
-              <Route path="profile/history" element={<HistoryPage />} />
-              <Route
-                path="*"
-                element={
-                  <ProtectedRoute>
-                    <Navigate to="/app/recommendations" replace />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </div>
-        </LetterboxdImportProvider>
+        <WatchLaterCountProvider>
+          <LetterboxdImportProvider>
+            <div className="slate-app">
+              <Routes>
+                <Route path="sign-in" element={<SignInPage />} />
+                <Route path="sign-up" element={<SignUpPage />} />
+                <Route path="forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="choose-username" element={<ChooseUsernamePage />} />
+                <Route path="onboarding" element={<OnboardingPage />} />
+                <Route path="recommendations" element={<RecommendationsPage />} />
+                <Route path="discover" element={<DiscoverPage />} />
+                <Route path="discover/:category" element={<CategoryPage />} />
+                <Route path="watch-later" element={<WatchLaterPage />} />
+                <Route path="preferences" element={<PreferencesPage />} />
+                <Route path="friends" element={<FriendsPage />} />
+                <Route path="friends/:uid" element={<FriendProfilePage />} />
+                <Route path="insights" element={<InsightsPage />} />
+                <Route path="letterboxd" element={<LetterboxdPage />} />
+                <Route path="profile" element={<ProfilePage />} />
+                <Route path="profile/history" element={<HistoryPage />} />
+                <Route
+                  path="*"
+                  element={
+                    <ProtectedRoute>
+                      <Navigate to="/app/recommendations" replace />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </div>
+          </LetterboxdImportProvider>
+        </WatchLaterCountProvider>
       </ToastProvider>
     </AuthProvider>
   );

@@ -110,7 +110,7 @@ function Feed() {
   }
 
   return (
-    <AppShell watchLaterCount={rec.watchLater.length}>
+    <AppShell>
       <main className="feed">{body}</main>
 
       <div className="feed__attribution">

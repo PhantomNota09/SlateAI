@@ -3,10 +3,12 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  onSnapshot,
   serverTimestamp,
   writeBatch,
   type DocumentData,
   type QueryDocumentSnapshot,
+  type Unsubscribe,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import type { MovieRef, Movie } from "../models/Movie";
@@ -151,4 +153,9 @@ export async function recordWatchLater(
 
 export async function removeWatchLater(uid: string, movieId: number): Promise<void> {
   await deleteDoc(userDoc(uid, "watchLater", movieId));
+}
+
+// Live size of the Watch Later list, for the nav badge. Local writes update it immediately.
+export function subscribeWatchLaterCount(uid: string, onCount: (count: number) => void, onError: (err: unknown) => void): Unsubscribe {
+  return onSnapshot(collection(db, "users", uid, "watchLater"), (snap) => onCount(snap.size), onError);
 }

@@ -7,6 +7,7 @@ const signOut = vi.fn();
 vi.mock("firebase/auth", () => ({ signOut: (...a: unknown[]) => signOut(...a) }));
 vi.mock("../services/firebase", () => ({ auth: {} }));
 vi.mock("../../features/friends/hooks/useFriends", () => ({ useIncomingRequestCount: () => 2 }));
+vi.mock("../../features/watchLater/context/WatchLaterCountContext", () => ({ useWatchLaterCount: () => 3 }));
 vi.mock("../../features/letterboxd/context/LetterboxdImportContext", () => ({ useImportProgress: () => null }));
 vi.mock("../../features/auth/context/AuthContext", () => ({
   useAuth: () => ({ user: { uid: "u1", email: "ada@example.com", displayName: "Ada", providerData: [] }, profile: { preferences: { name: "Ada Lovelace" } } }),
@@ -15,7 +16,7 @@ vi.mock("../../features/auth/context/AuthContext", () => ({
 import { AppShell } from "./AppShell";
 
 const renderShell = (path = "/app/recommendations") =>
-  render(<MemoryRouter initialEntries={[path]}><AppShell watchLaterCount={3}><p>page</p></AppShell></MemoryRouter>);
+  render(<MemoryRouter initialEntries={[path]}><AppShell><p>page</p></AppShell></MemoryRouter>);
 afterEach(cleanup);
 
 describe("AppShell navigation", () => {

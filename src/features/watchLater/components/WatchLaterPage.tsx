@@ -45,7 +45,7 @@ function WatchLater() {
   }
 
   return (
-    <AppShell watchLaterCount={items.length}>
+    <AppShell>
       <main className="wl">
         <header className="wl__head">
           <h1>Watch Later</h1>
