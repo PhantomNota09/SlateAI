@@ -65,7 +65,6 @@ function Body({ movie, region, status, onClose, onSave, onWatched }: { movie: Mo
             )}
           </>
         )}
-        <Button variant="ghost" onClick={onClose}>Close</Button>
       </div>
 
       <TrailerDialog open={trailer} onClose={() => setTrailer(false)} title={movie.title} videoKey={detail?.trailerKey ?? null} />

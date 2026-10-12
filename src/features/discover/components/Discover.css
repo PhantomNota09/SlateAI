@@ -238,18 +238,33 @@
 }
 
 /* Detail dialog */
+/* Pinned to the bottom of the scrolling dialog so the actions are always in reach, however far
+   down the details the reader has scrolled. Negative margins carry it across the body padding. */
 .slate-app .mdd__actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
   gap: var(--space-md);
-  margin-top: var(--space-xl);
+  margin: var(--space-xl) calc(-1 * var(--space-xl)) calc(-1 * var(--space-xl));
+  padding: var(--space-md) var(--space-xl);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
 }
 
 .slate-app .mdd__actions .btn {
   width: auto;
   padding: 0 var(--space-xl);
+}
+
+@media (max-width: 560px) {
+  .slate-app .mdd__actions .btn {
+    flex: 1;
+  }
 }
 
 .slate-app .mdd__status {
