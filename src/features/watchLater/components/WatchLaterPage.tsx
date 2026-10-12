@@ -6,10 +6,11 @@ import { ErrorState, LoadingState } from "../../../core/components/FullPageState
 import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { useToast } from "../../../core/components/Toast";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
-import { posterUrl, releaseYear, type MovieRef } from "../../../core/models/Movie";
+import { posterUrl, releaseYear, type Movie, type MovieRef } from "../../../core/models/Movie";
 import type { WatchLaterItem } from "../../../core/models/WatchLaterItem";
 import { ProtectedRoute } from "../../auth/components/ProtectedRoute";
 import { useAuth } from "../../auth/context/AuthContext";
+import { MovieDetailDialog } from "../../discover/components/MovieDetailDialog";
 import { RatingDialog } from "../../recommendations/components/Dialogs";
 import { useWatchLater } from "../hooks/useWatchLater";
 import "./WatchLater.css";
@@ -24,10 +25,12 @@ export function WatchLaterPage() {
 
 function WatchLater() {
   usePageTitle("Watch Later");
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const toast = useToast();
   const { phase, items, reload, remove, markWatched } = useWatchLater(user!.uid, toast);
   const [rating, setRating] = useState<MovieRef | null>(null);
+  const [open, setOpen] = useState<Movie | null>(null);
+  const region = (profile.preferences?.region ?? "US").toUpperCase();
 
   if (phase === "loading") {
     return (
@@ -66,6 +69,7 @@ function WatchLater() {
               <WatchLaterCard
                 key={item.movieId}
                 item={item}
+                onOpen={() => setOpen(toMovie(item))}
                 onWatched={() => setRating({ id: item.movieId, title: item.title, posterPath: item.posterPath })}
                 onRemove={() => void remove(item.movieId)}
               />
@@ -74,21 +78,53 @@ function WatchLater() {
         )}
       </main>
       <TmdbAttribution />
+      <MovieDetailDialog
+        movie={open}
+        region={region}
+        status="saved"
+        onClose={() => setOpen(null)}
+        onSave={async () => true}
+        onWatched={async (m, r) => {
+          await markWatched(m, r);
+          return true;
+        }}
+      />
       <RatingDialog movie={rating} onClose={() => setRating(null)} onRate={(m, r) => void markWatched(m, r)} />
     </AppShell>
   );
 }
 
-function WatchLaterCard({ item, onWatched, onRemove }: { item: WatchLaterItem; onWatched: () => void; onRemove: () => void }) {
+// The detail view fetches the rest (overview, cast, trailer, where to watch) itself; the saved item
+// supplies what the card needs straight away.
+function toMovie(item: WatchLaterItem): Movie {
+  return {
+    id: item.movieId,
+    title: item.title,
+    overview: "",
+    posterPath: item.posterPath,
+    backdropPath: null,
+    releaseDate: item.releaseDate,
+    voteAverage: item.voteAverage,
+    genreIds: [],
+    originalLanguage: "",
+    runtime: null,
+    matchPercentage: null,
+    reasons: [],
+  };
+}
+
+function WatchLaterCard({ item, onOpen, onWatched, onRemove }: { item: WatchLaterItem; onOpen: () => void; onWatched: () => void; onRemove: () => void }) {
   const poster = posterUrl(item.posterPath, "w342");
   const meta = [releaseYear(item.releaseDate), item.voteAverage ? `★ ${item.voteAverage.toFixed(1)}` : ""].filter(Boolean).join(" · ");
   return (
     <li className="wl__card">
-      {poster ? <img src={poster} alt={`${item.title} poster`} loading="lazy" /> : <span className="wl__blank" aria-hidden="true" />}
-      <div className="wl__text">
-        <strong>{item.title}</strong>
-        {meta && <small>{meta}</small>}
-      </div>
+      <button type="button" className="wl__open" onClick={onOpen} aria-label={`Details for ${item.title}`}>
+        {poster ? <img src={poster} alt={`${item.title} poster`} loading="lazy" /> : <span className="wl__blank" aria-hidden="true" />}
+        <span className="wl__text">
+          <strong>{item.title}</strong>
+          {meta && <small>{meta}</small>}
+        </span>
+      </button>
       <div className="wl__actions">
         <button type="button" onClick={onWatched}>
           Watched
