@@ -1,0 +1,72 @@
+.slate-app .acct {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--gutter) var(--space-xxxl);
+  animation: slate-fade 300ms var(--motion-ease);
+}
+
+.slate-app .acct__head h1 {
+  margin: 0;
+  font: var(--font-title);
+}
+
+.slate-app .acct__head p {
+  margin: var(--space-xs) 0 var(--space-xl);
+  font: var(--font-body);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .acct__card {
+  display: grid;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-lg);
+  background: var(--color-card-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.slate-app .acct__card h2 {
+  margin: 0;
+  font: var(--font-headline);
+}
+
+.slate-app .acct__card form {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.slate-app .acct__card .btn {
+  width: auto;
+  justify-self: start;
+}
+
+.slate-app .acct__facts {
+  display: grid;
+  gap: var(--space-sm);
+  margin: 0;
+}
+
+.slate-app .acct__facts div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.slate-app .acct__facts dt {
+  min-width: 88px;
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .acct__facts dd {
+  margin: 0;
+  font: var(--font-body);
+  overflow-wrap: anywhere;
+}
+
+.slate-app .acct__note {
+  margin: 0;
+  font: var(--font-body);
+  color: var(--color-text-secondary);
+}

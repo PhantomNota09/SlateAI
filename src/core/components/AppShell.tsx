@@ -107,6 +107,7 @@ export function AppShell({
                   <NavLink to="/app/profile" end role="menuitem" className={active}>Profile</NavLink>
                   <NavLink to="/app/profile/history" role="menuitem" className={active}>History</NavLink>
                   <NavLink to="/app/preferences" role="menuitem" className={active}>Preferences</NavLink>
+                  <NavLink to="/app/account" role="menuitem" className={active}>Account</NavLink>
                   <NavLink to="/app/insights" role="menuitem" className={active}>Insights</NavLink>
                   <NavLink to="/app/letterboxd" role="menuitem" className={active}>
                     Letterboxd

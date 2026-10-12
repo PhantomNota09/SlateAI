@@ -4,6 +4,7 @@ import { ToastProvider } from "./core/components/Toast";
 import { AuthProvider } from "./features/auth/context/AuthContext";
 import { ChooseUsernamePage } from "./features/auth/components/ChooseUsernamePage";
 import { ForgotPasswordPage } from "./features/auth/components/ForgotPasswordPage";
+import { AccountPage } from "./features/account/components/AccountPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { SignInPage } from "./features/auth/components/SignInPage";
 import { SignUpPage } from "./features/auth/components/SignUpPage";
@@ -56,6 +57,7 @@ export default function AppSection() {
                 <Route path="friends/:uid" element={<FriendProfilePage />} />
                 <Route path="insights" element={<InsightsPage />} />
                 <Route path="letterboxd" element={<LetterboxdPage />} />
+                <Route path="account" element={<AccountPage />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="profile/history" element={<HistoryPage />} />
                 <Route

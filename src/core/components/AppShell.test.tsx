@@ -26,12 +26,12 @@ describe("AppShell navigation", () => {
     expect(within(nav).getAllByRole("link").map((l) => l.textContent)).toEqual(["For You", "Discover", "Watch Later3", "Friends2"]);
   });
 
-  it("puts Profile, History, Preferences, Insights and Letterboxd in the account menu", () => {
+  it("puts Profile, History, Preferences, Account, Insights and Letterboxd in the account menu", () => {
     renderShell();
     expect(screen.queryByRole("menu")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Account menu" }));
     const menu = screen.getByRole("menu");
-    expect(within(menu).getAllByRole("menuitem").map((i) => i.textContent)).toEqual(["Profile", "History", "Preferences", "Insights", "Letterboxd", "Sign out"]);
+    expect(within(menu).getAllByRole("menuitem").map((i) => i.textContent)).toEqual(["Profile", "History", "Preferences", "Account", "Insights", "Letterboxd", "Sign out"]);
     expect(within(menu).getByRole("menuitem", { name: "History" }).getAttribute("href")).toBe("/app/profile/history");
   });
 
