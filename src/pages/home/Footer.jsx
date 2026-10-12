@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="lp-wrap lp-footer__inner">
         <div className="lp-brand">
           <img src="/logo.png" alt="" width="24" height="25" />
-          <span>Slate AI</span>
+          <span>Slate</span>
         </div>
         <nav className="lp-footer__links" aria-label="Legal and contact">
           <Link to="/terms">Terms of Service</Link>

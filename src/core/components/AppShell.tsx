@@ -64,7 +64,7 @@ export function AppShell({
     <div className="shell">
       <header className="shell__bar">
         <div className="shell__bar-inner">
-          <Link to="/app" className="shell__brand" aria-label="Slate AI home">
+          <Link to="/app" className="shell__brand" aria-label="Slate home">
             <BrandMark />
           </Link>
 

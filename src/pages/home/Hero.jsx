@@ -52,7 +52,7 @@ export default function Hero() {
             <div className="lp-slate__board">
               <span key={`flash-${take}`} className="lp-slate__flash" aria-hidden="true" />
               <dl className="lp-slate__meta">
-                <div><dt>Prod.</dt><dd>Slate AI</dd></div>
+                <div><dt>Prod.</dt><dd>Slate</dd></div>
                 <div><dt>Scene</dt><dd>Tonight</dd></div>
                 <div><dt>Take</dt><dd className="lp-slate__take" aria-live="polite">{take}</dd></div>
                 <div><dt>Roll</dt><dd>Your taste</dd></div>

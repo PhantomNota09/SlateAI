@@ -14,9 +14,9 @@ export default function Nav() {
   return (
     <header className={`lp-nav ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="lp-wrap lp-nav__inner">
-        <a href="#top" className="lp-brand" aria-label="Slate AI, back to top">
+        <a href="#top" className="lp-brand" aria-label="Slate, back to top">
           <img src="/logo.png" alt="" width="28" height="29" />
-          <span>Slate AI</span>
+          <span>Slate</span>
         </a>
         <nav className="lp-nav__links" aria-label="Sections">
           <a href="#taste">Try it</a>

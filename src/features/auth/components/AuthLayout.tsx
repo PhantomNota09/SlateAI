@@ -33,7 +33,7 @@ function BrandPanel() {
     <aside className="auth-panel">
       <div className="auth-panel__lockup">
         <img src="/slate-logo.png" alt="" className="auth-panel__logo" />
-        <span className="auth-panel__name">Slate AI</span>
+        <span className="auth-panel__name">Slate</span>
       </div>
 
       <div className="auth-panel__center">
