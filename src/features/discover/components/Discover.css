@@ -239,10 +239,12 @@
 
 /* Detail dialog */
 /* Pinned to the bottom of the scrolling dialog so the actions are always in reach, however far
-   down the details the reader has scrolled. Negative margins carry it across the body padding. */
+   down the details the reader has scrolled. Sticky offsets are measured from the scroll container's
+   content edge, so the negative bottom cancels the body's bottom padding and the bar sits flush with
+   the card's edge (the negative margins do the same across the sides). */
 .slate-app .mdd__actions {
   position: sticky;
-  bottom: 0;
+  bottom: calc(-1 * var(--space-xl));
   z-index: 1;
   display: flex;
   flex-wrap: wrap;
