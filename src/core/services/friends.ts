@@ -46,6 +46,27 @@ export function subscribeIncomingRequests(uid: string, onData: (requests: Friend
   );
 }
 
+// Requests you sent that are still waiting. Equality filters only, so no composite index is needed;
+// newest first is applied here instead.
+export function subscribeOutgoingRequests(uid: string, onData: (requests: FriendRequest[]) => void, onError: (err: unknown) => void): Unsubscribe {
+  return onSnapshot(
+    query(collection(db, "friendRequests"), where("fromUID", "==", uid), where("status", "==", "pending")),
+    (snap) => {
+      const list = snap.docs.flatMap((d) => parseFriendRequest(d.id, d.data()) ?? []);
+      onData(list.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));
+    },
+    onError,
+  );
+}
+
+// Name, handle and avatar for a recipient, from userStats (readable by any signed-in user).
+export async function loadPersonSummary(uid: string): Promise<{ username: string; displayName: string; avatarURL: string } | null> {
+  const snap = await getDoc(doc(db, "userStats", uid));
+  if (!snap.exists()) return null;
+  const d = snap.data();
+  return { username: String(d.username ?? ""), displayName: String(d.displayName ?? ""), avatarURL: String(d.avatarURL ?? "") };
+}
+
 export async function loadOutgoingPendingIds(uid: string): Promise<Set<string>> {
   const snap = await getDocs(query(collection(db, "friendRequests"), where("fromUID", "==", uid), where("status", "==", "pending")));
   return new Set(snap.docs.map((d) => String(d.data().toUID)));

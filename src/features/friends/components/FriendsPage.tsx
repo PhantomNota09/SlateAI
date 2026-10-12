@@ -10,7 +10,7 @@ import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import type { FriendEntry, FriendRequest, UserSearchResult } from "../../../core/models/Friends";
 import { ProtectedRoute } from "../../auth/components/ProtectedRoute";
 import { useAuth } from "../../auth/context/AuthContext";
-import { useFriends } from "../hooks/useFriends";
+import { useFriends, useSentRequests, type SentRequest } from "../hooks/useFriends";
 import { useUserSearch } from "../hooks/useUserSearch";
 import "./Friends.css";
 
@@ -29,6 +29,7 @@ function Friends() {
   const { user, profile } = useAuth();
   const toast = useToast();
   const { friends, requests, loadingFriends, loadingRequests, error, accept, decline } = useFriends(user!.uid, toast);
+  const sentRequests = useSentRequests(user!.uid, toast);
   const [tab, setTab] = useState<Tab>("friends");
 
   const prefs = profile.preferences;
@@ -73,7 +74,17 @@ function Friends() {
 
         <section id="frd-panel" role="tabpanel" aria-labelledby={`frd-tab-${tab}`} className="frd__panel">
           {tab === "friends" && <FriendList friends={friends} loading={loadingFriends} error={error} onAdd={() => setTab("add")} />}
-          {tab === "requests" && <RequestList requests={requests} loading={loadingRequests} onAccept={(r) => void accept(r)} onDecline={(r) => void decline(r)} />}
+          {tab === "requests" && (
+            <RequestList
+              requests={requests}
+              loading={loadingRequests}
+              onAccept={(r) => void accept(r)}
+              onDecline={(r) => void decline(r)}
+              sent={sentRequests.sent}
+              cancelling={sentRequests.cancelling}
+              onCancel={(r) => void sentRequests.cancel(r)}
+            />
+          )}
           {tab === "add" && <AddFriend me={me} friends={friends} requests={requests} toast={toast} />}
         </section>
       </main>
@@ -122,21 +133,52 @@ function FriendList({ friends, loading, error, onAdd }: { friends: FriendEntry[]
   );
 }
 
-function RequestList({ requests, loading, onAccept, onDecline }: { requests: FriendRequest[]; loading: boolean; onAccept: (r: FriendRequest) => void; onDecline: (r: FriendRequest) => void }) {
+interface RequestListProps {
+  requests: FriendRequest[];
+  loading: boolean;
+  onAccept: (r: FriendRequest) => void;
+  onDecline: (r: FriendRequest) => void;
+  sent: SentRequest[];
+  cancelling: string | null;
+  onCancel: (r: SentRequest) => void;
+}
+
+function RequestList({ requests, loading, onAccept, onDecline, sent, cancelling, onCancel }: RequestListProps) {
   if (loading) return <div className="frd__center"><Spinner /></div>;
-  if (requests.length === 0) return <p className="frd__empty">No pending requests.</p>;
+  if (requests.length === 0 && sent.length === 0) return <p className="frd__empty">No pending requests.</p>;
   return (
-    <ul className="frd__list">
-      {requests.map((r) => (
-        <li key={r.id} className="frd__row frd__row--static">
-          <Person name={r.fromDisplayName} username={r.fromUsername} photo={r.fromAvatarURL} seed={r.fromUID} />
-          <div className="frd__actions">
-            <Button variant="ghost" onClick={() => onDecline(r)}>Decline</Button>
-            <Button onClick={() => onAccept(r)}>Accept</Button>
-          </div>
-        </li>
-      ))}
-    </ul>
+    <>
+      {requests.length > 0 && (
+        <ul className="frd__list">
+          {requests.map((r) => (
+            <li key={r.id} className="frd__row frd__row--static">
+              <Person name={r.fromDisplayName} username={r.fromUsername} photo={r.fromAvatarURL} seed={r.fromUID} />
+              <div className="frd__actions">
+                <Button variant="ghost" onClick={() => onDecline(r)}>Decline</Button>
+                <Button onClick={() => onAccept(r)}>Accept</Button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+      {sent.length > 0 && (
+        <>
+          <h2 className="frd__subhead">Sent</h2>
+          <ul className="frd__list">
+            {sent.map((r) => (
+              <li key={r.id} className="frd__row frd__row--static">
+                <Person name={r.displayName} username={r.username} photo={r.avatarURL} seed={r.toUID}>
+                  <span className="frd__genres">Waiting for a reply</span>
+                </Person>
+                <Button variant="ghost" onClick={() => onCancel(r)} loading={cancelling === r.id} disabled={cancelling !== null} aria-label={`Cancel request to ${r.displayName || r.username}`}>
+                  Cancel
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </>
   );
 }
 

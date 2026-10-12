@@ -6,6 +6,9 @@ import type { FriendEntry, FriendRequest, UserSearchResult } from "../../../core
 
 let friends: FriendEntry[] = [];
 let incoming: FriendRequest[] = [];
+let outgoing: FriendRequest[] = [];
+const cancelRequest = vi.fn();
+const loadPersonSummary = vi.fn();
 const searchUsersByUsername = vi.fn();
 const loadOutgoingPendingIds = vi.fn();
 const sendFriendRequest = vi.fn();
@@ -15,6 +18,9 @@ const toast = vi.fn();
 vi.mock("../../../core/services/friends", () => ({
   subscribeFriends: (_uid: string, onData: (f: FriendEntry[]) => void) => { onData(friends); return () => undefined; },
   subscribeIncomingRequests: (_uid: string, onData: (r: FriendRequest[]) => void) => { onData(incoming); return () => undefined; },
+  subscribeOutgoingRequests: (_uid: string, onData: (r: FriendRequest[]) => void) => { onData(outgoing); return () => undefined; },
+  cancelRequest: (...a: unknown[]) => cancelRequest(...a),
+  loadPersonSummary: (...a: unknown[]) => loadPersonSummary(...a),
   searchUsersByUsername: (...a: unknown[]) => searchUsersByUsername(...a),
   loadOutgoingPendingIds: (...a: unknown[]) => loadOutgoingPendingIds(...a),
   sendFriendRequest: (...a: unknown[]) => sendFriendRequest(...a),
@@ -39,6 +45,9 @@ beforeEach(() => {
   vi.clearAllMocks();
   friends = [];
   incoming = [];
+  outgoing = [];
+  cancelRequest.mockResolvedValue(undefined);
+  loadPersonSummary.mockResolvedValue({ username: "zed_u", displayName: "Zed Zero", avatarURL: "" });
   loadOutgoingPendingIds.mockResolvedValue(new Set());
   searchUsersByUsername.mockResolvedValue([]);
   sendFriendRequest.mockResolvedValue("sent");
@@ -74,6 +83,16 @@ describe("FriendsPage", () => {
 
     fireEvent.click(screen.getAllByRole("button", { name: "Decline" })[1]);
     await waitFor(() => expect(respondToRequest).toHaveBeenCalledWith("r2", "rejected"));
+  });
+
+  it("lists requests you sent and cancels one", async () => {
+    outgoing = [{ ...request("s1", "me"), fromUID: "me", toUID: "zed" }];
+    renderPage();
+    fireEvent.click(screen.getByRole("tab", { name: /Requests/ }));
+    await screen.findByText("Zed Zero");
+    fireEvent.click(screen.getByRole("button", { name: /Cancel request to Zed Zero/ }));
+    await waitFor(() => expect(cancelRequest).toHaveBeenCalledWith("s1"));
+    expect(toast).toHaveBeenCalledWith("success", "Request cancelled.");
   });
 
   it("finds people, hides yourself, friends and pending requests, and sends a request", async () => {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { FriendEntry, FriendRequest } from "../../../core/models/Friends";
-import { removeFriend, respondToRequest, subscribeFriends, subscribeIncomingRequests } from "../../../core/services/friends";
+import { cancelRequest, loadPersonSummary, removeFriend, respondToRequest, subscribeFriends, subscribeIncomingRequests, subscribeOutgoingRequests } from "../../../core/services/friends";
 
 type Toast = (kind: "success" | "error", message: string) => void;
 
@@ -69,6 +69,67 @@ export function useFriends(uid: string, onToast: Toast) {
   );
 
   return { friends, requests, loadingFriends, loadingRequests, error, accept, decline, remove };
+}
+
+export interface SentRequest {
+  id: string;
+  toUID: string;
+  username: string;
+  displayName: string;
+  avatarURL: string;
+}
+
+// Requests you've sent that nobody has answered yet, with the recipient's profile, and a way to cancel them.
+export function useSentRequests(uid: string, onToast: Toast) {
+  const [sent, setSent] = useState<SentRequest[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [cancelling, setCancelling] = useState<string | null>(null);
+  const profiles = useRef(new Map<string, Omit<SentRequest, "id" | "toUID">>());
+  const toast = useRef(onToast);
+  toast.current = onToast;
+
+  useEffect(() => {
+    setLoading(true);
+    let live = true;
+    const stop = subscribeOutgoingRequests(
+      uid,
+      async (list) => {
+        const missing = list.filter((r) => !profiles.current.has(r.toUID));
+        await Promise.all(
+          missing.map(async (r) => {
+            const p = await loadPersonSummary(r.toUID).catch(() => null);
+            profiles.current.set(r.toUID, p ?? { username: "", displayName: "", avatarURL: "" });
+          }),
+        );
+        if (!live) return;
+        setSent(list.map((r) => ({ id: r.id, toUID: r.toUID, ...profiles.current.get(r.toUID)! })));
+        setLoading(false);
+      },
+      (err) => {
+        console.error("Sent requests listener failed", err);
+        if (live) setLoading(false);
+      },
+    );
+    return () => {
+      live = false;
+      stop();
+    };
+  }, [uid]);
+
+  const cancel = useCallback(async (request: SentRequest) => {
+    setCancelling(request.id);
+    try {
+      await cancelRequest(request.id);
+      toast.current("success", "Request cancelled.");
+    } catch (err) {
+      console.error("Cancelling request failed", err);
+      toast.current("error", "Couldn't cancel that request. Please try again.");
+    } finally {
+      setCancelling(null);
+    }
+  }, []);
+
+  return { sent, loading, cancelling, cancel };
 }
 
 // Just the number of waiting requests, for the nav badge.

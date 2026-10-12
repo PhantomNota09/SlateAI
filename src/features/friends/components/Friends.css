@@ -135,6 +135,14 @@
   padding: 0 var(--space-lg);
 }
 
+.slate-app .frd__subhead {
+  margin: var(--space-xl) 0 var(--space-sm);
+  font: var(--font-caption-emphasis);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .slate-app .frd__center {
   display: flex;
   justify-content: center;
