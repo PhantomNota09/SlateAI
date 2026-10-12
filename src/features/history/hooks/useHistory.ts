@@ -3,7 +3,7 @@ import type { DismissedRecommendation } from "../../../core/models/DismissedReco
 import type { LetterboxdMovie } from "../../../core/models/LetterboxdMovie";
 import type { WatchedRecommendation } from "../../../core/models/WatchedRecommendation";
 import { loadLetterboxdMovies } from "../../../core/services/letterboxd";
-import { loadUserCollections } from "../../../core/services/userCollections";
+import { loadUserCollections, removeDismissed } from "../../../core/services/userCollections";
 import { combineHistory, historyCounts } from "../historyLogic";
 
 // Everything for the History tab: Slate ratings, Letterboxd imports and "Not for me" picks.
@@ -32,7 +32,24 @@ export function useHistory(uid: string) {
     void load();
   }, [load]);
 
+  // Removes the pick from the list straight away and puts it back if the delete fails.
+  const undismiss = useCallback(
+    async (movieId: number): Promise<boolean> => {
+      const before = dismissed;
+      setDismissed((list) => list.filter((d) => d.movieId !== movieId));
+      try {
+        await removeDismissed(uid, movieId);
+        return true;
+      } catch (err) {
+        console.error("Failed to undo Not interested", err);
+        setDismissed(before);
+        return false;
+      }
+    },
+    [uid, dismissed],
+  );
+
   const items = useMemo(() => combineHistory(watched, imported), [watched, imported]);
   const counts = useMemo(() => historyCounts(items, dismissed), [items, dismissed]);
-  return { phase, items, dismissed, counts, reload: load };
+  return { phase, items, dismissed, counts, reload: load, undismiss };
 }

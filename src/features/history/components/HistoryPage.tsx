@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AppShell } from "../../../core/components/AppShell";
 import { Button } from "../../../core/components/Button";
 import { ErrorState, LoadingState } from "../../../core/components/FullPageState";
+import { useToast } from "../../../core/components/Toast";
 import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { posterUrl } from "../../../core/models/Movie";
@@ -37,7 +38,8 @@ const date = (d: Date) => (d.getTime() > 0 ? d.toLocaleDateString(undefined, { d
 function History() {
   usePageTitle("History");
   const { user } = useAuth();
-  const { phase, items, dismissed, counts, reload } = useHistory(user!.uid);
+  const toast = useToast();
+  const { phase, items, dismissed, counts, reload, undismiss } = useHistory(user!.uid);
   const [filter, setFilter] = useState<HistoryFilter>("all");
   const [shown, setShown] = useState(PAGE_SIZE);
 
@@ -50,6 +52,11 @@ function History() {
       </AppShell>
     );
   }
+
+  const undo = async (d: DismissedRecommendation) => {
+    if (await undismiss(d.movieId)) toast("success", `${d.title} can be recommended again.`);
+    else toast("error", "Couldn't undo that. Please try again.");
+  };
 
   const pick = (f: HistoryFilter) => {
     setFilter(f);
@@ -87,7 +94,7 @@ function History() {
               <p className="hist__none">Nothing here yet.</p>
             ) : filter === "dismissed" ? (
               <ul className="hist__grid">
-                {dismissed.slice(0, shown).map((d) => <DismissedCard key={d.movieId} item={d} />)}
+                {dismissed.slice(0, shown).map((d) => <DismissedCard key={d.movieId} item={d} onUndo={() => void undo(d)} />)}
               </ul>
             ) : (
               <ul className="hist__grid">
@@ -134,13 +141,14 @@ function HistoryCard({ item }: { item: HistoryItem }) {
   );
 }
 
-function DismissedCard({ item }: { item: DismissedRecommendation }) {
+function DismissedCard({ item, onUndo }: { item: DismissedRecommendation; onUndo: () => void }) {
   return (
     <li className="hist__card">
       <Poster path={item.posterPath} title={item.title} />
       <strong title={item.title}>{item.title}</strong>
       <small>{item.reason}</small>
       <small>{date(item.dismissedAt)}</small>
+      <button type="button" className="hist__undo" onClick={onUndo} aria-label={`Undo Not interested for ${item.title}`}>Undo</button>
     </li>
   );
 }

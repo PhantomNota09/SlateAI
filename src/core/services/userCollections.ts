@@ -155,6 +155,11 @@ export async function removeWatchLater(uid: string, movieId: number): Promise<vo
   await deleteDoc(userDoc(uid, "watchLater", movieId));
 }
 
+// Undo "Not for me": the movie can be recommended again.
+export async function removeDismissed(uid: string, movieId: number): Promise<void> {
+  await deleteDoc(userDoc(uid, "dismissedRecommendations", movieId));
+}
+
 // Live size of the Watch Later list, for the nav badge. Local writes update it immediately.
 export function subscribeWatchLaterCount(uid: string, onCount: (count: number) => void, onError: (err: unknown) => void): Unsubscribe {
   return onSnapshot(collection(db, "users", uid, "watchLater"), (snap) => onCount(snap.size), onError);

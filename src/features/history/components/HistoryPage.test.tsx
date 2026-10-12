@@ -1,12 +1,19 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const loadUserCollections = vi.fn();
 const loadLetterboxdMovies = vi.fn();
+const removeDismissed = vi.fn();
+const toast = vi.fn();
 
-vi.mock("../../../core/services/userCollections", () => ({ loadUserCollections: (...a: unknown[]) => loadUserCollections(...a) }));
+vi.mock("../../../core/services/userCollections", () => ({
+  loadUserCollections: (...a: unknown[]) => loadUserCollections(...a),
+  removeDismissed: (...a: unknown[]) => removeDismissed(...a),
+})
+);
+vi.mock("../../../core/components/Toast", () => ({ useToast: () => toast }));
 vi.mock("../../../core/services/letterboxd", () => ({ loadLetterboxdMovies: (...a: unknown[]) => loadLetterboxdMovies(...a) }));
 vi.mock("../../../core/components/AppShell", () => ({ AppShell: ({ children }: { children: React.ReactNode }) => <div>{children}</div> }));
 vi.mock("../../../core/components/TmdbAttribution", () => ({ TmdbAttribution: () => null }));
@@ -24,6 +31,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   loadUserCollections.mockResolvedValue({ watched: [watched(1, 4.5, 5), watched(2, 3, 4)], dismissed: [dismissed] });
   loadLetterboxdMovies.mockResolvedValue([imported(2, 5), imported(3, 4)]);
+  removeDismissed.mockResolvedValue(undefined);
 });
 afterEach(cleanup);
 
@@ -48,6 +56,26 @@ describe("HistoryPage", () => {
     fireEvent.click(screen.getByRole("tab", { name: /Not interested/ }));
     expect(screen.getByText("Nope Movie")).toBeTruthy();
     expect(screen.getByText("Looks boring")).toBeTruthy();
+  });
+
+  it("undoes a Not interested pick", async () => {
+    renderPage();
+    await screen.findByText("Slate 1");
+    fireEvent.click(screen.getByRole("tab", { name: /Not interested/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Undo Not interested for Nope Movie" }));
+    await waitFor(() => expect(removeDismissed).toHaveBeenCalledWith("u1", 50));
+    await waitFor(() => expect(screen.queryByText("Nope Movie")).toBeNull());
+    expect(toast).toHaveBeenCalledWith("success", expect.stringContaining("Nope Movie"));
+  });
+
+  it("keeps the pick and says so when the undo fails", async () => {
+    removeDismissed.mockRejectedValue(new Error("offline"));
+    renderPage();
+    await screen.findByText("Slate 1");
+    fireEvent.click(screen.getByRole("tab", { name: /Not interested/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Undo Not interested/ }));
+    await waitFor(() => expect(toast).toHaveBeenCalledWith("error", expect.any(String)));
+    expect(screen.getByText("Nope Movie")).toBeTruthy();
   });
 
   it("pages through a long history", async () => {

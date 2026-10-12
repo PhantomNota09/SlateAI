@@ -105,6 +105,18 @@
   border-radius: var(--radius-chip);
 }
 
+.slate-app .hist__undo {
+  align-self: flex-start;
+  margin-top: var(--space-xs);
+  padding: 2px var(--space-sm);
+  font: var(--font-caption-emphasis);
+  color: var(--color-accent);
+  background: none;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+}
+
 .slate-app .hist__none,
 .slate-app .hist__empty {
   margin: 0;
