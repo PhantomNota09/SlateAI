@@ -936,6 +936,103 @@
   border-radius: var(--radius-chip);
 }
 
+/* Search: a magnifier beside the avatar that opens into an input. Under 720px the open input
+   covers the whole bar so it has room. */
+.slate-app .shell__bar-inner {
+  position: relative;
+}
+
+.slate-app .shell__search {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-left: auto;
+}
+
+.slate-app .shell__burger + .shell__search {
+  margin-left: 0;
+}
+
+.slate-app .shell__search-toggle,
+.slate-app .shell__search-clear {
+  display: grid;
+  place-items: center;
+  color: var(--color-text-primary);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+}
+
+.slate-app .shell__search-toggle {
+  width: 44px;
+  height: 44px;
+}
+
+.slate-app .shell__search-toggle:hover,
+.slate-app .shell__search-clear:hover {
+  background: var(--color-overlay-fill);
+}
+
+.slate-app .shell__search.is-open {
+  position: absolute;
+  inset: var(--space-sm) var(--gutter);
+  z-index: 2;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0 var(--space-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-button);
+  animation: slate-fade 160ms var(--motion-ease);
+}
+
+.slate-app .shell__search-icon {
+  flex: none;
+  color: var(--color-text-secondary);
+}
+
+.slate-app .shell__search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  font: var(--font-body);
+  color: var(--color-text-primary);
+  background: none;
+  border: 0;
+  outline: 0;
+}
+
+.slate-app .shell__search input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.slate-app .shell__search-clear {
+  width: 32px;
+  height: 32px;
+  flex: none;
+}
+
+@media (min-width: 720px) {
+  .slate-app .shell__search {
+    margin-left: 0;
+  }
+
+  /* On wider screens the input opens in place, to the left of the avatar, and the tabs stay visible. */
+  .slate-app .shell__search.is-open {
+    position: static;
+    inset: auto;
+    width: min(320px, 32vw);
+    height: 44px;
+    animation: slate-search-open 200ms var(--motion-ease);
+  }
+}
+
+@keyframes slate-search-open {
+  from { width: 44px; opacity: 0.4; }
+}
+
 .slate-app .shell__user {
   position: relative;
   flex: none;

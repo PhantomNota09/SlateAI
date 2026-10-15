@@ -82,9 +82,9 @@ describe("Discover", () => {
   });
 
   it("searches by title", async () => {
-    renderAt("/app/discover");
-    fireEvent.change(await screen.findByLabelText("Search movies"), { target: { value: "dune" } });
+    renderAt("/app/discover?q=dune");
     expect(await screen.findByRole("button", { name: /Film 900/ })).toBeTruthy();
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Results for “dune”");
     expect(screen.queryByText("Trending This Week")).toBeNull();
   });
 

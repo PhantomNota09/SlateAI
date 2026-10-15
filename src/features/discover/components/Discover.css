@@ -24,18 +24,6 @@
   color: var(--color-text-secondary);
 }
 
-@media (min-width: 640px) {
-  .slate-app .disc__head:has(input) {
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
-  }
-
-  .slate-app .disc__head:has(input) > :last-child {
-    width: min(360px, 100%);
-  }
-}
-
 .slate-app .disc__back {
   align-self: flex-start;
   font: var(--font-body-emphasis);
@@ -61,9 +49,10 @@
 }
 
 /* Featured hero */
+/* Backdrops are 16:9, so the box is 16:9 too and the whole image shows, uncropped. */
 .slate-app .disc__hero {
   position: relative;
-  min-height: clamp(260px, 32vw, 460px);
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   background: var(--color-card-background);
   border-radius: var(--radius-card);
@@ -116,6 +105,32 @@
   width: auto;
   margin-top: var(--space-sm);
   padding: 0 var(--space-xl);
+}
+
+/* On phones a 16:9 box is too short to hold the title and button over the picture, so the picture
+   keeps its full frame and the text sits below it. */
+@media (max-width: 639px) {
+  .slate-app .disc__hero {
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: auto;
+    background: var(--color-card-background);
+  }
+
+  .slate-app .disc__hero img {
+    position: static;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .slate-app .disc__hero-scrim {
+    display: none;
+  }
+
+  .slate-app .disc__hero-body {
+    position: static;
+    padding: var(--space-lg);
+  }
 }
 
 /* Rows */

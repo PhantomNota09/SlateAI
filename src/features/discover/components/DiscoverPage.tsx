@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { AppShell } from "../../../core/components/AppShell";
 import { Button } from "../../../core/components/Button";
 import { ErrorState, LoadingState } from "../../../core/components/FullPageState";
 import { Spinner } from "../../../core/components/Spinner";
-import { TextField } from "../../../core/components/TextField";
 import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { useToast } from "../../../core/components/Toast";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
@@ -35,7 +34,8 @@ function Discover() {
   const seen = useSeenMovies(user!.uid, toast);
   const { phase, lists, reload } = useDiscoverLists();
   const { rows, featured } = useDiscoverRows(lists, seen.excluded);
-  const [query, setQuery] = useState("");
+  // The query comes from the search box in the top bar (/app/discover?q=…).
+  const query = useSearchParams()[0].get("q") ?? "";
   const search = useMovieSearch(query);
   const [open, setOpen] = useState<Movie | null>(null);
 
@@ -52,15 +52,7 @@ function Discover() {
     <AppShell>
       <main className="disc">
         <header className="disc__head">
-          <h1>Discover</h1>
-          <TextField
-            label="Search movies"
-            type="search"
-            placeholder="Search by title"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            autoComplete="off"
-          />
+          <h1>{search.active ? <>Results for “{query.trim()}”</> : "Discover"}</h1>
         </header>
 
         {search.active ? (

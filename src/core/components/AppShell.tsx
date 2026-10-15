@@ -6,6 +6,7 @@ import { useAuth } from "../../features/auth/context/AuthContext";
 import { useWatchLaterCount } from "../../features/watchLater/context/WatchLaterCountContext";
 import { useImportProgress } from "../../features/letterboxd/context/LetterboxdImportContext";
 import { useIncomingRequestCount } from "../../features/friends/hooks/useFriends";
+import { NavSearch } from "./NavSearch";
 import { BrandMark } from "./BrandMark";
 import { ProfileAvatar } from "./ProfileAvatar";
 import "./components.css";
@@ -84,6 +85,8 @@ export function AppShell({
               {sheetOpen ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
             </svg>
           </button>
+
+          <NavSearch />
 
           <div className="shell__user" ref={menuRef}>
             <button
