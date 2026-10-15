@@ -105,6 +105,38 @@
   border-radius: var(--radius-chip);
 }
 
+.slate-app .hist__tools {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.slate-app .hist__tools button {
+  padding: 2px var(--space-sm);
+  font: var(--font-caption-emphasis);
+  color: var(--color-text-secondary);
+  background: var(--color-overlay-fill);
+  border: 0;
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+}
+
+.slate-app .hist__tools button:hover {
+  color: var(--color-text-primary);
+  background: var(--color-overlay-fill-hover);
+}
+
+.slate-app .hist__confirm {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: flex-end;
+}
+
+.slate-app .hist__confirm .btn {
+  width: auto;
+  padding: 0 var(--space-xl);
+}
+
 .slate-app .hist__undo {
   align-self: flex-start;
   margin-top: var(--space-xs);

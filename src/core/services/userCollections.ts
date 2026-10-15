@@ -5,6 +5,7 @@ import {
   getDocs,
   onSnapshot,
   serverTimestamp,
+  updateDoc,
   writeBatch,
   type DocumentData,
   type QueryDocumentSnapshot,
@@ -109,6 +110,18 @@ export async function recordWatched(
     watchedAt: serverTimestamp(),
   });
   await batch.commit();
+}
+
+// Edit a rating in place. The Cloud Functions adjust userStats (average, counts) from the change,
+// so only the rating field is written; watchedAt stays as it was.
+export async function updateWatchedRating(uid: string, movieId: number, rating: number): Promise<void> {
+  if (!VALID_RATINGS.includes(rating)) throw new Error(`Invalid rating: ${rating}`);
+  await updateDoc(userDoc(uid, "watchedRecommendations", movieId), { rating });
+}
+
+// Remove a film from your Slate history. userStats follows server-side (badges are never revoked).
+export async function removeWatched(uid: string, movieId: number): Promise<void> {
+  await deleteDoc(userDoc(uid, "watchedRecommendations", movieId));
 }
 
 // "Not for me". Removes the movie from watch later if present (coordinator.dismissMovie).

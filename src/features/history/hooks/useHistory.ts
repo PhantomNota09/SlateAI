@@ -3,7 +3,7 @@ import type { DismissedRecommendation } from "../../../core/models/DismissedReco
 import type { LetterboxdMovie } from "../../../core/models/LetterboxdMovie";
 import type { WatchedRecommendation } from "../../../core/models/WatchedRecommendation";
 import { loadLetterboxdMovies } from "../../../core/services/letterboxd";
-import { loadUserCollections, removeDismissed } from "../../../core/services/userCollections";
+import { loadUserCollections, removeDismissed, removeWatched, updateWatchedRating } from "../../../core/services/userCollections";
 import { combineHistory, historyCounts } from "../historyLogic";
 
 // Everything for the History tab: Slate ratings, Letterboxd imports and "Not for me" picks.
@@ -49,7 +49,40 @@ export function useHistory(uid: string) {
     [uid, dismissed],
   );
 
+  // Both apply at once and roll back if the write fails.
+  const editRating = useCallback(
+    async (movieId: number, rating: number): Promise<boolean> => {
+      const before = watched;
+      setWatched((list) => list.map((w) => (w.movieId === movieId ? { ...w, rating } : w)));
+      try {
+        await updateWatchedRating(uid, movieId, rating);
+        return true;
+      } catch (err) {
+        console.error("Failed to edit rating", err);
+        setWatched(before);
+        return false;
+      }
+    },
+    [uid, watched],
+  );
+
+  const removeFromHistory = useCallback(
+    async (movieId: number): Promise<boolean> => {
+      const before = watched;
+      setWatched((list) => list.filter((w) => w.movieId !== movieId));
+      try {
+        await removeWatched(uid, movieId);
+        return true;
+      } catch (err) {
+        console.error("Failed to remove from history", err);
+        setWatched(before);
+        return false;
+      }
+    },
+    [uid, watched],
+  );
+
   const items = useMemo(() => combineHistory(watched, imported), [watched, imported]);
   const counts = useMemo(() => historyCounts(items, dismissed), [items, dismissed]);
-  return { phase, items, dismissed, counts, reload: load, undismiss };
+  return { phase, items, dismissed, counts, reload: load, undismiss, editRating, removeFromHistory };
 }

@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Modal } from "../../../core/components/Modal";
 import { AppShell } from "../../../core/components/AppShell";
 import { Button } from "../../../core/components/Button";
 import { ErrorState, LoadingState } from "../../../core/components/FullPageState";
 import { useToast } from "../../../core/components/Toast";
 import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
-import { posterUrl } from "../../../core/models/Movie";
+import { posterUrl, type MovieRef } from "../../../core/models/Movie";
 import type { DismissedRecommendation } from "../../../core/models/DismissedRecommendation";
+import { RatingDialog } from "../../recommendations/components/Dialogs";
 import { ProtectedRoute } from "../../auth/components/ProtectedRoute";
 import { useAuth } from "../../auth/context/AuthContext";
 import { ProfileTabs } from "../../profile/components/ProfileTabs";
@@ -39,9 +41,11 @@ function History() {
   usePageTitle("History");
   const { user } = useAuth();
   const toast = useToast();
-  const { phase, items, dismissed, counts, reload, undismiss } = useHistory(user!.uid);
+  const { phase, items, dismissed, counts, reload, undismiss, editRating, removeFromHistory } = useHistory(user!.uid);
   const [filter, setFilter] = useState<HistoryFilter>("all");
   const [shown, setShown] = useState(PAGE_SIZE);
+  const [editing, setEditing] = useState<HistoryItem | null>(null);
+  const [removing, setRemoving] = useState<HistoryItem | null>(null);
 
   if (phase === "loading") return <AppShell><ProfileTabs /><LoadingState /></AppShell>;
   if (phase === "error") {
@@ -56,6 +60,17 @@ function History() {
   const undo = async (d: DismissedRecommendation) => {
     if (await undismiss(d.movieId)) toast("success", `${d.title} can be recommended again.`);
     else toast("error", "Couldn't undo that. Please try again.");
+  };
+
+  const rate = async (movie: MovieRef, rating: number) => {
+    if (await editRating(movie.id, rating)) toast("success", "Rating updated.");
+    else toast("error", "Couldn't update that rating. Please try again.");
+  };
+
+  const remove = async (item: HistoryItem) => {
+    setRemoving(null);
+    if (await removeFromHistory(item.movieId)) toast("success", `${item.title} removed from your history.`);
+    else toast("error", "Couldn't remove that. Please try again.");
   };
 
   const pick = (f: HistoryFilter) => {
@@ -98,7 +113,7 @@ function History() {
               </ul>
             ) : (
               <ul className="hist__grid">
-                {rows.slice(0, shown).map((i) => <HistoryCard key={i.movieId} item={i} />)}
+                {rows.slice(0, shown).map((i) => <HistoryCard key={i.movieId} item={i} onEdit={() => setEditing(i)} onRemove={() => setRemoving(i)} />)}
               </ul>
             )}
 
@@ -113,6 +128,24 @@ function History() {
         )}
       </main>
       <TmdbAttribution />
+      <RatingDialog
+        movie={editing ? { id: editing.movieId, title: editing.title, posterPath: editing.posterPath } : null}
+        initialRating={editing?.slateRating ?? 0}
+        onClose={() => setEditing(null)}
+        onRate={(m, r) => void rate(m, r)}
+      />
+      <Modal open={!!removing} onClose={() => setRemoving(null)} title="Remove from your history?">
+        {removing && (
+          <>
+            <p className="dialog__movie">{removing.title}</p>
+            <p className="dialog__hint">This removes your Slate rating. Your stats update, and any badges you've earned stay.</p>
+            <div className="hist__confirm">
+              <Button variant="ghost" onClick={() => setRemoving(null)}>Cancel</Button>
+              <Button onClick={() => void remove(removing)}>Remove</Button>
+            </div>
+          </>
+        )}
+      </Modal>
     </AppShell>
   );
 }
@@ -124,7 +157,7 @@ function Poster({ path, title }: { path: string | null; title: string }) {
 
 const SOURCE_LABEL = { slate: "Slate", letterboxd: "Letterboxd", both: "Slate + Letterboxd" } as const;
 
-function HistoryCard({ item }: { item: HistoryItem }) {
+function HistoryCard({ item, onEdit, onRemove }: { item: HistoryItem; onEdit: () => void; onRemove: () => void }) {
   return (
     <li className="hist__card">
       <Poster path={item.posterPath} title={item.title} />
@@ -137,6 +170,12 @@ function HistoryCard({ item }: { item: HistoryItem }) {
       </small>
       <small>{date(item.date)}</small>
       <span className={`hist__badge hist__badge--${item.source}`}>{SOURCE_LABEL[item.source]}</span>
+      {item.source !== "letterboxd" && (
+        <div className="hist__tools">
+          <button type="button" onClick={onEdit} aria-label={`Edit your rating for ${item.title}`}>{item.slateRating == null ? "Rate" : "Edit"}</button>
+          <button type="button" onClick={onRemove} aria-label={`Remove ${item.title} from your history`}>Remove</button>
+        </div>
+      )}
     </li>
   );
 }

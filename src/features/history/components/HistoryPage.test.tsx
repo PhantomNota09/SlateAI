@@ -6,11 +6,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const loadUserCollections = vi.fn();
 const loadLetterboxdMovies = vi.fn();
 const removeDismissed = vi.fn();
+const updateWatchedRating = vi.fn();
+const removeWatched = vi.fn();
 const toast = vi.fn();
 
 vi.mock("../../../core/services/userCollections", () => ({
   loadUserCollections: (...a: unknown[]) => loadUserCollections(...a),
   removeDismissed: (...a: unknown[]) => removeDismissed(...a),
+  updateWatchedRating: (...a: unknown[]) => updateWatchedRating(...a),
+  removeWatched: (...a: unknown[]) => removeWatched(...a),
 })
 );
 vi.mock("../../../core/components/Toast", () => ({ useToast: () => toast }));
@@ -28,10 +32,15 @@ const dismissed = { movieId: 50, title: "Nope Movie", posterPath: null, reason: 
 const renderPage = () => render(<MemoryRouter><HistoryPage /></MemoryRouter>);
 
 beforeEach(() => {
+  // jsdom has no <dialog> modal support
+  HTMLDialogElement.prototype.showModal = function () { this.setAttribute("open", ""); };
+  HTMLDialogElement.prototype.close = function () { this.removeAttribute("open"); };
   vi.clearAllMocks();
   loadUserCollections.mockResolvedValue({ watched: [watched(1, 4.5, 5), watched(2, 3, 4)], dismissed: [dismissed] });
   loadLetterboxdMovies.mockResolvedValue([imported(2, 5), imported(3, 4)]);
   removeDismissed.mockResolvedValue(undefined);
+  updateWatchedRating.mockResolvedValue(undefined);
+  removeWatched.mockResolvedValue(undefined);
 });
 afterEach(cleanup);
 
@@ -76,6 +85,37 @@ describe("HistoryPage", () => {
     fireEvent.click(screen.getByRole("button", { name: /Undo Not interested/ }));
     await waitFor(() => expect(toast).toHaveBeenCalledWith("error", expect.any(String)));
     expect(screen.getByText("Nope Movie")).toBeTruthy();
+  });
+
+  it("edits a Slate rating in place, starting from the current one", async () => {
+    renderPage();
+    await screen.findByText("Slate 1");
+    fireEvent.click(screen.getByRole("button", { name: "Edit your rating for Slate 1" }));
+    expect(screen.getByText("Rate 4.5/5.0")).toBeTruthy(); // opens on the existing rating
+    fireEvent.click(screen.getByRole("button", { name: "Rate 4.5/5.0" }));
+    await waitFor(() => expect(updateWatchedRating).toHaveBeenCalledWith("u1", 1, 4.5));
+    expect(toast).toHaveBeenCalledWith("success", "Rating updated.");
+  });
+
+  it("removes a film from history after confirming, and offers nothing for Letterboxd-only films", async () => {
+    renderPage();
+    await screen.findByText("Slate 1");
+    expect(screen.queryByRole("button", { name: /Remove Box 3/ })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Remove Slate 1 from your history" }));
+    expect(removeWatched).not.toHaveBeenCalled(); // asks first
+    fireEvent.click(screen.getByRole("button", { name: "Remove" }));
+    await waitFor(() => expect(removeWatched).toHaveBeenCalledWith("u1", 1));
+    await waitFor(() => expect(screen.queryByText("Slate 1")).toBeNull());
+  });
+
+  it("puts a film back when removing it fails", async () => {
+    removeWatched.mockRejectedValue(new Error("offline"));
+    renderPage();
+    await screen.findByText("Slate 1");
+    fireEvent.click(screen.getByRole("button", { name: "Remove Slate 1 from your history" }));
+    fireEvent.click(screen.getByRole("button", { name: "Remove" }));
+    await waitFor(() => expect(toast).toHaveBeenCalledWith("error", expect.any(String)));
+    expect(screen.getByText("Slate 1")).toBeTruthy();
   });
 
   it("pages through a long history", async () => {

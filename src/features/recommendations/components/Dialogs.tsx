@@ -11,20 +11,22 @@ export function RatingDialog({
   movie,
   onClose,
   onRate,
+  initialRating = 0,
 }: {
   movie: MovieRef | null;
   onClose: () => void;
   onRate: (movie: MovieRef, rating: number) => void;
+  initialRating?: number; // when editing an existing rating
 }) {
   return (
     <Modal open={!!movie} onClose={onClose} title="How would you rate it?">
-      {movie && <RatingBody movie={movie} onRate={(r) => { onRate(movie, r); onClose(); }} />}
+      {movie && <RatingBody movie={movie} initialRating={initialRating} onRate={(r) => { onRate(movie, r); onClose(); }} />}
     </Modal>
   );
 }
 
-function RatingBody({ movie, onRate }: { movie: MovieRef; onRate: (rating: number) => void }) {
-  const [rating, setRating] = useState(0);
+function RatingBody({ movie, initialRating, onRate }: { movie: MovieRef; initialRating: number; onRate: (rating: number) => void }) {
+  const [rating, setRating] = useState(initialRating);
   return (
     <>
       <p className="dialog__movie">{movie.title}</p>
