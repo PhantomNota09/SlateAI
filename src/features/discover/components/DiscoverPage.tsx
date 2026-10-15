@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { AppShell } from "../../../core/components/AppShell";
-import { Button } from "../../../core/components/Button";
 import { ErrorState, LoadingState } from "../../../core/components/FullPageState";
 import { Spinner } from "../../../core/components/Spinner";
 import { useToast } from "../../../core/components/Toast";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
-import { backdropUrl, releaseYear, type Movie } from "../../../core/models/Movie";
+import type { Movie } from "../../../core/models/Movie";
 import { ProtectedRoute } from "../../auth/components/ProtectedRoute";
 import { useAuth } from "../../auth/context/AuthContext";
 import { CATEGORIES } from "../categories";
 import { useDiscoverLists, useDiscoverRows } from "../hooks/useDiscover";
 import { useMovieSearch } from "../hooks/useMovieSearch";
 import { useSeenMovies } from "../hooks/useSeenMovies";
+import { HeroBanner } from "./HeroBanner";
 import { MovieCard } from "./MovieCard";
 import { MovieDetailDialog } from "./MovieDetailDialog";
 import "./Discover.css";
@@ -69,7 +69,7 @@ function Discover() {
           </section>
         ) : (
           <>
-            {featured && <Hero movie={featured} onOpen={setOpen} />}
+            {featured && <HeroBanner movie={featured} region={region} onOpen={setOpen} />}
             {CATEGORIES.map((c) =>
               rows[c.id].length === 0 ? null : (
                 <section key={c.id} className="disc__row" aria-labelledby={`disc-${c.id}`}>
@@ -93,21 +93,5 @@ function Discover() {
       </main>
       <MovieDetailDialog movie={open} region={region} status={open ? seen.statusOf(open.id) : null} onClose={() => setOpen(null)} onSave={seen.saveForLater} onWatched={seen.markWatched} />
     </AppShell>
-  );
-}
-
-function Hero({ movie, onOpen }: { movie: Movie; onOpen: (m: Movie) => void }) {
-  const image = backdropUrl(movie.backdropPath);
-  return (
-    <section className="disc__hero" aria-label="Featured">
-      {image && <img src={image} alt="" />}
-      <div className="disc__hero-scrim" />
-      <div className="disc__hero-body">
-        <small>Featured this week</small>
-        <h2>{movie.title}</h2>
-        <p>{[releaseYear(movie.releaseDate), movie.voteAverage > 0 ? `★ ${movie.voteAverage.toFixed(1)}` : ""].filter(Boolean).join(" · ")}</p>
-        <Button onClick={() => onOpen(movie)}>View details</Button>
-      </div>
-    </section>
   );
 }

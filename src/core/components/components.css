@@ -955,6 +955,7 @@
   flex: none;
   align-items: center;
   margin-left: auto;
+  margin-right: calc(-1 * var(--space-sm)); /* sit close to the avatar */
 }
 
 .slate-app .shell__burger + .shell__search {
@@ -1025,6 +1026,7 @@
 @media (min-width: 720px) {
   .slate-app .shell__search {
     margin-left: 0;
+    margin-right: calc(-1 * var(--space-md));
   }
 
   /* On wider screens the input opens in place, to the left of the avatar, and the tabs stay visible. */
@@ -1150,17 +1152,17 @@
 
 /* ── App footer ─────────────────────────────────────────── */
 .slate-app .app-footer {
-  margin-top: var(--space-xxl);
+  margin-top: var(--space-xl);
   border-top: 1px solid var(--color-border);
 }
 
 .slate-app .app-footer__inner {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-sm);
   max-width: calc(var(--page-wide) + 2 * var(--gutter));
   margin: 0 auto;
-  padding: var(--space-xl) var(--gutter) var(--space-xxl);
+  padding: var(--space-lg) var(--gutter);
 }
 
 .slate-app .app-footer__top,
@@ -1169,13 +1171,22 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-md) var(--space-xl);
+  gap: var(--space-sm) var(--space-xl);
+}
+
+.slate-app .app-footer__brand .brand__logo {
+  width: 20px;
+  height: 20px;
+}
+
+.slate-app .app-footer__brand .brand__name {
+  font-size: 15px;
 }
 
 .slate-app .app-footer__links {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-sm) var(--space-xl);
+  gap: var(--space-xs) var(--space-lg);
 }
 
 .slate-app .app-footer__links a,
@@ -1193,16 +1204,17 @@
   color: var(--color-text-primary);
 }
 
-.slate-app .app-footer__bottom {
-  align-items: flex-start;
-  padding-top: var(--space-lg);
-  border-top: 1px solid var(--color-border);
-}
-
+/* One quiet line: the TMDB logo and notice, then the copyright. */
 .slate-app .app-footer__bottom .tmdb {
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-sm);
   padding: 0;
   text-align: left;
+}
+
+.slate-app .app-footer__bottom .tmdb p {
+  max-width: none;
 }
 
 .slate-app .app-footer__copy {
