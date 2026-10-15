@@ -48,8 +48,7 @@
   color: var(--color-text-tertiary);
 }
 
-/* Featured hero: a wide banner (shorter than the 16:9 backdrop, so the top and bottom edges crop a
-   little). The trailer plays muted over the backdrop and fades in once it is actually playing. */
+/* Featured hero: a wide banner, shorter than the 16:9 backdrop, so the top and bottom edges crop a little. */
 .slate-app .disc__hero {
   position: relative;
   aspect-ratio: 2.5 / 1;
@@ -72,38 +71,6 @@
   object-position: center 25%;
 }
 
-.slate-app .disc__hero-video {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 600ms var(--motion-ease);
-  pointer-events: none;
-}
-
-.slate-app .disc__hero-video.is-playing {
-  opacity: 1;
-}
-
-/* Back to the cover: quickly, not the slow fade-in. */
-.slate-app .disc__hero-video.is-stopped {
-  opacity: 0;
-  transition-duration: 120ms;
-}
-
-/* The player is 16:9 and centred, so a wider box crops its top and bottom. Slightly oversized so
-   YouTube's edge chrome falls outside the crop. */
-.slate-app .disc__hero-video iframe {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  height: auto;
-  border: 0;
-  transform: translate(-50%, -50%) scale(1.1);
-}
-
 .slate-app .disc__hero-scrim {
   position: absolute;
   inset: 0;
@@ -111,29 +78,6 @@
   pointer-events: none;
 }
 
-.slate-app .disc__hero-mute {
-  position: absolute;
-  right: var(--space-lg);
-  bottom: var(--space-lg);
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  color: var(--color-text-primary);
-  background: rgba(14, 17, 23, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
-}
-
-.slate-app .disc__hero-mute:hover {
-  background: rgba(14, 17, 23, 0.8);
-  border-color: var(--color-text-primary);
-}
-
-/* The text block spans the banner, so let clicks through to the mute button beneath it. */
 .slate-app .disc__hero-body {
   position: absolute;
   right: var(--space-xl);
@@ -143,11 +87,6 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-sm);
-  pointer-events: none;
-}
-
-.slate-app .disc__hero-body .btn {
-  pointer-events: auto;
 }
 
 .slate-app .disc__hero-body small {
@@ -175,7 +114,7 @@
 }
 
 /* On phones the banner is too short to hold the title and button over the picture, so the picture
-   (and trailer) keep a full 16:9 frame and the text sits below it. */
+   keeps a full 16:9 frame and the text sits below it. */
 @media (max-width: 639px) {
   .slate-app .disc__hero {
     display: flex;
@@ -193,15 +132,9 @@
     display: none;
   }
 
-  .slate-app .disc__hero-mute {
-    right: var(--space-md);
-    bottom: var(--space-md);
-  }
-
   .slate-app .disc__hero-body {
     position: static;
     padding: var(--space-lg);
-    pointer-events: auto;
   }
 }
 

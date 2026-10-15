@@ -69,7 +69,7 @@ function Discover() {
           </section>
         ) : (
           <>
-            {featured && <HeroBanner movie={featured} region={region} onOpen={setOpen} />}
+            {featured && <HeroBanner movie={featured} onOpen={setOpen} />}
             {CATEGORIES.map((c) =>
               rows[c.id].length === 0 ? null : (
                 <section key={c.id} className="disc__row" aria-labelledby={`disc-${c.id}`}>
