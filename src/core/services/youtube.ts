@@ -22,7 +22,7 @@ export interface YouTubePlayerOptions {
 
 export interface YouTubeApi {
   Player: new (element: HTMLElement, options: YouTubePlayerOptions) => YouTubePlayer;
-  PlayerState: { PLAYING: number };
+  PlayerState: { PLAYING: number; ENDED: number };
 }
 
 declare global {

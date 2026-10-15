@@ -9,7 +9,7 @@ const recordWatchLater = vi.fn();
 const recordWatched = vi.fn();
 const recordStreakInteraction = vi.fn();
 const toast = vi.fn();
-const players: { options: { videoId: string; events: { onReady: (e: { target: unknown }) => void; onStateChange: (e: { data: number }) => void } }; api: { mute: ReturnType<typeof vi.fn>; unMute: ReturnType<typeof vi.fn>; playVideo: ReturnType<typeof vi.fn>; pauseVideo: ReturnType<typeof vi.fn>; destroy: ReturnType<typeof vi.fn> } }[] = [];
+const players: { options: { videoId: string; playerVars?: Record<string, unknown>; events: { onReady: (e: { target: unknown }) => void; onStateChange: (e: { data: number }) => void } }; api: { mute: ReturnType<typeof vi.fn>; unMute: ReturnType<typeof vi.fn>; playVideo: ReturnType<typeof vi.fn>; pauseVideo: ReturnType<typeof vi.fn>; destroy: ReturnType<typeof vi.fn> } }[] = [];
 
 vi.mock("../../../core/services/cloudFunctions", () => ({ tmdbProxy: (...a: unknown[]) => tmdbProxy(...a) }));
 vi.mock("../../../core/services/userCollections", () => ({
@@ -19,7 +19,7 @@ vi.mock("../../../core/services/userCollections", () => ({
 }));
 vi.mock("../../../core/services/youtube", () => ({
   loadYouTubeApi: async () => ({
-    PlayerState: { PLAYING: 1 },
+    PlayerState: { PLAYING: 1, ENDED: 0 },
     Player: function (this: unknown, _el: unknown, options: (typeof players)[number]["options"]) {
       const api = { mute: vi.fn(), unMute: vi.fn(), playVideo: vi.fn(), pauseVideo: vi.fn(), destroy: vi.fn() };
       players.push({ options, api });
@@ -92,19 +92,75 @@ describe("Discover", () => {
     expect(within(hero).getByText("Film 1")).toBeTruthy();
   });
 
-  it("plays the featured film's trailer muted, and shows a mute toggle once it is playing", async () => {
-    wire({ "/trending/movie/week": [11, 12], "/movie/top_rated": [], "/movie/now_playing": [], "/movie/upcoming": [] }, "abc123"); // ids are unique per test: film details are cached across renders
+  // Lets a test say how much of the banner is on screen.
+  let intersect: (ratio: number) => void = () => undefined;
+  const stubIntersectionObserver = () => {
+    vi.stubGlobal("IntersectionObserver", class {
+      constructor(cb: (e: { intersectionRatio: number }[]) => void) { intersect = (ratio) => cb([{ intersectionRatio: ratio }]); }
+      observe() {}
+      disconnect() {}
+    });
+  };
+
+  const trailerWire = (id: number) => wire({ "/trending/movie/week": [id, id + 100], "/movie/top_rated": [], "/movie/now_playing": [], "/movie/upcoming": [] }, "abc123"); // ids are unique per test: film details are cached across renders
+
+  it("plays the featured trailer once, muted, only after the banner is mostly on screen", async () => {
+    stubIntersectionObserver();
+    trailerWire(11);
     renderAt("/app/discover");
     await waitFor(() => expect(players).toHaveLength(1));
-    expect(players[0].options.videoId).toBe("abc123");
+    const { options, api } = players[0];
+    expect(options.videoId).toBe("abc123");
+    expect(options.playerVars).not.toHaveProperty("loop");
+    expect(options.playerVars).not.toHaveProperty("autoplay");
+
+    act(() => intersect(0.2));
+    act(() => options.events.onReady({ target: api }));
+    expect(api.mute).toHaveBeenCalled();
+    expect(api.playVideo).not.toHaveBeenCalled(); // under half visible: no autoplay yet
+    act(() => intersect(0.6));
+    expect(api.playVideo).toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+
+  it("shows a mute toggle once the trailer is playing", async () => {
+    trailerWire(15);
+    renderAt("/app/discover");
+    await waitFor(() => expect(players).toHaveLength(1));
     expect(screen.queryByRole("button", { name: /trailer/ })).toBeNull(); // nothing to toggle until it plays
 
     act(() => players[0].options.events.onStateChange({ data: 1 }));
-    const unmute = await screen.findByRole("button", { name: "Unmute trailer" });
-    fireEvent.click(unmute);
+    fireEvent.click(await screen.findByRole("button", { name: "Unmute trailer" }));
     expect(players[0].api.unMute).toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Mute trailer" }));
     expect(players[0].api.mute).toHaveBeenCalled();
+  });
+
+  it("goes back to the cover when the trailer ends, and doesn't replay it", async () => {
+    trailerWire(16);
+    renderAt("/app/discover");
+    await waitFor(() => expect(players).toHaveLength(1));
+    act(() => players[0].options.events.onStateChange({ data: 1 }));
+    await screen.findByRole("button", { name: "Unmute trailer" });
+
+    act(() => players[0].options.events.onStateChange({ data: 0 })); // ended
+    expect(players[0].api.destroy).toHaveBeenCalled();
+    expect(screen.queryByRole("button", { name: /trailer/ })).toBeNull();
+    expect(document.querySelector(".disc__hero-video")?.classList.contains("is-playing")).toBe(false);
+    expect(players).toHaveLength(1); // no second player
+  });
+
+  it("View details stops the trailer at once and opens the film", async () => {
+    trailerWire(17);
+    renderAt("/app/discover");
+    await waitFor(() => expect(players).toHaveLength(1));
+    act(() => players[0].options.events.onStateChange({ data: 1 }));
+    await screen.findByRole("button", { name: "Unmute trailer" });
+
+    fireEvent.click(within(screen.getByRole("region", { name: "Featured" })).getByRole("button", { name: "View details" }));
+    expect(players[0].api.destroy).toHaveBeenCalled();
+    expect(document.querySelector(".disc__hero-video")?.classList.contains("is-stopped")).toBe(true);
+    expect(await screen.findByRole("button", { name: "Save to Watch Later" })).toBeTruthy(); // the dialog opened
   });
 
   it("stays on the still image when the film has no trailer", async () => {

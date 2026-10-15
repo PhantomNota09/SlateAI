@@ -85,6 +85,12 @@
   opacity: 1;
 }
 
+/* Back to the cover: quickly, not the slow fade-in. */
+.slate-app .disc__hero-video.is-stopped {
+  opacity: 0;
+  transition-duration: 120ms;
+}
+
 /* The player is 16:9 and centred, so a wider box crops its top and bottom. Slightly oversized so
    YouTube's edge chrome falls outside the crop. */
 .slate-app .disc__hero-video iframe {

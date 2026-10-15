@@ -17,11 +17,25 @@ export function HeroBanner({ movie, region, onOpen }: { movie: Movie; region: st
   const root = useRef<HTMLElement>(null);
   const mount = useRef<HTMLDivElement>(null);
   const player = useRef<YouTubePlayer | null>(null);
+  const visible = useRef(false); // at least half the banner is on screen
+  const finished = useRef(false); // the trailer ended or was stopped: it never plays again here
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
+  const [stopped, setStopped] = useState(false);
+
+  // Ends playback for good: tears the player down and brings the still backdrop back.
+  const stop = () => {
+    finished.current = true;
+    setStopped(true);
+    setPlaying(false);
+    player.current?.destroy();
+    player.current = null;
+  };
 
   useEffect(() => {
+    finished.current = false;
     setPlaying(false);
+    setStopped(false);
     setMuted(true);
     if (!videoKey || !mount.current || prefersReducedMotion()) return;
     let cancelled = false;
@@ -36,16 +50,18 @@ export function HeroBanner({ movie, region, onOpen }: { movie: Movie; region: st
         player.current = new YT.Player(target, {
           videoId: videoKey,
           host: "https://www.youtube-nocookie.com",
-          playerVars: { autoplay: 1, mute: 1, controls: 0, disablekb: 1, fs: 0, rel: 0, modestbranding: 1, playsinline: 1, iv_load_policy: 3, loop: 1, playlist: videoKey },
+          // No autoplay flag and no loop: playback is started below, once the banner is on screen, and plays once.
+          playerVars: { controls: 0, disablekb: 1, fs: 0, rel: 0, modestbranding: 1, playsinline: 1, iv_load_policy: 3 },
           events: {
             onReady: (e) => {
               e.target.mute();
-              e.target.playVideo();
+              if (visible.current) e.target.playVideo();
             },
             onStateChange: (e) => {
               if (e.data === YT.PlayerState.PLAYING) setPlaying(true);
+              else if (e.data === YT.PlayerState.ENDED) stop();
             },
-            onError: () => setPlaying(false), // embedding disabled etc.: stay on the still image
+            onError: () => stop(), // embedding disabled etc.: stay on the still image
           },
         });
       })
@@ -57,16 +73,26 @@ export function HeroBanner({ movie, region, onOpen }: { movie: Movie; region: st
       player.current = null;
       host.replaceChildren();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoKey]);
 
-  // Pause while the banner is scrolled out of view.
+  // YouTube's policy: only start once more than half the player is visible. Also pause while scrolled away.
   useEffect(() => {
     const el = root.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) player.current?.playVideo();
-      else player.current?.pauseVideo();
-    }, { threshold: 0.25 });
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      visible.current = true; // can't measure, so don't block the trailer
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible.current = entry.intersectionRatio >= 0.5;
+        if (finished.current) return;
+        if (visible.current) player.current?.playVideo();
+        else if (entry.intersectionRatio < 0.25) player.current?.pauseVideo();
+      },
+      { threshold: [0, 0.25, 0.5] },
+    );
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -82,7 +108,7 @@ export function HeroBanner({ movie, region, onOpen }: { movie: Movie; region: st
     <section className="disc__hero" aria-label="Featured" ref={root}>
       <div className="disc__hero-media">
         {image && <img src={image} alt="" />}
-        <div className={`disc__hero-video${playing ? " is-playing" : ""}`} ref={mount} aria-hidden="true" />
+        <div className={`disc__hero-video${playing ? " is-playing" : ""}${stopped ? " is-stopped" : ""}`} ref={mount} aria-hidden="true" />
         <div className="disc__hero-scrim" />
         {playing && (
           <button type="button" className="disc__hero-mute" onClick={toggleMute} aria-label={muted ? "Unmute trailer" : "Mute trailer"} aria-pressed={!muted}>
@@ -97,7 +123,14 @@ export function HeroBanner({ movie, region, onOpen }: { movie: Movie; region: st
         <small>Featured this week</small>
         <h2>{movie.title}</h2>
         <p>{[releaseYear(movie.releaseDate), movie.voteAverage > 0 ? `★ ${movie.voteAverage.toFixed(1)}` : ""].filter(Boolean).join(" · ")}</p>
-        <Button onClick={() => onOpen(movie)}>View details</Button>
+        <Button
+          onClick={() => {
+            stop(); // the video goes first, so the backdrop is back before the dialog opens
+            onOpen(movie);
+          }}
+        >
+          View details
+        </Button>
       </div>
     </section>
   );
