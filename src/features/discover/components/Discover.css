@@ -171,6 +171,48 @@
   scroll-snap-type: x proximity;
 }
 
+.slate-app .disc__rowwrap {
+  position: relative;
+}
+
+/* Arrows sit over the row's edges, level with the middle of the posters. Touch devices swipe instead. */
+.slate-app .disc__arrow {
+  position: absolute;
+  top: calc(var(--poster-w) * 0.75);
+  z-index: 2;
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--color-text-primary);
+  background: rgba(14, 17, 23, 0.82);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  cursor: pointer;
+  transform: translateY(-50%);
+  box-shadow: var(--elevation-2);
+  transition: background var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
+}
+
+.slate-app .disc__arrow:hover {
+  background: var(--color-surface-raised);
+  border-color: var(--color-text-secondary);
+}
+
+.slate-app .disc__arrow--left {
+  left: calc(-1 * var(--space-sm));
+}
+
+.slate-app .disc__arrow--right {
+  right: calc(-1 * var(--space-sm));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .slate-app .disc__arrow {
+    display: grid;
+  }
+}
+
 .slate-app .disc__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--poster-w), 1fr));

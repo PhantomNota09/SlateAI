@@ -13,6 +13,7 @@ import { useDiscoverLists, useDiscoverRows } from "../hooks/useDiscover";
 import { useMovieSearch } from "../hooks/useMovieSearch";
 import { useSeenMovies } from "../hooks/useSeenMovies";
 import { HeroBanner } from "./HeroBanner";
+import { ScrollRow } from "./ScrollRow";
 import { MovieCard } from "./MovieCard";
 import { MovieDetailDialog } from "./MovieDetailDialog";
 import "./Discover.css";
@@ -80,10 +81,10 @@ function Discover() {
                     </div>
                     <Link to={`/app/discover/${c.id}`}>See all ›</Link>
                   </header>
-                  <div className="disc__scroller">
+                  <ScrollRow>
                     {rows[c.id].map((m, i) => <MovieCard key={m.id} movie={m} rank={c.id === "trending" ? i + 1 : undefined} onOpen={setOpen} />)}
                     <Link to={`/app/discover/${c.id}`} className="dcard dcard--more">See all</Link>
-                  </div>
+                  </ScrollRow>
                 </section>
               ),
             )}
