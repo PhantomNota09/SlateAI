@@ -5,7 +5,6 @@ import { Button } from "../../../core/components/Button";
 import { ErrorState, LoadingState } from "../../../core/components/FullPageState";
 import { StatPill } from "../../../core/components/StatPill";
 import { Spinner } from "../../../core/components/Spinner";
-import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { ProtectedRoute } from "../../auth/components/ProtectedRoute";
 import { useAuth } from "../../auth/context/AuthContext";
@@ -70,7 +69,6 @@ function Insights() {
           </>
         )}
       </main>
-      <TmdbAttribution />
     </AppShell>
   );
 }

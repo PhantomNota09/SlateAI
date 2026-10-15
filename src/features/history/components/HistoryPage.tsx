@@ -5,7 +5,6 @@ import { AppShell } from "../../../core/components/AppShell";
 import { Button } from "../../../core/components/Button";
 import { ErrorState, LoadingState } from "../../../core/components/FullPageState";
 import { useToast } from "../../../core/components/Toast";
-import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { posterUrl, type MovieRef } from "../../../core/models/Movie";
 import type { DismissedRecommendation } from "../../../core/models/DismissedRecommendation";
@@ -127,7 +126,6 @@ function History() {
           </>
         )}
       </main>
-      <TmdbAttribution />
       <RatingDialog
         movie={editing ? { id: editing.movieId, title: editing.title, posterPath: editing.posterPath } : null}
         initialRating={editing?.slateRating ?? 0}

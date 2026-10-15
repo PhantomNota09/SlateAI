@@ -17,7 +17,6 @@ vi.mock("../../../core/services/cloudFunctions", () => ({
   generateAnalyticsInsights: (...a: unknown[]) => generateAnalyticsInsights(...a),
 }));
 vi.mock("../../../core/components/AppShell", () => ({ AppShell: ({ children }: { children: React.ReactNode }) => <div>{children}</div> }));
-vi.mock("../../../core/components/TmdbAttribution", () => ({ TmdbAttribution: () => null }));
 vi.mock("../../auth/components/ProtectedRoute", () => ({ ProtectedRoute: ({ children }: { children: React.ReactNode }) => <>{children}</> }));
 vi.mock("../../auth/context/AuthContext", () => ({ useAuth: () => ({ user: { uid: "u1" } }) }));
 

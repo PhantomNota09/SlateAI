@@ -20,7 +20,6 @@ vi.mock("../importRunner", async (orig) => {
   return { ...mod, runImport: (o: Parameters<typeof mod.runImport>[0]) => mod.runImport({ ...o, minIntervalMs: 0 }) };
 });
 vi.mock("../../../core/components/AppShell", () => ({ AppShell: ({ children }: { children: React.ReactNode }) => <div>{children}</div> }));
-vi.mock("../../../core/components/TmdbAttribution", () => ({ TmdbAttribution: () => null }));
 vi.mock("../../auth/components/ProtectedRoute", () => ({ ProtectedRoute: ({ children }: { children: React.ReactNode }) => <>{children}</> }));
 vi.mock("../../auth/context/AuthContext", () => ({
   useAuth: () => ({

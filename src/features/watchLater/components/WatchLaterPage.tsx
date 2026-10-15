@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { AppShell } from "../../../core/components/AppShell";
 import { Button } from "../../../core/components/Button";
 import { ErrorState, LoadingState } from "../../../core/components/FullPageState";
-import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { useToast } from "../../../core/components/Toast";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { posterUrl, releaseYear, type Movie, type MovieRef } from "../../../core/models/Movie";
@@ -77,7 +76,6 @@ function WatchLater() {
           </ul>
         )}
       </main>
-      <TmdbAttribution />
       <MovieDetailDialog
         movie={open}
         region={region}

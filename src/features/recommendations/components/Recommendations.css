@@ -613,9 +613,9 @@
   border-radius: var(--radius-card);
 }
 
-/* Leave room for the docked action bar on small screens. */
+/* Leave room for the docked action bar on small screens, so it never covers the footer. */
 @media (max-width: 959px) {
-  .slate-app .feed__attribution {
+  .slate-app .shell:has(.feed) .app-footer {
     padding-bottom: 150px;
   }
 }

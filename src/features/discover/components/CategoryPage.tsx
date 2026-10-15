@@ -3,7 +3,6 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { AppShell } from "../../../core/components/AppShell";
 import { Button } from "../../../core/components/Button";
 import { Spinner } from "../../../core/components/Spinner";
-import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { useToast } from "../../../core/components/Toast";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import type { Movie } from "../../../core/models/Movie";
@@ -70,7 +69,6 @@ function Feed({ category }: { category: Category }) {
         {done && movies.length > 0 && <p className="disc__note disc__end">That's everything.</p>}
         <div ref={sentinel} aria-hidden="true" />
       </main>
-      <TmdbAttribution />
       <MovieDetailDialog movie={open} region={region} status={open ? seen.statusOf(open.id) : null} onClose={() => setOpen(null)} onSave={seen.saveForLater} onWatched={seen.markWatched} />
     </AppShell>
   );

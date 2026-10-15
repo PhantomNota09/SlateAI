@@ -6,7 +6,6 @@ import { ErrorState, LoadingState } from "../../../core/components/FullPageState
 import { Modal } from "../../../core/components/Modal";
 import { ProfileAvatar } from "../../../core/components/ProfileAvatar";
 import { StatPill } from "../../../core/components/StatPill";
-import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { useToast } from "../../../core/components/Toast";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { posterUrl } from "../../../core/models/Movie";
@@ -111,7 +110,6 @@ function FriendProfile() {
           </div>
         )}
       </main>
-      <TmdbAttribution />
 
       <Modal open={confirming} onClose={() => !removing && setConfirming(false)} title={`Remove ${name}?`}>
         <p className="frd__note">You'll stop seeing each other's profiles in your friends lists. You can add them again any time.</p>

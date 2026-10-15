@@ -18,7 +18,6 @@ vi.mock("../../../core/services/userCollections", () => ({
 }));
 vi.mock("../../../core/services/streak", () => ({ recordStreakInteraction: (...a: unknown[]) => recordStreakInteraction(...a) }));
 vi.mock("../../../core/components/AppShell", () => ({ AppShell: ({ children }: { children: React.ReactNode }) => <div>{children}</div> }));
-vi.mock("../../../core/components/TmdbAttribution", () => ({ TmdbAttribution: () => null }));
 vi.mock("../../../core/components/Toast", () => ({ useToast: () => toast }));
 vi.mock("../../auth/components/ProtectedRoute", () => ({ ProtectedRoute: ({ children }: { children: React.ReactNode }) => <>{children}</> }));
 vi.mock("../../auth/context/AuthContext", () => ({ useAuth: () => ({ user: { uid: "u1" }, profile: { preferences: { region: "US" } } }) }));

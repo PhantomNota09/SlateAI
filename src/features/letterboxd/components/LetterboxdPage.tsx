@@ -3,7 +3,6 @@ import { AppShell } from "../../../core/components/AppShell";
 import { Alert } from "../../../core/components/Alert";
 import { Button } from "../../../core/components/Button";
 import { ProgressBar } from "../../../core/components/ProgressBar";
-import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { ProtectedRoute } from "../../auth/components/ProtectedRoute";
 import { useAuth } from "../../auth/context/AuthContext";
@@ -84,7 +83,6 @@ function Letterboxd() {
 
         {(state.step === "idle" || state.step === "ready") && <Guide />}
       </main>
-      <TmdbAttribution />
     </AppShell>
   );
 }

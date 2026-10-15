@@ -6,6 +6,7 @@ import { useAuth } from "../../features/auth/context/AuthContext";
 import { useWatchLaterCount } from "../../features/watchLater/context/WatchLaterCountContext";
 import { useImportProgress } from "../../features/letterboxd/context/LetterboxdImportContext";
 import { useIncomingRequestCount } from "../../features/friends/hooks/useFriends";
+import { AppFooter } from "./AppFooter";
 import { NavSearch } from "./NavSearch";
 import { BrandMark } from "./BrandMark";
 import { ProfileAvatar } from "./ProfileAvatar";
@@ -135,7 +136,8 @@ export function AppShell({
           {links(() => setSheetOpen(false))}
         </nav>
       )}
-      {children}
+      <div className="shell__page">{children}</div>
+      <AppFooter />
     </div>
   );
 }

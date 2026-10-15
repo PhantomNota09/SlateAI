@@ -4,7 +4,6 @@ import { AppShell } from "../../../core/components/AppShell";
 import { Button } from "../../../core/components/Button";
 import { ErrorState, LoadingState } from "../../../core/components/FullPageState";
 import { Spinner } from "../../../core/components/Spinner";
-import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { useToast } from "../../../core/components/Toast";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { backdropUrl, releaseYear, type Movie } from "../../../core/models/Movie";
@@ -51,9 +50,13 @@ function Discover() {
   return (
     <AppShell>
       <main className="disc">
-        <header className="disc__head">
-          <h1>{search.active ? <>Results for “{query.trim()}”</> : "Discover"}</h1>
-        </header>
+        {search.active ? (
+          <header className="disc__head">
+            <h1>Results for “{query.trim()}”</h1>
+          </header>
+        ) : (
+          <h1 className="sr-only">Discover</h1>
+        )}
 
         {search.active ? (
           <section aria-label="Search results">
@@ -88,7 +91,6 @@ function Discover() {
           </>
         )}
       </main>
-      <TmdbAttribution />
       <MovieDetailDialog movie={open} region={region} status={open ? seen.statusOf(open.id) : null} onClose={() => setOpen(null)} onSave={seen.saveForLater} onWatched={seen.markWatched} />
     </AppShell>
   );

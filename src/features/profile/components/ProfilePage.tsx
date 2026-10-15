@@ -3,7 +3,6 @@ import { AppShell } from "../../../core/components/AppShell";
 import { ErrorState, LoadingState } from "../../../core/components/FullPageState";
 import { ProfileAvatar } from "../../../core/components/ProfileAvatar";
 import { StatPill } from "../../../core/components/StatPill";
-import { TmdbAttribution } from "../../../core/components/TmdbAttribution";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { GENRES } from "../../../core/models/genres";
 import { posterUrl } from "../../../core/models/Movie";
@@ -67,7 +66,6 @@ function Profile() {
         recent={recent}
         prefs={profile.preferences}
       />
-      <TmdbAttribution />
     </AppShell>
   );
 }
