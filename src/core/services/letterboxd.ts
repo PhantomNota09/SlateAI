@@ -1,6 +1,6 @@
 import { collection, doc, getDoc, getDocs, serverTimestamp, Timestamp, updateDoc, writeBatch } from "firebase/firestore";
 import { db } from "./firebase";
-import type { LetterboxdImportSource, LetterboxdMovie } from "../models/LetterboxdMovie";
+import { parseLetterboxdDoc, type LetterboxdImportSource, type LetterboxdMovie } from "../models/LetterboxdMovie";
 
 // Firestore side of the Letterboxd import (iOS LetterboxdViewModel.addLetterboxdMoviesBatch and
 // LetterboxdCSVImportService.updateLetterboxdMetadata). Writing a letterboxdData doc with a rating
@@ -21,6 +21,9 @@ function toDoc(m: LetterboxdMovie) {
     ...(m.letterboxdRating != null ? { letterboxdRating: m.letterboxdRating } : {}),
     ...(m.watchedDate ? { watchedDate: Timestamp.fromDate(m.watchedDate) } : {}),
     importedAt: Timestamp.fromDate(m.importedAt),
+    ...(m.genreIds?.length ? { genreIds: m.genreIds } : {}),
+    ...(m.originalLanguage ? { originalLanguage: m.originalLanguage } : {}),
+    ...(m.releaseYear ? { releaseYear: m.releaseYear } : {}),
   };
 }
 
@@ -54,18 +57,5 @@ export async function updateLetterboxdMetadata(uid: string, totalMovies: number)
 // Imported films with their rating and watch date, for the Insights page.
 export async function loadLetterboxdMovies(uid: string): Promise<LetterboxdMovie[]> {
   const snap = await getDocs(collection(db, "users", uid, "letterboxdData"));
-  return snap.docs.flatMap((d): LetterboxdMovie[] => {
-    const x = d.data();
-    const movieId = Number(x.movieId ?? d.id);
-    if (!Number.isFinite(movieId)) return [];
-    const at = (v: unknown): Date | null => (typeof (v as { toDate?: () => Date })?.toDate === "function" ? (v as { toDate: () => Date }).toDate() : null);
-    return [{
-      movieId,
-      title: String(x.title ?? ""),
-      posterPath: x.posterPath ?? null,
-      letterboxdRating: typeof x.letterboxdRating === "number" ? x.letterboxdRating : null,
-      watchedDate: at(x.watchedDate),
-      importedAt: at(x.importedAt) ?? new Date(0),
-    }];
-  });
+  return snap.docs.flatMap((d) => parseLetterboxdDoc(d.id, d.data()) ?? []);
 }

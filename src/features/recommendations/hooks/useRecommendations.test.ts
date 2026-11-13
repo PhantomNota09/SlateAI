@@ -24,6 +24,9 @@ vi.mock("../../../core/services/userCollections", () => ({
   removeWatchLater: (...a: unknown[]) => removeWatchLater(...a),
 }));
 
+const startGenreBackfill = vi.fn();
+vi.mock("../startGenreBackfill", () => ({ startGenreBackfill: (...a: unknown[]) => startGenreBackfill(...a) }));
+
 import { useRecommendations } from "./useRecommendations";
 
 const movie = (id: number): Movie => ({
@@ -45,7 +48,7 @@ async function setup(poolSize = 10) {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  collections = { watched: [], dismissed: [], watchLater: [], letterboxdIds: [] };
+  collections = { watched: [], dismissed: [], watchLater: [], letterboxdIds: [], letterboxdMovies: [] };
   loadUserCollections.mockImplementation(async () => structuredClone(collections));
   readProfile.mockResolvedValue({ status: "ready", isOnboarded: true, preferences: { topGenres: [28] } });
   for (const fn of [recordWatched, recordDismissed, recordWatchLater, removeWatchLater]) fn.mockResolvedValue(undefined);
@@ -59,6 +62,14 @@ describe("loading", () => {
     const { result } = await setup();
     expect(result.current.current?.id).toBe(3);
     expect(result.current.watchLater).toHaveLength(1);
+  });
+
+  it("sends your ratings with genres to the engine, and starts the one-time genre fill-in from what it loaded", async () => {
+    collections.watched = [{ movieId: 7, title: "Rated", posterPath: null, rating: 4.5, watchedAt: new Date(5), genreIds: [27] }];
+    await setup();
+    const request = getRecommendations.mock.calls[0][0];
+    expect(request.ratedHistory).toEqual([{ movieId: 7, rating: 4.5, genreIds: [27] }]);
+    expect(startGenreBackfill).toHaveBeenCalledWith("u1", expect.objectContaining({ watched: collections.watched }));
   });
 
   it("reports an error phase when the function call fails", async () => {

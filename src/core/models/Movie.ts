@@ -20,7 +20,36 @@ export interface Movie {
 }
 
 // Minimal reference used by the watched / dismissed / watch-later writes.
-export type MovieRef = Pick<Movie, "id" | "title" | "posterPath">;
+// Genres, language and year of a film, saved on watched / imported records so the recommendation
+// engine can learn from your ratings (backend docs/RATED_HISTORY.md).
+export interface TasteFields {
+  genreIds?: number[];
+  originalLanguage?: string;
+  releaseYear?: number;
+}
+
+export type MovieRef = Pick<Movie, "id" | "title" | "posterPath"> & Partial<Pick<Movie, "genreIds" | "originalLanguage" | "releaseDate">>;
+
+// Only what is known and valid, so nothing is written as undefined or empty.
+export function tasteFieldsOf(m: Partial<Pick<Movie, "genreIds" | "originalLanguage" | "releaseDate">> | null | undefined): TasteFields {
+  const genreIds = Array.isArray(m?.genreIds) ? m!.genreIds.filter((g): g is number => Number.isInteger(g)).slice(0, 10) : [];
+  const year = Number((m?.releaseDate ?? "").slice(0, 4));
+  return {
+    ...(genreIds.length > 0 ? { genreIds } : {}),
+    ...(typeof m?.originalLanguage === "string" && m.originalLanguage ? { originalLanguage: m.originalLanguage } : {}),
+    ...(Number.isInteger(year) && year > 1800 ? { releaseYear: year } : {}),
+  };
+}
+
+// Reads the same three fields back from a stored document.
+export function tasteFieldsFromDoc(d: Record<string, unknown>): TasteFields {
+  const genreIds = Array.isArray(d.genreIds) ? d.genreIds.filter((g): g is number => Number.isInteger(g)) : [];
+  return {
+    ...(genreIds.length > 0 ? { genreIds } : {}),
+    ...(typeof d.originalLanguage === "string" && d.originalLanguage ? { originalLanguage: d.originalLanguage } : {}),
+    ...(Number.isInteger(d.releaseYear) ? { releaseYear: d.releaseYear as number } : {}),
+  };
+}
 
 export interface MatchInfo {
   matchPercentage: number;

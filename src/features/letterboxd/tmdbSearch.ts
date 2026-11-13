@@ -1,9 +1,10 @@
 import { tmdbProxy } from "../../core/services/cloudFunctions";
 import { describeCallableError } from "../../core/services/callableErrors";
+import { tasteFieldsOf } from "../../core/models/Movie";
 import type { TmdbMatch } from "./importRunner";
 
 interface SearchResponse {
-  results?: { id?: number; title?: string; poster_path?: string | null }[];
+  results?: { id?: number; title?: string; poster_path?: string | null; genre_ids?: unknown; original_language?: unknown; release_date?: unknown }[];
 }
 
 const MAX_RETRIES = 3;
@@ -27,7 +28,7 @@ export async function searchMovie(title: string, year: string | null, signal?: A
       const data = await tmdbProxy<SearchResponse>("/search/movie", params);
       const top = data?.results?.[0];
       return top && Number.isInteger(top.id) && typeof top.title === "string"
-        ? { id: top.id as number, title: top.title, posterPath: top.poster_path ?? null }
+        ? { id: top.id as number, title: top.title, posterPath: top.poster_path ?? null, ...tasteFieldsOf({ genreIds: top.genre_ids as number[], originalLanguage: top.original_language as string, releaseDate: top.release_date as string }) }
         : null;
     } catch (err) {
       const failure = describeCallableError(err);

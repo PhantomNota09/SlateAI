@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Movie, MovieRef } from "../../../core/models/Movie";
+import { tasteFieldsOf, type Movie, type MovieRef } from "../../../core/models/Movie";
 import type { DismissalReason, UserPreferences } from "../../../core/models/UserPreferences";
 import { getRecommendations } from "../../../core/services/cloudFunctions";
 import { describeCallableError } from "../../../core/services/callableErrors";
@@ -16,6 +16,7 @@ import {
   type UserCollections,
 } from "../../../core/services/userCollections";
 import { buildRecommendationRequest } from "../recommendationPayload";
+import { startGenreBackfill } from "../startGenreBackfill";
 import { mergePool, needsRefill, removeMovie } from "../queueLogic";
 import { track } from "../../../core/analytics/analytics";
 
@@ -36,7 +37,7 @@ interface State {
   error: string | null;
 }
 
-const EMPTY_COLLECTIONS: UserCollections = { watched: [], dismissed: [], watchLater: [], letterboxdIds: [] };
+const EMPTY_COLLECTIONS: UserCollections = { watched: [], dismissed: [], watchLater: [], letterboxdIds: [], letterboxdMovies: [] };
 
 const INITIAL: State = {
   phase: "loading",
@@ -106,6 +107,7 @@ export function useRecommendations(uid: string, onToast: Toast) {
     try {
       const [collections, profile] = await Promise.all([loadUserCollections(uid), readProfile(uid)]);
       preferences.current = profile.preferences;
+      startGenreBackfill(uid, collections);
       const res = await getRecommendations(buildRecommendationRequest(preferences.current, collections));
       if (gen !== generation.current) return;
       const { queue } = mergePool([], res.pool, excludedIds(collections), skipped.current);
@@ -213,7 +215,7 @@ export function useRecommendations(uid: string, onToast: Toast) {
         queue: removeMovie(s.queue, movie.id),
         collections: {
           ...s.collections,
-          watched: setEntry(s.collections.watched, movie.id, { movieId: movie.id, title: movie.title, posterPath: movie.posterPath, rating, watchedAt: new Date() }, (x) => x.watchedAt),
+          watched: setEntry(s.collections.watched, movie.id, { movieId: movie.id, title: movie.title, posterPath: movie.posterPath, rating, watchedAt: new Date(), ...tasteFieldsOf(movie) }, (x) => x.watchedAt),
           dismissed: setEntry(s.collections.dismissed, movie.id, undefined, (x) => x.dismissedAt),
           watchLater: setEntry(s.collections.watchLater, movie.id, undefined, (x) => x.addedAt),
         },

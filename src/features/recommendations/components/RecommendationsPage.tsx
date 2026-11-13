@@ -3,7 +3,7 @@ import { AppShell } from "../../../core/components/AppShell";
 import { ErrorState } from "../../../core/components/FullPageState";
 import { useToast } from "../../../core/components/Toast";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
-import { matchInfoOf, type MovieRef } from "../../../core/models/Movie";
+import { matchInfoOf, type Movie, type MovieRef } from "../../../core/models/Movie";
 import { ProtectedRoute } from "../../auth/components/ProtectedRoute";
 import { useAuth } from "../../auth/context/AuthContext";
 import { LetterboxdPrompt } from "../../letterboxd/components/LetterboxdPrompt";
@@ -15,6 +15,8 @@ import { FeedDone, FeedSkeleton } from "./FeedStates";
 import { MovieHero } from "./MovieHero";
 import { MovieInfo } from "./MovieInfo";
 import "./Recommendations.css";
+
+const refOf = (m: Movie): MovieRef => ({ id: m.id, title: m.title, posterPath: m.posterPath, genreIds: m.genreIds, originalLanguage: m.originalLanguage, releaseDate: m.releaseDate });
 
 export function RecommendationsPage() {
   return (
@@ -49,7 +51,7 @@ function Feed() {
       const t = e.target as HTMLElement | null;
       if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
       switch (e.key.toLowerCase()) {
-        case "r": setRating({ id: current.id, title: current.title, posterPath: current.posterPath }); break;
+        case "r": setRating(refOf(current)); break;
         case "w": void saveForLater(current); break;
         case "n": setDismissing(true); break;
         case "s": skip(current); break;
@@ -88,7 +90,7 @@ function Feed() {
         <ActionPanel
           movie={current}
           upNext={rec.upNext}
-          onWatched={() => setRating({ id: current.id, title: current.title, posterPath: current.posterPath })}
+          onWatched={() => setRating(refOf(current))}
           onSave={() => void rec.saveForLater(current)}
           onDismiss={() => setDismissing(true)}
           onSkip={() => rec.skip(current)}

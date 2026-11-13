@@ -57,7 +57,7 @@ function Body({ movie, region, status, onClose, onSave, onWatched }: { movie: Mo
           <p className="mdd__status">You've already watched this one.</p>
         ) : (
           <>
-            <Button onClick={() => setRating({ id: movie.id, title: movie.title, posterPath: movie.posterPath })} disabled={busy}>Already watched</Button>
+            <Button onClick={() => setRating({ id: movie.id, title: movie.title, posterPath: movie.posterPath, genreIds: movie.genreIds, originalLanguage: movie.originalLanguage, releaseDate: movie.releaseDate })} disabled={busy}>Already watched</Button>
             {status === "saved" ? (
               <p className="mdd__status">In your Watch Later</p>
             ) : (

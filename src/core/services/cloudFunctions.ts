@@ -2,6 +2,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "./firebase";
 import { normalizePool, type RecommendationResponse } from "../models/Movie";
 import type { UserPreferences } from "../models/UserPreferences";
+import type { RatedHistoryEntry } from "../../features/recommendations/ratedHistory";
 
 // All TMDb access goes through the `tmdbProxy` callable — the API key never ships in the
 // bundle (CLAUDE.md non-negotiables). Only allowlisted paths work (functions/tmdb.js).
@@ -19,6 +20,8 @@ export interface RecommendationRequest {
   dismissedHistory: { movieId: number }[];
   watchLaterMovieIds: number[];
   letterboxdMovieIds: number[];
+  // Your ratings with genres and language, newest first (max 300). Optional: see ratedHistory.ts.
+  ratedHistory?: RatedHistoryEntry[];
   poolSize?: number; // 20-100, default 40; larger sizes fetch more TMDb pages (slower)
 }
 

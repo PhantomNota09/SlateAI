@@ -12,7 +12,8 @@ import {
   type Unsubscribe,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import type { MovieRef, Movie } from "../models/Movie";
+import { tasteFieldsFromDoc, tasteFieldsOf, type MovieRef, type Movie } from "../models/Movie";
+import { parseLetterboxdDoc, type LetterboxdMovie } from "../models/LetterboxdMovie";
 import type { DismissalReason } from "../models/UserPreferences";
 import type { WatchedRecommendation } from "../models/WatchedRecommendation";
 import type { DismissedRecommendation } from "../models/DismissedRecommendation";
@@ -29,6 +30,7 @@ export interface UserCollections {
   dismissed: DismissedRecommendation[];
   watchLater: WatchLaterItem[];
   letterboxdIds: number[];
+  letterboxdMovies: LetterboxdMovie[]; // same documents as letterboxdIds, with ratings and genres
 }
 
 export const VALID_RATINGS = Array.from({ length: 10 }, (_, i) => (i + 1) / 2); // 0.5 … 5.0
@@ -63,6 +65,7 @@ export async function loadUserCollections(uid: string): Promise<UserCollections>
         posterPath: d.data().posterPath ?? null,
         rating: Number(d.data().rating ?? 0),
         watchedAt: toDate(d.data().watchedAt),
+        ...tasteFieldsFromDoc(d.data()),
       }))
       .sort((a, b) => byNewest(a.watchedAt, b.watchedAt)),
     dismissed: dismissed.docs
@@ -86,6 +89,7 @@ export async function loadUserCollections(uid: string): Promise<UserCollections>
       }))
       .sort((a, b) => byNewest(a.addedAt, b.addedAt)),
     letterboxdIds: letterboxd.docs.map(idOf).filter((n) => Number.isFinite(n)),
+    letterboxdMovies: letterboxd.docs.flatMap((d) => parseLetterboxdDoc(d.id, d.data()) ?? []),
   };
 }
 
@@ -108,6 +112,7 @@ export async function recordWatched(
     posterPath: movie.posterPath,
     rating,
     watchedAt: serverTimestamp(),
+    ...tasteFieldsOf(movie),
   });
   await batch.commit();
 }

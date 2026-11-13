@@ -48,6 +48,13 @@ describe("recordWatched", () => {
     expect(commit).toHaveBeenCalledOnce();
   });
 
+  it("saves the film's genres, language and year with the rating so recommendations can learn from it", async () => {
+    await recordWatched("u1", { ...movie, genreIds: [18, 53], originalLanguage: "en", releaseDate: "1999-10-15" }, 5, { dismissed: false, inWatchLater: false });
+    expect(batchSet).toHaveBeenCalledWith("users/u1/watchedRecommendations/550", {
+      movieId: 550, title: "Fight Club", posterPath: "/p.jpg", rating: 5, watchedAt: "SERVER_TS", genreIds: [18, 53], originalLanguage: "en", releaseYear: 1999,
+    });
+  });
+
   it("does not delete anything the movie wasn't in", async () => {
     await recordWatched("u1", movie, 3, { dismissed: false, inWatchLater: false });
     expect(batchDelete).not.toHaveBeenCalled();

@@ -1,6 +1,7 @@
 import type { RecommendationRequest } from "../../core/services/cloudFunctions";
 import type { UserCollections } from "../../core/services/userCollections";
 import type { UserPreferences } from "../../core/models/UserPreferences";
+import { buildRatedHistory } from "./ratedHistory";
 
 // The preference fields `getRecommendations` reads (spec §3 / functions/index.js). Missing
 // fields fall back to iOS's defaults so a partially-filled document still scores sensibly.
@@ -57,12 +58,15 @@ export function buildRecommendationRequest(
   preferences: Partial<UserPreferences> | null,
   c: UserCollections,
 ): RecommendationRequest {
+  const ratedHistory = buildRatedHistory(c.watched, c.letterboxdMovies ?? []);
   return {
     preferences: pickEnginePreferences(preferences),
     watchedHistory: c.watched.map((w) => ({ movieId: w.movieId })),
     dismissedHistory: c.dismissed.map((d) => ({ movieId: d.movieId })),
     watchLaterMovieIds: c.watchLater.map((w) => w.movieId),
     letterboxdMovieIds: c.letterboxdIds,
+    // Omitted entirely when there is nothing to learn from, so the request is exactly what it was.
+    ...(ratedHistory.length > 0 ? { ratedHistory } : {}),
     poolSize: RECOMMENDATION_POOL_SIZE,
   };
 }

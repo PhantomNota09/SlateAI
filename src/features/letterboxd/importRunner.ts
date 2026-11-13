@@ -1,7 +1,8 @@
+import type { TasteFields } from "../../core/models/Movie";
 import type { LetterboxdMovie } from "../../core/models/LetterboxdMovie";
 import type { LetterboxdCSVEntry } from "./csvParser";
 
-export interface TmdbMatch {
+export interface TmdbMatch extends TasteFields {
   id: number;
   title: string;
   posterPath: string | null;
@@ -96,6 +97,9 @@ export async function runImport(options: RunOptions): Promise<ImportResult> {
       letterboxdRating: entry.rating,
       watchedDate: entry.date,
       importedAt: now(),
+      ...(match.genreIds?.length ? { genreIds: match.genreIds } : {}),
+      ...(match.originalLanguage ? { originalLanguage: match.originalLanguage } : {}),
+      ...(match.releaseYear ? { releaseYear: match.releaseYear } : {}),
     };
     result.added.push(movie);
     pending.push(movie);

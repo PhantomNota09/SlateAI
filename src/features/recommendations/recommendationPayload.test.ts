@@ -13,6 +13,7 @@ const collections: UserCollections = {
   dismissed: [{ movieId: 2, title: "B", posterPath: null, reason: "Too long", customReason: null, dismissedAt: new Date(0) }],
   watchLater: [{ movieId: 3, title: "C", posterPath: null, voteAverage: 7, releaseDate: null, addedAt: new Date(0) }],
   letterboxdIds: [4],
+  letterboxdMovies: [],
 };
 
 describe("buildRecommendationRequest", () => {
@@ -75,5 +76,26 @@ describe("streaming filter fields", () => {
   it("normalizes availability types and falls back to flatrate", () => {
     expect(sanitizeAvailabilityTypes(["Rent", "buy", "rent", 3, ""])).toEqual(["rent", "buy"]);
     for (const empty of [[], undefined, "flatrate", [1, 2]]) expect(sanitizeAvailabilityTypes(empty)).toEqual(["flatrate"]);
+  });
+});
+
+describe("ratedHistory in the request", () => {
+  it("is sent when there are ratings to learn from", () => {
+    const req = buildRecommendationRequest(null, {
+      ...collections,
+      watched: [{ movieId: 1, title: "A", posterPath: null, rating: 4, watchedAt: new Date(5), genreIds: [18] }],
+      letterboxdMovies: [{ movieId: 9, title: "B", posterPath: null, letterboxdRating: 3.5, watchedDate: new Date(2), importedAt: new Date(1), genreIds: [27], originalLanguage: "ja" }],
+    });
+    expect(req.ratedHistory).toEqual([
+      { movieId: 1, rating: 4, genreIds: [18] },
+      { movieId: 9, rating: 3.5, genreIds: [27], originalLanguage: "ja" },
+    ]);
+    expect(req.watchedHistory).toEqual([{ movieId: 1 }]); // the usual exclusion lists are unchanged
+    expect(req.letterboxdMovieIds).toEqual([4]);
+  });
+
+  it("is left out entirely when nothing is rated, so the request is exactly as before", () => {
+    const req = buildRecommendationRequest(null, { ...collections, watched: [{ movieId: 1, title: "A", posterPath: null, rating: 0, watchedAt: new Date(0) }] });
+    expect("ratedHistory" in req).toBe(false);
   });
 });

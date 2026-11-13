@@ -99,3 +99,16 @@ describe("estimateMinutes", () => {
     expect(estimateMinutes(1000)).toBe(10);
   });
 });
+
+describe("runImport keeps genres from the match", () => {
+  it("saves genres, language and year when the TMDb result has them, and nothing extra when not", async () => {
+    const r = await runImport({
+      ...base,
+      entries: [entry("Rich"), entry("Plain")],
+      existingIds: new Set(),
+      search: async (t) => (t === "Rich" ? { id: 10, title: "Rich", posterPath: null, genreIds: [27, 53], originalLanguage: "ko", releaseYear: 2019 } : { id: 11, title: "Plain", posterPath: null }),
+    });
+    expect(r.added[0]).toMatchObject({ movieId: 10, genreIds: [27, 53], originalLanguage: "ko", releaseYear: 2019 });
+    expect("genreIds" in r.added[1]).toBe(false);
+  });
+});
