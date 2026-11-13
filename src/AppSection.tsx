@@ -8,6 +8,8 @@ import { AccountPage } from "./features/account/components/AccountPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { SignInPage } from "./features/auth/components/SignInPage";
 import { SignUpPage } from "./features/auth/components/SignUpPage";
+import { CollectionDetailPage } from "./features/collections/components/CollectionDetailPage";
+import { CollectionsPage } from "./features/collections/components/CollectionsPage";
 import { CategoryPage } from "./features/discover/components/CategoryPage";
 import { DiscoverPage } from "./features/discover/components/DiscoverPage";
 import { FriendProfilePage } from "./features/friends/components/FriendProfilePage";
@@ -53,6 +55,8 @@ export default function AppSection() {
                 <Route path="recommendations" element={<RecommendationsPage />} />
                 <Route path="discover" element={<DiscoverPage />} />
                 <Route path="discover/:category" element={<CategoryPage />} />
+                <Route path="collections" element={<CollectionsPage />} />
+                <Route path="collections/:id" element={<CollectionDetailPage />} />
                 <Route path="watch-later" element={<WatchLaterPage />} />
                 <Route path="preferences" element={<PreferencesPage />} />
                 <Route path="friends" element={<FriendsPage />} />

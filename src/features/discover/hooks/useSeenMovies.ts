@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Movie, MovieRef } from "../../../core/models/Movie";
 import { recordStreakInteraction } from "../../../core/services/streak";
-import { loadUserCollections, recordWatched, recordWatchLater } from "../../../core/services/userCollections";
+import { loadUserCollections, recordWatched, recordWatchLater, updateWatchedRating } from "../../../core/services/userCollections";
 import { describeStreakResult } from "../../../core/streak/streakMessages";
 
 type Toast = (kind: "success" | "error", message: string) => void;
@@ -15,6 +15,7 @@ export function useSeenMovies(uid: string, onToast: Toast) {
   const [watchedIds, setWatchedIds] = useState<Set<number>>(new Set());
   const [savedIds, setSavedIds] = useState<Set<number>>(new Set());
   const [importedIds, setImportedIds] = useState<Set<number>>(new Set());
+  const [ratings, setRatings] = useState<ReadonlyMap<number, number>>(new Map());
   const toast = useRef(onToast);
   toast.current = onToast;
 
@@ -24,6 +25,7 @@ export function useSeenMovies(uid: string, onToast: Toast) {
     try {
       const c = await loadUserCollections(uid);
       setWatchedIds(new Set(c.watched.map((w) => w.movieId)));
+      setRatings(new Map(c.watched.map((w) => [w.movieId, w.rating])));
       setSavedIds(new Set(c.watchLater.map((w) => w.movieId)));
       setImportedIds(new Set(c.letterboxdIds));
     } catch (err) {
@@ -77,6 +79,7 @@ export function useSeenMovies(uid: string, onToast: Toast) {
       try {
         await recordWatched(uid, movie, rating, { dismissed: false, inWatchLater: wasSaved });
         setWatchedIds((s) => new Set(s).add(movie.id));
+        setRatings((m) => new Map(m).set(movie.id, rating));
         setSavedIds((s) => {
           const n = new Set(s);
           n.delete(movie.id);
@@ -94,5 +97,26 @@ export function useSeenMovies(uid: string, onToast: Toast) {
     [uid, savedIds, countStreak],
   );
 
-  return { ready, failed, excluded, statusOf, saveForLater, markWatched };
+  // Your Slate rating for a film, or undefined when it isn't rated on Slate (e.g. Letterboxd-only).
+  const ratingOf = useCallback((id: number): number | undefined => ratings.get(id), [ratings]);
+
+  // Rate a film: edits the existing Slate rating, or marks it watched with this rating.
+  const rate = useCallback(
+    async (movie: MovieRef, rating: number): Promise<boolean> => {
+      if (!ratings.has(movie.id)) return markWatched(movie, rating);
+      try {
+        await updateWatchedRating(uid, movie.id, rating);
+        setRatings((m) => new Map(m).set(movie.id, rating));
+        toast.current("success", "Rating updated");
+        return true;
+      } catch (err) {
+        console.error("Failed to update rating", err);
+        toast.current("error", "Couldn't update that rating. Please try again.");
+        return false;
+      }
+    },
+    [uid, ratings, markWatched],
+  );
+
+  return { ready, failed, excluded, statusOf, ratingOf, rate, saveForLater, markWatched };
 }

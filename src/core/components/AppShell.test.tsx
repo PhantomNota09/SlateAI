@@ -20,10 +20,10 @@ const renderShell = (path = "/app/recommendations") =>
 afterEach(cleanup);
 
 describe("AppShell navigation", () => {
-  it("has exactly four tabs in the top bar, with counts on Watch Later and Friends", () => {
+  it("has exactly five tabs in the top bar, with counts on Watch Later and Friends", () => {
     renderShell();
     const nav = screen.getByRole("navigation", { name: "Primary" });
-    expect(within(nav).getAllByRole("link").map((l) => l.textContent)).toEqual(["For You", "Discover", "Watch Later3", "Friends2"]);
+    expect(within(nav).getAllByRole("link").map((l) => l.textContent)).toEqual(["For You", "Discover", "Collections", "Watch Later3", "Friends2"]);
   });
 
   it("puts Profile, History, Preferences, Account, Insights and Letterboxd in the account menu", () => {
@@ -50,6 +50,6 @@ describe("AppShell navigation", () => {
     renderShell();
     fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
     const sheet = screen.getByRole("navigation", { name: "Menu" });
-    expect(within(sheet).getAllByRole("link")).toHaveLength(4);
+    expect(within(sheet).getAllByRole("link")).toHaveLength(5);
   });
 });

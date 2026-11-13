@@ -52,11 +52,12 @@ export function AppShell({
 
   const active = ({ isActive }: { isActive: boolean }) => (isActive ? "is-active" : undefined);
   const count = (n: number) => n > 0 && <span className="shell__count">{n > 99 ? "99+" : n}</span>;
-  // The four main tabs. Everything else lives in the account menu (avatar).
+  // The main tabs. Everything else lives in the account menu (avatar).
   const links = (onNavigate?: () => void) => (
     <>
       <NavLink to="/app/recommendations" className={active} onClick={onNavigate}>For You</NavLink>
       <NavLink to="/app/discover" className={active} onClick={onNavigate}>Discover</NavLink>
+      <NavLink to="/app/collections" className={active} onClick={onNavigate}>Collections</NavLink>
       <NavLink to="/app/watch-later" className={active} onClick={onNavigate}>Watch Later{count(watchLaterCount ?? 0)}</NavLink>
       <NavLink to="/app/friends" className={active} onClick={onNavigate}>Friends{count(requestCount)}</NavLink>
     </>

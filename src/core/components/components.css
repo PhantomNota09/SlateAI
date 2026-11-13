@@ -846,7 +846,7 @@
   min-width: 0;
 }
 
-/* Under 720px (phones) the four tabs live in a menu sheet instead. */
+/* Under 880px the five tabs live in a menu sheet instead. */
 .slate-app .shell__burger {
   display: grid;
   place-items: center;
@@ -896,7 +896,7 @@
   background: var(--color-overlay-fill);
 }
 
-@media (min-width: 720px) {
+@media (min-width: 880px) {
   .slate-app .shell__nav {
     display: flex;
   }
@@ -944,7 +944,7 @@
   border-radius: var(--radius-chip);
 }
 
-/* Search: a magnifier beside the avatar that opens into an input. Under 720px the open input
+/* Search: a magnifier beside the avatar that opens into an input. Under 880px the open input
    covers the whole bar so it has room. */
 .slate-app .shell__bar-inner {
   position: relative;
@@ -1023,7 +1023,7 @@
   flex: none;
 }
 
-@media (min-width: 720px) {
+@media (min-width: 880px) {
   .slate-app .shell__search {
     margin-left: 0;
     margin-right: calc(-1 * var(--space-md));

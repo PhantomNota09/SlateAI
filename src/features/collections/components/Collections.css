@@ -1,0 +1,215 @@
+.slate-app .col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  max-width: calc(var(--page-wide) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: var(--space-xl) var(--gutter) var(--space-lg);
+  animation: slate-fade 300ms var(--motion-ease);
+}
+
+.slate-app .col__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.slate-app .col__head h1 {
+  margin: 0;
+  font: var(--font-title);
+}
+
+.slate-app .col__head p {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.slate-app .col__overview {
+  max-width: 72ch;
+}
+
+.slate-app .col__back {
+  align-self: flex-start;
+  font: var(--font-body-emphasis);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .col__note {
+  margin: 0;
+  padding: var(--space-xl);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.slate-app .col__refresh {
+  align-self: center;
+}
+
+/* Category filter chips */
+.slate-app .col__chips {
+  display: flex;
+  gap: var(--space-sm);
+  padding-bottom: var(--space-xs);
+  overflow-x: auto;
+}
+
+.slate-app .col__chips button {
+  flex: none;
+  padding: var(--space-sm) var(--space-md);
+  font: var(--font-caption-emphasis);
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+}
+
+.slate-app .col__chips button.is-active {
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+/* Franchise cards */
+.slate-app .col__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slate-app .col__card {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  background: var(--color-card-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  transition: border-color var(--motion-fast) var(--motion-ease);
+}
+
+.slate-app .col__card:hover,
+.slate-app .col__card:focus-visible {
+  border-color: var(--color-border-strong);
+}
+
+.slate-app .col__card img,
+.slate-app .col__card .col__blank {
+  flex: none;
+  width: 40%;
+  object-fit: cover;
+  background: var(--color-surface);
+}
+
+.slate-app .col__info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-xs);
+  min-width: 0;
+  padding: var(--space-md);
+}
+
+.slate-app .col__info strong {
+  font: var(--font-headline);
+}
+
+.slate-app .col__info small {
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .col__info .progress {
+  margin: var(--space-xs) 0;
+}
+
+/* A franchise's films */
+.slate-app .col__parts {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--color-card-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.slate-app .col__part {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.slate-app .col__part + .col__part {
+  border-top: 1px solid var(--color-border);
+}
+
+.slate-app .col__tick {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  font: var(--font-body-emphasis);
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slate-app .col__tick.is-done {
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.slate-app .col__film {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 0;
+  padding: 0;
+  text-align: left;
+  color: var(--color-text-primary);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.slate-app .col__film img,
+.slate-app .col__film .col__blank {
+  flex: none;
+  width: 60px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  background: var(--color-surface);
+  border-radius: var(--radius-chip);
+}
+
+.slate-app .col__film-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  min-width: 0;
+}
+
+.slate-app .col__film-text strong {
+  font: var(--font-body-emphasis);
+}
+
+.slate-app .col__film-text small {
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .col__film-text .col__watched {
+  color: var(--color-accent);
+}
