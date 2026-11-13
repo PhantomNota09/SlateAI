@@ -6,6 +6,7 @@ import { usePageTitle } from "../../../core/hooks/usePageTitle";
 import { matchInfoOf, type MovieRef } from "../../../core/models/Movie";
 import { ProtectedRoute } from "../../auth/components/ProtectedRoute";
 import { useAuth } from "../../auth/context/AuthContext";
+import { LetterboxdPrompt } from "../../letterboxd/components/LetterboxdPrompt";
 import { useMovieDetail } from "../hooks/useMovieDetail";
 import { useRecommendations } from "../hooks/useRecommendations";
 import { ActionPanel } from "./ActionPanel";
@@ -110,7 +111,10 @@ function Feed() {
 
   return (
     <AppShell>
-      <main className="feed">{body}</main>
+      <main className="feed">
+        <LetterboxdPrompt />
+        {body}
+      </main>
 
       <RatingDialog movie={rating} onClose={() => setRating(null)} onRate={(m, r) => void rec.markWatched(m, r)} />
       <DismissDialog

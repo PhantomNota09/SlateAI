@@ -22,7 +22,7 @@ import "./Onboarding.css";
 
 export function OnboardingPage() {
   return (
-    <ProtectedRoute allowIncompleteOnboarding>
+    <ProtectedRoute allowIncompleteOnboarding onboardedRedirect="/app/welcome">
       <OnboardingFlow />
     </ProtectedRoute>
   );

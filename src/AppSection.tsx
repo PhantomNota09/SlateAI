@@ -15,6 +15,7 @@ import { FriendsPage } from "./features/friends/components/FriendsPage";
 import { HistoryPage } from "./features/history/components/HistoryPage";
 import { InsightsPage } from "./features/insights/components/InsightsPage";
 import { LetterboxdImportProvider } from "./features/letterboxd/context/LetterboxdImportContext";
+import { WelcomePage } from "./features/letterboxd/components/WelcomePage";
 import { LetterboxdPage } from "./features/letterboxd/components/LetterboxdPage";
 import { OnboardingPage } from "./features/onboarding/components/OnboardingPage";
 import { PreferencesPage } from "./features/preferences/components/PreferencesPage";
@@ -48,6 +49,7 @@ export default function AppSection() {
                 <Route path="forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="choose-username" element={<ChooseUsernamePage />} />
                 <Route path="onboarding" element={<OnboardingPage />} />
+                <Route path="welcome" element={<WelcomePage />} />
                 <Route path="recommendations" element={<RecommendationsPage />} />
                 <Route path="discover" element={<DiscoverPage />} />
                 <Route path="discover/:category" element={<CategoryPage />} />

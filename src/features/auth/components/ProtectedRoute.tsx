@@ -8,9 +8,12 @@ import { useAuth } from "../context/AuthContext";
 export function ProtectedRoute({
   children,
   allowIncompleteOnboarding = false,
+  onboardedRedirect = "/app",
 }: {
   children: ReactNode;
   allowIncompleteOnboarding?: boolean;
+  // Where a user who has finished onboarding is sent from an onboarding-only page.
+  onboardedRedirect?: string;
 }) {
   const { user, profile, profileError, loading, refreshProfile } = useAuth();
 
@@ -27,7 +30,7 @@ export function ProtectedRoute({
   }
   if (profile.status !== "ready") return <Navigate to="/app/choose-username" replace />;
   if (!profile.isOnboarded && !allowIncompleteOnboarding) return <Navigate to="/app/onboarding" replace />;
-  if (profile.isOnboarded && allowIncompleteOnboarding) return <Navigate to="/app" replace />;
+  if (profile.isOnboarded && allowIncompleteOnboarding) return <Navigate to={onboardedRedirect} replace />;
 
   return <>{children}</>;
 }
