@@ -35,6 +35,8 @@ export interface AnalyticsInsights {
   personalityInsights: string[];
   tasteProfile: string;
   recommendedNextSteps: string[];
+  // Where the text came from. Informational only: never branch behaviour on it.
+  source?: "ai" | "template";
 }
 
 export interface AnalyticsInsightsRequest {
@@ -53,5 +55,6 @@ export async function generateAnalyticsInsights(request: AnalyticsInsightsReques
     personalityInsights: strings(data?.personalityInsights),
     tasteProfile: typeof data?.tasteProfile === "string" ? data.tasteProfile : "",
     recommendedNextSteps: strings(data?.recommendedNextSteps),
+    ...(data?.source === "ai" || data?.source === "template" ? { source: data.source } : {}),
   };
 }

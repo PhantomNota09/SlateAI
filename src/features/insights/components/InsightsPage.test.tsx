@@ -64,6 +64,22 @@ describe("InsightsPage", () => {
     expect(generateAnalyticsInsights).toHaveBeenCalledWith({ totalMovies: 6, averageRating: 4, topGenres: ["Drama"], explorationScore: 5, forceRefresh: false });
   });
 
+  it("labels AI-written summaries, and says nothing extra for template ones", async () => {
+    loadUserCollections.mockResolvedValue({ watched: watched(6) });
+    generateAnalyticsInsights.mockResolvedValue({ personalityInsights: ["A"], tasteProfile: "Profile text", recommendedNextSteps: ["Step"], source: "ai" });
+    renderPage();
+    fireEvent.click(await screen.findByRole("button", { name: "Generate insights" }));
+    expect(await screen.findByText("AI-generated")).toBeTruthy();
+    cleanup();
+
+    generateAnalyticsInsights.mockResolvedValue({ personalityInsights: ["A"], tasteProfile: "Profile text", recommendedNextSteps: ["Step"], source: "template" });
+    renderPage();
+    fireEvent.click(await screen.findByRole("button", { name: "Generate insights" }));
+    await screen.findByText("Profile text");
+    expect(screen.queryByText("AI-generated")).toBeNull();
+    expect(screen.getByText("Your taste summary")).toBeTruthy();
+  });
+
   it("explains a daily-limit error", async () => {
     loadUserCollections.mockResolvedValue({ watched: watched(5) });
     generateAnalyticsInsights.mockRejectedValue({ code: "functions/resource-exhausted" });

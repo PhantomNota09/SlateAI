@@ -14,13 +14,13 @@ export type AiState = { phase: "idle" } | { phase: "loading" } | { phase: "ready
 
 export function aiErrorMessage(err: unknown): string {
   const code = String((err as { code?: unknown })?.code ?? "").replace(/^functions\//, "");
-  if (code === "resource-exhausted") return "You've reached today's limit for AI insights. Try again tomorrow.";
-  if (code === "unavailable") return "AI insights are temporarily unavailable. Please try again in a moment.";
+  if (code === "resource-exhausted") return "You've reached today's limit for insights. Try again tomorrow.";
+  if (code === "unavailable") return "Insights are temporarily unavailable. Please try again in a moment.";
   return "We couldn't generate insights right now. Please try again.";
 }
 
 // Data for /app/insights: your history from Slate + Letterboxd, a taste breakdown from TMDb details of
-// your most recent films, and AI insights from the generateAnalyticsInsights callable on request.
+// your most recent films, and a taste summary from the generateAnalyticsInsights callable on request.
 export function useInsights(uid: string) {
   const [phase, setPhase] = useState<"loading" | "ready" | "error">("loading");
   const [films, setFilms] = useState<RatedFilm[]>([]);

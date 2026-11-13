@@ -160,10 +160,10 @@ function Taste({ taste, loading }: { taste: TasteBreakdown; loading: boolean }) 
 function AiCard({ ai, ready, onGenerate }: { ai: AiState; ready: boolean; onGenerate: (forceRefresh: boolean) => void }) {
   return (
     <section className="ins__card ins__ai" aria-labelledby="ins-ai">
-      <h2 id="ins-ai">AI insights</h2>
+      <h2 id="ins-ai">Your taste summary</h2>
       {ai.phase === "idle" && (
         <>
-          <p className="ins__note">A short read on your taste and what to watch next, written by AI from your stats. No movie titles are shared.</p>
+          <p className="ins__note">A short read on your taste and what to watch next, based on your stats. No movie titles are shared.</p>
           <div className="ins__links">
             <Button onClick={() => onGenerate(false)} disabled={!ready}>{ready ? "Generate insights" : "Preparing your stats…"}</Button>
           </div>
@@ -190,6 +190,7 @@ function AiCard({ ai, ready, onGenerate }: { ai: AiState; ready: boolean; onGene
               <ul className="ins__steps">{ai.data.recommendedNextSteps.map((s) => <li key={s}>{s}</li>)}</ul>
             </>
           )}
+          {ai.data.source === "ai" && <p className="ins__note">AI-generated</p>}
           <p className="ins__note">Refreshed at most once a week. Rate more films, then regenerate for a fresh take.</p>
           <div className="ins__links"><Button variant="ghost" onClick={() => onGenerate(true)}>Regenerate</Button></div>
         </>
