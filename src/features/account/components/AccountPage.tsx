@@ -6,10 +6,11 @@ import { PasswordStrength } from "../../../core/components/PasswordStrength";
 import { TextField } from "../../../core/components/TextField";
 import { useToast } from "../../../core/components/Toast";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
-import { hasPasswordSignIn } from "../../../core/services/account";
+import { hasPasswordSignIn, providerOf } from "../../../core/services/account";
 import { ProtectedRoute } from "../../auth/components/ProtectedRoute";
 import { useAuth } from "../../auth/context/AuthContext";
 import { nameProblem, useAccount } from "../hooks/useAccount";
+import { useDeleteAccount } from "../hooks/useDeleteAccount";
 import "./Account.css";
 
 export function AccountPage() {
@@ -25,6 +26,9 @@ function Account() {
   const { user, profile, refreshProfile } = useAuth();
   const toast = useToast();
   const { savingName, savingPassword, passwordError, saveName, savePassword } = useAccount(user!.uid, toast, refreshProfile);
+  const del = useDeleteAccount(user!, toast);
+  const [confirming, setConfirming] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
   const prefs = profile.preferences;
 
   const [name, setName] = useState(prefs?.name ?? "");
@@ -80,6 +84,43 @@ function Account() {
             </form>
           ) : (
             <p className="acct__note">You sign in with Google or Apple, so there's no Slate password to change.</p>
+          )}
+        </section>
+
+        <section className="acct__card acct__card--danger" aria-labelledby="acct-delete">
+          <h2 id="acct-delete">Delete account</h2>
+          <p className="acct__note">
+            Permanently deletes your Slate account and everything in it: your ratings, Watch Later, history, friends and imported
+            Letterboxd films. Your username is released. This can't be undone.
+          </p>
+          {!confirming ? (
+            <Button variant="ghost" className="acct__danger-btn" onClick={() => setConfirming(true)}>Delete my account</Button>
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                void del.remove(hasPasswordSignIn(user) ? deletePassword : undefined);
+              }}
+            >
+              {del.error && <Alert>{del.error}</Alert>}
+              {providerOf(user) === "other" ? (
+                <p className="acct__note">Your account signs in with a method the web app can't confirm. Delete it from the Slate app instead.</p>
+              ) : (
+                <>
+                  {hasPasswordSignIn(user) ? (
+                    <TextField label="Confirm with your password" type="password" revealable value={deletePassword} onChange={(e) => setDeletePassword(e.target.value)} autoComplete="current-password" data-autofocus />
+                  ) : (
+                    <p className="acct__note">You'll be asked to confirm with Google first.</p>
+                  )}
+                  <div className="acct__row">
+                    <Button type="submit" className="acct__danger-btn acct__danger-btn--solid" loading={del.deleting} disabled={hasPasswordSignIn(user) && !deletePassword}>
+                      Permanently delete
+                    </Button>
+                    <Button type="button" variant="ghost" disabled={del.deleting} onClick={() => { setConfirming(false); setDeletePassword(""); }}>Cancel</Button>
+                  </div>
+                </>
+              )}
+            </form>
           )}
         </section>
       </main>

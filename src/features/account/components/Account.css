@@ -70,3 +70,23 @@
   font: var(--font-body);
   color: var(--color-text-secondary);
 }
+
+.slate-app .acct__card--danger {
+  border-color: var(--color-danger-border);
+}
+
+.slate-app .acct__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.slate-app .acct__card .acct__danger-btn {
+  color: var(--color-danger);
+  border-color: var(--color-danger-border);
+}
+
+.slate-app .acct__card .acct__danger-btn--solid:not(:disabled) {
+  color: var(--color-on-accent);
+  background: var(--color-danger);
+}

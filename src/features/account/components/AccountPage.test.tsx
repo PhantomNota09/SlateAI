@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const updateDisplayName = vi.fn();
 const changePassword = vi.fn();
+const deleteAccount = vi.fn();
 const refreshProfile = vi.fn();
 const toast = vi.fn();
 let passwordUser = true;
@@ -13,6 +14,8 @@ vi.mock("../../../core/services/account", () => ({
   updateDisplayName: (...a: unknown[]) => updateDisplayName(...a),
   changePassword: (...a: unknown[]) => changePassword(...a),
   hasPasswordSignIn: () => passwordUser,
+  providerOf: () => (passwordUser ? "password" : "google"),
+  deleteAccount: (...a: unknown[]) => deleteAccount(...a),
 }));
 vi.mock("../../../core/components/AppShell", () => ({ AppShell: ({ children }: { children: React.ReactNode }) => <div>{children}</div> }));
 vi.mock("../../../core/components/Toast", () => ({ useToast: () => toast }));
@@ -32,6 +35,7 @@ beforeEach(() => {
   passwordUser = true;
   updateDisplayName.mockResolvedValue(undefined);
   changePassword.mockResolvedValue(undefined);
+  deleteAccount.mockResolvedValue(undefined);
   refreshProfile.mockResolvedValue(undefined);
 });
 afterEach(cleanup);
@@ -84,5 +88,40 @@ describe("AccountPage", () => {
     render(<AccountPage />);
     expect(screen.queryByLabelText("Current password")).toBeNull();
     expect(screen.getByText(/no Slate password to change/)).toBeTruthy();
+  });
+
+  it("deletes the account only after the password is confirmed", async () => {
+    render(<AccountPage />);
+    fireEvent.click(screen.getByRole("button", { name: "Delete my account" }));
+    expect((screen.getByRole("button", { name: "Permanently delete" }) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.change(screen.getByLabelText("Confirm with your password"), { target: { value: "MyPass123" } });
+    fireEvent.click(screen.getByRole("button", { name: "Permanently delete" }));
+    await waitFor(() => expect(deleteAccount).toHaveBeenCalledWith(expect.objectContaining({ uid: "u1" }), "MyPass123"));
+    await waitFor(() => expect(toast).toHaveBeenCalledWith("success", "Your account has been deleted."));
+  });
+
+  it("uses Google to confirm for Google accounts, and explains a wrong password", async () => {
+    passwordUser = false;
+    render(<AccountPage />);
+    fireEvent.click(screen.getByRole("button", { name: "Delete my account" }));
+    fireEvent.click(screen.getByRole("button", { name: "Permanently delete" }));
+    await waitFor(() => expect(deleteAccount).toHaveBeenCalledWith(expect.anything(), undefined));
+    cleanup();
+
+    passwordUser = true;
+    deleteAccount.mockRejectedValue({ code: "auth/invalid-credential" });
+    render(<AccountPage />);
+    fireEvent.click(screen.getByRole("button", { name: "Delete my account" }));
+    fireEvent.change(screen.getByLabelText("Confirm with your password"), { target: { value: "nope" } });
+    fireEvent.click(screen.getByRole("button", { name: "Permanently delete" }));
+    expect(await screen.findByText("That password is incorrect.")).toBeTruthy();
+  });
+
+  it("can back out of deleting", () => {
+    render(<AccountPage />);
+    fireEvent.click(screen.getByRole("button", { name: "Delete my account" }));
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(screen.getByRole("button", { name: "Delete my account" })).toBeTruthy();
+    expect(deleteAccount).not.toHaveBeenCalled();
   });
 });
