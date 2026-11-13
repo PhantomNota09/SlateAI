@@ -22,6 +22,11 @@ describe("buildRows", () => {
     expect(rows.upcoming.map((x) => x.id)).toEqual([5]);
   });
 
+  it("keeps a film once when TMDb's pages repeat it inside one list", () => {
+    const { rows } = buildRows({ ...empty(), trending: [m(1), m(2), m(1), m(3), m(2)] }, new Set());
+    expect(rows.trending.map((x) => x.id)).toEqual([1, 2, 3]);
+  });
+
   it("features the first unseen trending film with a backdrop", () => {
     const { featured } = buildRows({ ...empty(), trending: [m(1), m(2, null), m(3)] }, new Set([1]));
     expect(featured?.id).toBe(3);

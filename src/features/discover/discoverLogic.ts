@@ -16,7 +16,15 @@ export function buildRows(lists: Lists, excluded: ReadonlySet<number>): { rows: 
   const shown = new Set<number>();
   const rows = {} as Rows;
   for (const c of CATEGORIES) {
-    const row = (lists[c.id] ?? []).filter((m) => !excluded.has(m.id) && !shown.has(m.id)).slice(0, ROW_SIZE);
+    // TMDb's pages can overlap, so a film may appear twice in one list; keep its first place only.
+    const inRow = new Set<number>();
+    const row = (lists[c.id] ?? [])
+      .filter((m) => {
+        if (excluded.has(m.id) || shown.has(m.id) || inRow.has(m.id)) return false;
+        inRow.add(m.id);
+        return true;
+      })
+      .slice(0, ROW_SIZE);
     row.forEach((m) => shown.add(m.id));
     rows[c.id] = row;
   }
