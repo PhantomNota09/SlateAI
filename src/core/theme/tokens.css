@@ -54,6 +54,9 @@
   --color-accent-glow: rgba(62, 207, 142, 0.22);
   --color-trailer: #e62117;
   --color-trailer-hover: #ff3b30;
+  --color-medal-gold: #ffd700;
+  --color-medal-silver: #c0c0c0;
+  --color-medal-bronze: #cd7f32;
   --color-danger: #ff6b6b;
   --color-danger-subtle: rgba(255, 107, 107, 0.1);
   --color-danger-border: rgba(255, 107, 107, 0.32);

@@ -11,10 +11,11 @@ import type { FriendEntry, FriendRequest, UserSearchResult } from "../../../core
 import { ProtectedRoute } from "../../auth/components/ProtectedRoute";
 import { useAuth } from "../../auth/context/AuthContext";
 import { useFriends, useSentRequests, type SentRequest } from "../hooks/useFriends";
+import { Leaderboard } from "./Leaderboard";
 import { useUserSearch } from "../hooks/useUserSearch";
 import "./Friends.css";
 
-type Tab = "friends" | "requests" | "add";
+type Tab = "friends" | "requests" | "add" | "leaderboard";
 
 export function FriendsPage() {
   return (
@@ -44,6 +45,7 @@ function Friends() {
     { id: "friends", label: "Friends", count: friends.length },
     { id: "requests", label: "Requests", count: requests.length },
     { id: "add", label: "Add friend" },
+    { id: "leaderboard", label: "Leaderboard" },
   ];
 
   return (
@@ -85,6 +87,7 @@ function Friends() {
               onCancel={(r) => void sentRequests.cancel(r)}
             />
           )}
+          {tab === "leaderboard" && <Leaderboard uid={user!.uid} friendUids={friends.map((f) => f.uid)} />}
           {tab === "add" && <AddFriend me={me} friends={friends} requests={requests} toast={toast} />}
         </section>
       </main>

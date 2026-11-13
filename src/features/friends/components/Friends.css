@@ -22,6 +22,7 @@
 
 .slate-app .frd__tabs {
   display: flex;
+  overflow-x: auto;
   gap: var(--space-xs);
   padding: var(--space-xs);
   background: var(--color-surface);
@@ -31,7 +32,7 @@
 
 .slate-app .frd__tabs button {
   display: inline-flex;
-  flex: 1;
+  flex: 1 0 auto;
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
@@ -300,4 +301,110 @@
     width: 100%;
     justify-content: flex-end;
   }
+}
+
+/* Leaderboard */
+.slate-app .lb {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.slate-app .lb__scope {
+  display: flex;
+  gap: var(--space-xs);
+  padding: var(--space-xs);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+}
+
+.slate-app .lb__scope button {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  font: var(--font-body-emphasis);
+  color: var(--color-text-secondary);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+}
+
+.slate-app .lb__scope button.is-active {
+  color: var(--color-text-primary);
+  background: var(--color-overlay-fill-hover);
+}
+
+.slate-app .lb__list {
+  display: grid;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slate-app .lb__gap {
+  margin: 0;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.slate-app .lb__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  color: var(--color-text-primary);
+  background: var(--color-card-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.slate-app a.lb__row:hover {
+  background: var(--color-surface-raised);
+}
+
+.slate-app .lb__row.is-me {
+  border-color: var(--color-accent);
+}
+
+.slate-app .lb__row--p1 { border-left: 3px solid var(--color-medal-gold); }
+.slate-app .lb__row--p2 { border-left: 3px solid var(--color-medal-silver); }
+.slate-app .lb__row--p3 { border-left: 3px solid var(--color-medal-bronze); }
+
+.slate-app .lb__rank {
+  flex: none;
+  width: 36px;
+  text-align: center;
+  font: var(--font-title);
+  color: var(--color-text-secondary);
+}
+
+.slate-app .lb__row--p1 .lb__rank { color: var(--color-medal-gold); }
+.slate-app .lb__row--p2 .lb__rank { color: var(--color-medal-silver); }
+.slate-app .lb__row--p3 .lb__rank { color: var(--color-medal-bronze); }
+
+.slate-app .lb__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font: var(--font-headline);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slate-app .lb__score {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.slate-app .lb__score strong {
+  font: var(--font-title);
+  font-variant-numeric: tabular-nums;
+}
+
+.slate-app .lb__score small {
+  font: var(--font-caption);
+  color: var(--color-text-secondary);
 }
