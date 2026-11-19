@@ -70,7 +70,6 @@ export function useWatchLater(uid: string, onToast: Toast) {
       try {
         await removeWatchLater(uid, movieId);
         toast.current("success", "Removed from Watch Later");
-        track({ name: "watch_later_action", params: { action: "removed" } });
       } catch (err) {
         console.error("Failed to remove from watch later", err);
         restore(item);
@@ -87,7 +86,7 @@ export function useWatchLater(uid: string, onToast: Toast) {
       try {
         await recordWatched(uid, movie, rating, { dismissed: false, inWatchLater: true });
         toast.current("success", "Marked as watched");
-        track({ name: "watch_later_action", params: { action: "watched" } });
+        track({ name: "card_action", params: { action: "rated", movie_id: movie.id, match_bucket: "none", rating } });
         void recordStreakInteraction(uid)
           .then((result) => {
             const message = describeStreakResult(result);

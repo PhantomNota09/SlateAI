@@ -5,16 +5,36 @@ import { onConsentChange, readConsent } from "./consent";
 // Product analytics (Google Analytics for Firebase, same project as iOS). Loaded lazily and
 // only after consent, so visitors who decline — and the marketing pages' first paint — never
 // download it. Events carry no personal data: no emails, user IDs, titles or movie IDs.
+export type MatchBucket = "0-39" | "40-59" | "60-79" | "80-100" | "none";
+export type LandingSourceParam = "share" | "store_badge" | "direct" | "other";
+export type OriginPlatformParam = "ios" | "android" | "web" | "unknown";
+export type ShareSurface = "share_card" | "profile_link" | "milestone" | "invite";
+
+// Names and values follow docs/ANALYTICS_SPEC.md in the backend repo (sections 2, 3, 3.1).
 export type AnalyticsEvent =
   | { name: "sign_up"; params: { method: "email" | "google" } }
   | { name: "login"; params: { method: "email" | "google" } }
-  | { name: "onboarding_step"; params: { step: number } }
+  | { name: "onboarding_step"; params: { step_index: number } }
   | { name: "onboarding_complete"; params: Record<string, never> }
-  | { name: "recommendation_action"; params: { action: "watched" | "dismissed" | "watch_later" | "skipped" } }
-  | { name: "watch_later_action"; params: { action: "watched" | "removed" } }
-  | { name: "preferences_saved"; params: { fields_changed: number } }
-  | { name: "cta_click"; params: { target: "app_store" | "web_app" } }
-  | { name: "page_view"; params: { page_path: string } };
+  | {
+      name: "card_action";
+      params: { action: "rated" | "dismissed" | "watch_later" | "skipped"; movie_id: number; match_bucket: MatchBucket; rating?: number; dismiss_reason?: string };
+    }
+  | { name: "preferences_updated"; params: { fields_changed: number } }
+  | { name: "landing_view"; params: { source: LandingSourceParam; origin_platform: OriginPlatformParam } }
+  | { name: "store_click"; params: { store: "app_store" | "play_store"; source: LandingSourceParam } }
+  | { name: "profile_viewed_from_link"; params: { origin_platform: OriginPlatformParam } }
+  | { name: "share_created"; params: { surface: ShareSurface; content_type: "stats" | "movie" | "badge" | "profile" } }
+  | { name: "share_completed"; params: { surface: ShareSurface; method: "native_sheet" | "copy_link" | "save_image" } };
+
+// match_bucket from the server's matchPercentage (spec section 2); "none" when there is no score.
+export function matchBucket(pct: number | null | undefined): MatchBucket {
+  if (pct == null || Number.isNaN(pct)) return "none";
+  if (pct < 40) return "0-39";
+  if (pct < 60) return "40-59";
+  if (pct < 80) return "60-79";
+  return "80-100";
+}
 
 type Module = typeof import("firebase/analytics");
 

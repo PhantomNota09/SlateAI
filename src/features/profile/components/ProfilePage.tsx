@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { AppShell } from "../../../core/components/AppShell";
 import { ErrorState, LoadingState } from "../../../core/components/FullPageState";
+import { ShareButton } from "../../../core/components/ShareButton";
 import { ProfileAvatar } from "../../../core/components/ProfileAvatar";
 import { StatPill } from "../../../core/components/StatPill";
 import { usePageTitle } from "../../../core/hooks/usePageTitle";
@@ -104,6 +105,16 @@ export function ProfileView({
             {joined && <span>Joined {joined}</span>}
           </p>
         </div>
+        {username && (
+          <ShareButton
+            path={`/u/${encodeURIComponent(username)}`}
+            surface="profile_link"
+            contentType="profile"
+            title="Join me on Slate"
+            text="Find movies you'll love on Slate."
+            label="Share profile"
+          />
+        )}
       </section>
 
       <Streak current={s?.currentStreak ?? 0} best={s?.longestStreak ?? 0} />

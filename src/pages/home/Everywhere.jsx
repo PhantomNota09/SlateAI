@@ -1,5 +1,5 @@
 import { filmById } from './data';
-import { AppStoreBadge, MatchRing, PosterArt, WebAppLink } from './Bits';
+import { StoreButtons, MatchRing, PosterArt, WebAppLink } from './Bits';
 import { Reveal } from './useReveal';
 
 function MiniPick({ film, score }) {
@@ -64,7 +64,7 @@ export default function Everywhere() {
         </Reveal>
 
         <Reveal className="lp-center lp-cta-row" delay={160}>
-          <AppStoreBadge />
+          <StoreButtons />
           <WebAppLink>Open the web app</WebAppLink>
         </Reveal>
       </div>

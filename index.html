@@ -15,14 +15,37 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://slateapp.com/" />
+    <meta property="og:site_name" content="Slate" />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:image" content="%SITE_URL%/og-default.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Slate: your perfect movie match, every time" />
+    <link rel="canonical" href="%SITE_URL%/" />
     <meta property="og:title" content="Slate - Your Perfect Movie Match, Every Time" />
     <meta property="og:description" content="Stop wasting time scrolling. AI-powered movie recommendations that actually match your taste." />
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:image" content="%SITE_URL%/og-default.png" />
     <meta property="twitter:title" content="Slate - Your Perfect Movie Match, Every Time" />
     <meta property="twitter:description" content="Stop wasting time scrolling. AI-powered movie recommendations that actually match your taste." />
+
+    <!-- Structured data for search engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Slate",
+        "applicationCategory": "EntertainmentApplication",
+        "operatingSystem": "iOS",
+        "description": "Personalized movie recommendations that learn your taste.",
+        "url": "%SITE_URL%/",
+        "image": "%SITE_URL%/og-default.png",
+        "downloadUrl": "https://apps.apple.com/us/app/slate-ai/id6757089643",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

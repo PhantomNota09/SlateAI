@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import './Legal.css';
+import { useDocumentMeta } from '../core/hooks/useDocumentMeta';
 
 const Privacy = () => {
+  useDocumentMeta({ title: 'Privacy Policy | Slate', description: 'How Slate collects, uses and protects your information, including optional analytics.', path: '/privacy' });
   return (
     <div className="legal-page">
       <div className="legal-container">

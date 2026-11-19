@@ -1,4 +1,4 @@
-import { AppStoreBadge, WebAppLink } from './Bits';
+import { StoreButtons, WebAppLink } from './Bits';
 import { Reveal } from './useReveal';
 
 export default function Finale() {
@@ -13,7 +13,7 @@ export default function Finale() {
           is one <em>pick</em> away.
         </h2>
         <div className="lp-cta-row">
-          <AppStoreBadge />
+          <StoreButtons showQr />
           <WebAppLink>Open the web app</WebAppLink>
         </div>
         <p className="lp-fine">Free · No ads · No subscriptions</p>

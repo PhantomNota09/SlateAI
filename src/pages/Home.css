@@ -1614,3 +1614,27 @@
     transform: none;
   }
 }
+
+.lp-stores {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.lp-appstore--soon {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  border: 1px dashed rgba(255, 255, 255, 0.28);
+  cursor: default;
+}
+
+.lp-appstore--soon:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.lp-qr {
+  border-radius: 10px;
+  background: #fff;
+}

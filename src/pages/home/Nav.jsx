@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { APP_STORE_URL } from './Bits';
+import { track } from '../../core/analytics/analytics';
+import { entryAttribution } from '../../core/analytics/landing';
+import { APP_STORE_URL } from '../../core/config/site';
+import { currentPlatform, withParams } from '../../core/platform/platform';
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -26,7 +29,18 @@ export default function Nav() {
         </nav>
         <div className="lp-nav__cta">
           <Link to="/app/sign-in" className="lp-nav__signin">Sign in</Link>
-          <a href={APP_STORE_URL} className="lp-btn lp-btn--small" target="_blank" rel="noopener noreferrer">Download</a>
+          {/* The App Store is no use on Android, and Google Play isn't live yet. */}
+          {currentPlatform() !== 'android' && (
+            <a
+              href={withParams(APP_STORE_URL, { src: 'store_badge' })}
+              className="lp-btn lp-btn--small"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => track({ name: 'store_click', params: { store: 'app_store', source: entryAttribution().source } })}
+            >
+              Download
+            </a>
+          )}
         </div>
       </div>
     </header>

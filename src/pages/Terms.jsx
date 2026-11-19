@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import './Legal.css';
+import { useDocumentMeta } from '../core/hooks/useDocumentMeta';
 
 const Terms = () => {
+  useDocumentMeta({ title: 'Terms of Service | Slate', description: 'The terms that apply when you use Slate, the movie recommendation app.', path: '/terms' });
   return (
     <div className="legal-page">
       <div className="legal-container">

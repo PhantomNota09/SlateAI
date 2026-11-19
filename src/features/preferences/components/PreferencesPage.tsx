@@ -77,7 +77,7 @@ function Preferences() {
     setError(null);
     try {
       await savePreferenceChanges(user!.uid, changes);
-      track({ name: "preferences_saved", params: { fields_changed: Object.keys(changes).length } });
+      track({ name: "preferences_updated", params: { fields_changed: Object.keys(changes).length } });
       setSaved(draft);
       toast("success", "Preferences saved. Your recommendations will use them.");
       void refreshProfile().catch(() => undefined);

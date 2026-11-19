@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { openConsentSettings } from '../../core/analytics/consent';
+import { shareLink } from '../../core/share/share';
 
 export default function Footer() {
   return (
@@ -14,6 +15,7 @@ export default function Footer() {
           <Link to="/privacy">Privacy Policy</Link>
           <a href="mailto:slateai09@gmail.com">Contact</a>
           <button type="button" onClick={openConsentSettings}>Analytics settings</button>
+          <button type="button" onClick={() => shareLink({ path: '/', surface: 'invite', contentType: 'profile', title: 'Slate', text: 'Personalized movie picks that learn your taste.' })}>Share Slate</button>
         </nav>
         <p>© 2026 Slate. All rights reserved.</p>
       </div>

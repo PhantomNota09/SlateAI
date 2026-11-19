@@ -59,11 +59,11 @@ describe("analytics", () => {
     const { initAnalytics, track, writeConsent } = await fresh();
     initAnalytics();
     writeConsent("granted");
-    track({ name: "cta_click", params: { target: "app_store" } });
+    track({ name: "store_click", params: { store: "app_store", source: "direct" } });
     await settle();
     await settle();
     expect(initializeApp).toHaveBeenCalledWith({ measurementId: "G-TEST" }, "analytics");
-    expect(logEvent).toHaveBeenCalledWith({ id: "analytics" }, "cta_click", { target: "app_store" });
+    expect(logEvent).toHaveBeenCalledWith({ id: "analytics" }, "store_click", { store: "app_store", source: "direct" });
   });
 
   it("starts on load when consent was already given", async () => {

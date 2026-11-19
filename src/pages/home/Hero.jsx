@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { filmById } from './data';
-import { AppStoreBadge, MatchRing, PosterArt, WebAppLink } from './Bits';
+import { StoreButtons, MatchRing, PosterArt, WebAppLink } from './Bits';
 
 // Five illustrative picks the slate cycles through. Scores sit in the range the real engine
 // produces for good fits (roughly 40-90%), not an inflated 99%.
@@ -38,7 +38,7 @@ export default function Hero() {
             subscriptions.
           </p>
           <div className="lp-hero__actions">
-            <AppStoreBadge />
+            <StoreButtons />
             <WebAppLink />
           </div>
         </div>

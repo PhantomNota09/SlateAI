@@ -32,7 +32,7 @@ export function useOnboarding(
         track({ name: "onboarding_complete", params: {} });
         await onFinished();
       } else {
-        track({ name: "onboarding_step", params: { step: nextStep } });
+        track({ name: "onboarding_step", params: { step_index: nextStep } });
         setStep(nextStep);
       }
     } catch {
